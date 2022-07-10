@@ -1,0 +1,20 @@
+name: xostat React Deploy
+
+on:
+  push:
+    branches:
+      "master"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm install
+      - run: npm run build
+      - run: npm test
+
