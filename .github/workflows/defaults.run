@@ -1,4 +1,0 @@
-defaults:
-  run:
-    shell: bash
-    working-directory: xostat-client
