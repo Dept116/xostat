@@ -14,7 +14,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@main
-      - name: npm install, build, test
       - run: cd xostat-client
       - run: npm install
       - run: npm run build
