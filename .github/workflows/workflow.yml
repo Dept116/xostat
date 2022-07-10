@@ -3,7 +3,7 @@ name: xostat React Deploy
 on:
   push:
     branches:
-      "master"
+      "main"
 
 jobs:
   build:
