@@ -1,2 +1,2 @@
-# codriver.gg
+# xostat
 macro level crossout analytics site
