@@ -1,23 +1,24 @@
 import boto3
-import json
+import json 
+from boto3.dynamodb.conditions import Key
 
-dynamodb = boto3.client('dynamodb')
+dynamodb = boto3.client('dynamodb', region_name="us-east-2")
 
 def upload():
-    with open('data.json', 'r') as datafile:
-        records = json.load(datafile)
-    for song in records:
-        print(song)
+    with open('sample-data.json', 'r') as datafile:
+        matches = json.load(datafile)
+    for match in matches:
+        print(match)
         item = {
-                'artist':{'S':song['artist']},
-                'song':{'S':song['song']},
-                'id':{'S': song['id']},
-                'priceUsdCents':{'S': str(song['priceUsdCents'])},
-                'publisher':{'S': song['publisher']}
+                'pk':{'S':match['match']},
+                'sk':{'S':match['user']},
+                'kills':{'S': str(match['kills'])},
+                'assits':{'S': str(match['assits'])},
+                'deaths':{'S': str(match['deaths'])}
         }
         print(item)
         response = dynamodb.put_item(
-            TableName='basicSongsTable', 
+            TableName='xodat', 
             Item=item
         )
         print("UPLOADING ITEM")
