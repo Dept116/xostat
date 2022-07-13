@@ -1,0 +1,39 @@
+org: dept116
+app: xostat-lambda-api
+service: xostat-lambda-api
+frameworkVersion: '3'
+
+service: xostat
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-east-2
+  environment:
+    DYNAMODB_TABLE: xodat
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:GetItem
+      Resource: 
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/sk-pk-index"
+functions:
+  uploadMatch:
+    handler: xostat-lambda-api/upload.uploadMatch
+    events:
+      - http:
+          path: /customer
+          method: post
+          cors: true
+  getUploadRecords:
+    handler: xostat-lambda-api/upload.getUploadRecords
+    events:
+      - http:
+          path: /customer
+          method: post
+          cors: true
