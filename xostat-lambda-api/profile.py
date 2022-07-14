@@ -1,6 +1,12 @@
 import json
 import boto3
 
+def getUserNames(event, context):
+    return ""
+
+def getMatchHistory(event, context):
+    return ""
+
 def hello(event, context):
     body = {
         "message": "Go Serverless v3.0! Your function executed successfully!",
