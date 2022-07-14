@@ -25,7 +25,7 @@ def uploadMatch(event, context):
         'body': json.dumps(body)
     }
 
-def getUploadRecords():
+def getUploadRecords(uploader):
     return ""
 
 def uploadMatch(match):
