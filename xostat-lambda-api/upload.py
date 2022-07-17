@@ -2,6 +2,7 @@ import json
 import boto3
 import uuid
 
+from profile import findUploadedMatchesForUserID
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
@@ -29,15 +30,6 @@ def uploadMatch(event, context):
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(body)
-    }
-
-def getUploadRecords(uploader):
-    previouslyUploadedMatches = findUploadedMatchesForUserID(uploader)
-
-    return {
-        "statusCode": 200,
-        "headers": {"Access-Control-Allow-Origin": "*"},
-        "body": json.dumps(previouslyUploadedMatches)
     }
 
 def uploadMatch(uploader, match):
@@ -134,15 +126,3 @@ def uploadBuild(build):
     }
     table.put_item(Item=item)
     return 
-
-def findUploadedMatchesForUserID(uploader):
-    pk = Key('pk').eq('USER#' + uploader)
-    sk = Key('sk').begins_with('UPLOAD#')
-    expression = pk & sk
-
-    uploadRecords = table.query(
-        IndexName='xodat',
-        KeyConditionExpression=expression
-    )
-
-    return uploadRecords['Items']['pk']

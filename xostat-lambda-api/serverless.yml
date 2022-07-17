@@ -1,9 +1,4 @@
-org: dept116
-app: xostat-lambda-api
 service: xostat-lambda-api
-frameworkVersion: '3'
-
-service: xostat
 
 provider:
   name: aws
@@ -27,13 +22,13 @@ functions:
     handler: xostat-lambda-api/upload.uploadMatch
     events:
       - http:
-          path: /customer
+          path: /upload
           method: post
           cors: true
   getUploadRecords:
-    handler: xostat-lambda-api/upload.getUploadRecords
+    handler: xostat-lambda-api/profile.getUploadRecords
     events:
       - http:
-          path: /customer
-          method: post
+          path: /player/{id}
+          method: get
           cors: true
