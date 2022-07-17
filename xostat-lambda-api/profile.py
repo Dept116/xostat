@@ -1,6 +1,12 @@
 import json
 import boto3
+import os
 from boto3.dynamodb.conditions import Key
+
+dynamodb = boto3.resource('dynamodb')
+
+TABLE_NAME = os.environ['DYNAMODB_TABLE']
+table = dynamodb.Table(TABLE_NAME)
 
 def getUserNames(event, context):
     return ""
