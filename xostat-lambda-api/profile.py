@@ -30,8 +30,7 @@ def findUploadedMatchesForUserID(uploader):
     expression = pk & sk
 
     uploadRecords = table.query(
-        IndexName='xodat',
         KeyConditionExpression=expression
     )
     
-    return uploadRecords['Items']['pk']
+    return uploadRecords['Items']

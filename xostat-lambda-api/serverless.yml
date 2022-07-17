@@ -1,3 +1,5 @@
+org: xostat
+app: xostat-lambda-api
 service: xostat-lambda-api
 
 provider:
