@@ -18,8 +18,8 @@ def uploadMatch(event, context):
         if match['match_id'] not in previouslyUploadedMatches:
             uploadMatch(uploader, match)
 
-    for build in body['build_list']:
-        uploadBuild(build)
+    #for build in body['build_list']:
+        #uploadBuild(build)
 
     body = {
         "message": "Sucess!",
@@ -34,10 +34,18 @@ def uploadMatch(event, context):
 
 def uploadMatch(uploader, match):
     uploadMatchAttributes(match)
-    for round in match['rounds']:
-        uploadRound(round)
-    uploadResources(uploader, match)
+    #for round in match['rounds']:
+    #    uploadRound(round)
+    #uploadResources(uploader, match)
     return 
+
+def uploadUploadRecord(uploader, match):
+    item = {
+        'pk': 'USER#' + uploader,
+        'sk': 'UPLOAD#' + match['match_id']
+    }
+    table.put_item(Item=item)
+    return
 
 def uploadMatchAttributes(match):
     item = {

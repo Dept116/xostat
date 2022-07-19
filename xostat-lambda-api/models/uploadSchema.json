@@ -1,0 +1,631 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#", 
+	"$id": "https://example.com/object1658265081.json", 
+	"title": "Root", 
+	"type": "object",
+	"required": [
+		"uploader_uid",
+		"match_list",
+		"build_list"
+	],
+	"properties": {
+		"uploader_uid": {
+			"$id": "#root/uploader_uid", 
+			"title": "Uploader_uid", 
+			"type": "integer",
+			"examples": [
+				7907969
+			],
+			"default": 0
+		},
+		"match_list": {
+			"$id": "#root/match_list", 
+			"title": "Match_list", 
+			"type": "array",
+			"default": [],
+			"items":{
+				"$id": "#root/match_list/items", 
+				"title": "Items", 
+				"type": "object",
+				"required": [
+					"match_id",
+					"match_type",
+					"match_classification",
+					"match_start",
+					"match_end",
+					"map_name",
+					"map_display_name",
+					"winning_team",
+					"win_conidtion",
+					"client_version",
+					"co_driver_version",
+					"host_name",
+					"rounds",
+					"resources"
+				],
+				"properties": {
+					"match_id": {
+						"$id": "#root/match_list/items/match_id", 
+						"title": "Match_id", 
+						"type": "integer",
+						"examples": [
+							1628718728212966
+						],
+						"default": 0
+					},
+					"match_type": {
+						"$id": "#root/match_list/items/match_type", 
+						"title": "Match_type", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"8v8"
+						],
+						"pattern": "^.*$"
+					},
+					"match_classification": {
+						"$id": "#root/match_list/items/match_classification", 
+						"title": "Match_classification", 
+						"type": "integer",
+						"examples": [
+							1
+						],
+						"default": 0
+					},
+					"match_start": {
+						"$id": "#root/match_list/items/match_start", 
+						"title": "Match_start", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"2021-08-11T21:52:12.514Z"
+						],
+						"pattern": "^.*$"
+					},
+					"match_end": {
+						"$id": "#root/match_list/items/match_end", 
+						"title": "Match_end", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"2021-08-11T21:54:14.314Z"
+						],
+						"pattern": "^.*$"
+					},
+					"map_name": {
+						"$id": "#root/match_list/items/map_name", 
+						"title": "Map_name", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"riverport"
+						],
+						"pattern": "^.*$"
+					},
+					"map_display_name": {
+						"$id": "#root/match_list/items/map_display_name", 
+						"title": "Map_display_name", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"Ship graveyard"
+						],
+						"pattern": "^.*$"
+					},
+					"winning_team": {
+						"$id": "#root/match_list/items/winning_team", 
+						"title": "Winning_team", 
+						"type": "integer",
+						"examples": [
+							1
+						],
+						"default": 0
+					},
+					"win_conidtion": {
+						"$id": "#root/match_list/items/win_conidtion", 
+						"title": "Win_conidtion", 
+						"type": "integer",
+						"examples": [
+							1
+						],
+						"default": 0
+					},
+					"client_version": {
+						"$id": "#root/match_list/items/client_version", 
+						"title": "Client_version", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"0.12.80.177330"
+						],
+						"pattern": "^.*$"
+					},
+					"co_driver_version": {
+						"$id": "#root/match_list/items/co_driver_version", 
+						"title": "Co_driver_version", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"0.1.0.77"
+						],
+						"pattern": "^.*$"
+					},
+					"host_name": {
+						"$id": "#root/match_list/items/host_name", 
+						"title": "Host_name", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"wheel10lw-us.pxo"
+						],
+						"pattern": "^.*$"
+					},
+					"rounds": {
+						"$id": "#root/match_list/items/rounds", 
+						"title": "Rounds", 
+						"type": "array",
+						"default": [],
+						"items":{
+							"$id": "#root/match_list/items/rounds/items", 
+							"title": "Items", 
+							"type": "object",
+							"required": [
+								"match_id",
+								"round_id",
+								"round_start",
+								"round_end",
+								"winning_team",
+								"players",
+								"damage_records"
+							],
+							"properties": {
+								"match_id": {
+									"$id": "#root/match_list/items/rounds/items/match_id", 
+									"title": "Match_id", 
+									"type": "integer",
+									"examples": [
+										1628718728212966
+									],
+									"default": 0
+								},
+								"round_id": {
+									"$id": "#root/match_list/items/rounds/items/round_id", 
+									"title": "Round_id", 
+									"type": "integer",
+									"examples": [
+										0
+									],
+									"default": 0
+								},
+								"round_start": {
+									"$id": "#root/match_list/items/rounds/items/round_start", 
+									"title": "Round_start", 
+									"type": "string",
+									"default": "",
+									"examples": [
+										"2021-08-11T21:52:12.514Z"
+									],
+									"pattern": "^.*$"
+								},
+								"round_end": {
+									"$id": "#root/match_list/items/rounds/items/round_end", 
+									"title": "Round_end", 
+									"type": "string",
+									"default": "",
+									"examples": [
+										"2021-08-11T21:54:28.244Z"
+									],
+									"pattern": "^.*$"
+								},
+								"winning_team": {
+									"$id": "#root/match_list/items/rounds/items/winning_team", 
+									"title": "Winning_team", 
+									"type": "integer",
+									"examples": [
+										1
+									],
+									"default": 0
+								},
+								"players": {
+									"$id": "#root/match_list/items/rounds/items/players", 
+									"title": "Players", 
+									"type": "array",
+									"default": [],
+									"items":{
+										"$id": "#root/match_list/items/rounds/items/players/items", 
+										"title": "Items", 
+										"type": "object",
+										"required": [
+											"match_id",
+											"round_id",
+											"uid",
+											"bot",
+											"nickname",
+											"team",
+											"group_id",
+											"build_hash",
+											"power_score",
+											"kills",
+											"assists",
+											"drone_kills",
+											"deaths",
+											"score",
+											"damage",
+											"damage_taken",
+											"scores",
+											"medals"
+										],
+										"properties": {
+											"match_id": {
+												"$id": "#root/match_list/items/rounds/items/players/items/match_id", 
+												"title": "Match_id", 
+												"type": "integer",
+												"examples": [
+													1628718728212966
+												],
+												"default": 0
+											},
+											"round_id": {
+												"$id": "#root/match_list/items/rounds/items/players/items/round_id", 
+												"title": "Round_id", 
+												"type": "integer",
+												"examples": [
+													0
+												],
+												"default": 0
+											},
+											"uid": {
+												"$id": "#root/match_list/items/rounds/items/players/items/uid", 
+												"title": "Uid", 
+												"type": "integer",
+												"examples": [
+													7907969
+												],
+												"default": 0
+											},
+											"bot": {
+												"$id": "#root/match_list/items/rounds/items/players/items/bot", 
+												"title": "Bot", 
+												"type": "integer",
+												"examples": [
+													0
+												],
+												"default": 0
+											},
+											"nickname": {
+												"$id": "#root/match_list/items/rounds/items/players/items/nickname", 
+												"title": "Nickname", 
+												"type": "string",
+												"default": "",
+												"examples": [
+													"Rot_Fish_Bandit"
+												],
+												"pattern": "^.*$"
+											},
+											"team": {
+												"$id": "#root/match_list/items/rounds/items/players/items/team", 
+												"title": "Team", 
+												"type": "integer",
+												"examples": [
+													1
+												],
+												"default": 0
+											},
+											"group_id": {
+												"$id": "#root/match_list/items/rounds/items/players/items/group_id", 
+												"title": "Group_id", 
+												"type": "integer",
+												"examples": [
+													0
+												],
+												"default": 0
+											},
+											"build_hash": {
+												"$id": "#root/match_list/items/rounds/items/players/items/build_hash", 
+												"title": "Build_hash", 
+												"type": "string",
+												"default": "",
+												"examples": [
+													"44ef9ec3"
+												],
+												"pattern": "^.*$"
+											},
+											"power_score": {
+												"$id": "#root/match_list/items/rounds/items/players/items/power_score", 
+												"title": "Power_score", 
+												"type": "integer",
+												"examples": [
+													8210
+												],
+												"default": 0
+											},
+											"kills": {
+												"$id": "#root/match_list/items/rounds/items/players/items/kills", 
+												"title": "Kills", 
+												"type": "integer",
+												"examples": [
+													4
+												],
+												"default": 0
+											},
+											"assists": {
+												"$id": "#root/match_list/items/rounds/items/players/items/assists", 
+												"title": "Assists", 
+												"type": "integer",
+												"examples": [
+													4
+												],
+												"default": 0
+											},
+											"drone_kills": {
+												"$id": "#root/match_list/items/rounds/items/players/items/drone_kills", 
+												"title": "Drone_kills", 
+												"type": "integer",
+												"examples": [
+													3
+												],
+												"default": 0
+											},
+											"deaths": {
+												"$id": "#root/match_list/items/rounds/items/players/items/deaths", 
+												"title": "Deaths", 
+												"type": "integer",
+												"examples": [
+													0
+												],
+												"default": 0
+											},
+											"score": {
+												"$id": "#root/match_list/items/rounds/items/players/items/score", 
+												"title": "Score", 
+												"type": "integer",
+												"examples": [
+													1965
+												],
+												"default": 0
+											},
+											"damage": {
+												"$id": "#root/match_list/items/rounds/items/players/items/damage", 
+												"title": "Damage", 
+												"type": "number",
+												"examples": [
+													8748.390000000007
+												],
+												"default": 0.0
+											},
+											"damage_taken": {
+												"$id": "#root/match_list/items/rounds/items/players/items/damage_taken", 
+												"title": "Damage_taken", 
+												"type": "number",
+												"examples": [
+													5647.729999999998
+												],
+												"default": 0.0
+											},
+											"scores": {
+												"$id": "#root/match_list/items/rounds/items/players/items/scores", 
+												"title": "Scores", 
+												"type": "array",
+												"default": [],
+												"items":{
+													"$id": "#root/match_list/items/rounds/items/players/items/scores/items", 
+													"title": "Items", 
+													"type": "object",
+													"required": [
+														"score_type",
+														"points"
+													],
+													"properties": {
+														"score_type": {
+															"$id": "#root/match_list/items/rounds/items/players/items/scores/items/score_type", 
+															"title": "Score_type", 
+															"type": "string",
+															"default": "",
+															"examples": [
+																"First Hit"
+															],
+															"pattern": "^.*$"
+														},
+														"points": {
+															"$id": "#root/match_list/items/rounds/items/players/items/scores/items/points", 
+															"title": "Points", 
+															"type": "integer",
+															"examples": [
+																10
+															],
+															"default": 0
+														}
+													}
+												}
+
+											},
+											"medals": {
+												"$id": "#root/match_list/items/rounds/items/players/items/medals", 
+												"title": "Medals", 
+												"type": "array",
+												"default": [],
+												"items":{
+													"$id": "#root/match_list/items/rounds/items/players/items/medals/items", 
+													"title": "Items", 
+													"type": "object",
+													"required": [
+														"medal",
+														"amount"
+													],
+													"properties": {
+														"medal": {
+															"$id": "#root/match_list/items/rounds/items/players/items/medals/items/medal", 
+															"title": "Medal", 
+															"type": "string",
+															"default": "",
+															"examples": [
+																"PvpDestroyDetailsCommon"
+															],
+															"pattern": "^.*$"
+														},
+														"amount": {
+															"$id": "#root/match_list/items/rounds/items/players/items/medals/items/amount", 
+															"title": "Amount", 
+															"type": "integer",
+															"examples": [
+																6
+															],
+															"default": 0
+														}
+													}
+												}
+
+											}
+										}
+									}
+
+								},
+								"damage_records": {
+									"$id": "#root/match_list/items/rounds/items/damage_records", 
+									"title": "Damage_records", 
+									"type": "array",
+									"default": [],
+									"items":{
+										"$id": "#root/match_list/items/rounds/items/damage_records/items", 
+										"title": "Items", 
+										"type": "object",
+										"required": [
+											"uid",
+											"weapon",
+											"damage"
+										],
+										"properties": {
+											"uid": {
+												"$id": "#root/match_list/items/rounds/items/damage_records/items/uid", 
+												"title": "Uid", 
+												"type": "integer",
+												"examples": [
+													5018113
+												],
+												"default": 0
+											},
+											"weapon": {
+												"$id": "#root/match_list/items/rounds/items/damage_records/items/weapon", 
+												"title": "Weapon", 
+												"type": "string",
+												"default": "",
+												"examples": [
+													"CarPart_Gun_Machinegun_Frontal_legend"
+												],
+												"pattern": "^.*$"
+											},
+											"damage": {
+												"$id": "#root/match_list/items/rounds/items/damage_records/items/damage", 
+												"title": "Damage", 
+												"type": "number",
+												"examples": [
+													2486.170000000003
+												],
+												"default": 0.0
+											}
+										}
+									}
+
+								}
+							}
+						}
+
+					},
+					"resources": {
+						"$id": "#root/match_list/items/resources", 
+						"title": "Resources", 
+						"type": "array",
+						"default": [],
+						"items":{
+							"$id": "#root/match_list/items/resources/items", 
+							"title": "Items", 
+							"type": "object",
+							"required": [
+								"resource",
+								"amount"
+							],
+							"properties": {
+								"resource": {
+									"$id": "#root/match_list/items/resources/items/resource", 
+									"title": "Resource", 
+									"type": "string",
+									"default": "",
+									"examples": [
+										"Scrap_Common"
+									],
+									"pattern": "^.*$"
+								},
+								"amount": {
+									"$id": "#root/match_list/items/resources/items/amount", 
+									"title": "Amount", 
+									"type": "integer",
+									"examples": [
+										45
+									],
+									"default": 0
+								}
+							}
+						}
+
+					}
+				}
+			}
+
+		},
+		"build_list": {
+			"$id": "#root/build_list", 
+			"title": "Build_list", 
+			"type": "array",
+			"default": [],
+			"items":{
+				"$id": "#root/build_list/items", 
+				"title": "Items", 
+				"type": "object",
+				"required": [
+					"build_hash",
+					"power_score",
+					"parts"
+				],
+				"properties": {
+					"build_hash": {
+						"$id": "#root/build_list/items/build_hash", 
+						"title": "Build_hash", 
+						"type": "string",
+						"default": "",
+						"examples": [
+							"44ef9ec3"
+						],
+						"pattern": "^.*$"
+					},
+					"power_score": {
+						"$id": "#root/build_list/items/power_score", 
+						"title": "Power_score", 
+						"type": "integer",
+						"examples": [
+							8210
+						],
+						"default": 0
+					},
+					"parts": {
+						"$id": "#root/build_list/items/parts", 
+						"title": "Parts", 
+						"type": "array",
+						"default": [],
+						"items":{
+							"$id": "#root/build_list/items/parts/items", 
+							"title": "Items", 
+							"type": "string",
+							"default": "",
+							"examples": [
+								"CarPart_Gun_Machinegun_Preepic"
+							],
+							"pattern": "^.*$"
+						}
+					}
+				}
+			}
+
+		}
+	}
+}
