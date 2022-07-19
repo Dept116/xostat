@@ -27,6 +27,9 @@ functions:
           path: /upload
           method: post
           cors: true
+          request:
+            schema:
+              application/json: ${file(xostat-lambda-api/models/uploadSchema.json)}
   getUploadRecords:
     handler: xostat-lambda-api/profile.getUploadRecords
     events:
