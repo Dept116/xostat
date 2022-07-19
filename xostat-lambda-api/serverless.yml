@@ -28,8 +28,11 @@ functions:
           method: post
           cors: true
           request:
-            schema:
-              application/json: ${file(xostat-lambda-api/models/uploadSchema.json)}
+            schemas:
+              application/json: 
+                schema: ${file(models/uploadSchema.json)}
+                name: UploadModel
+                description: 'Validation for uploading match'
   getUploadRecords:
     handler: xostat-lambda-api/profile.getUploadRecords
     events:
