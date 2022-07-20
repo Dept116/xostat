@@ -8,15 +8,15 @@ dynamodb = boto3.resource('dynamodb')
 TABLE_NAME = os.environ['DYNAMODB_TABLE']
 table = dynamodb.Table(TABLE_NAME)
 
-def getUserNames(event, context):
+def get_user_names(event, context):
     return ""
 
-def getMatchHistory(event, context):
+def get_match_history(event, context):
     return ""
 
-def getUploadRecords(event, context):
+def get_upload_records(event, context):
     userID = event['pathParameters']['id']
-    previouslyUploadedMatches = findUploadedMatchesForUserID(userID)
+    previouslyUploadedMatches = find_uploaded_matches_for_user_id(userID)
 
     return {
         "statusCode": 200,
@@ -24,8 +24,8 @@ def getUploadRecords(event, context):
         "body": json.dumps(previouslyUploadedMatches)
     }
 
-def findUploadedMatchesForUserID(uploader):
-    pk = Key('pk').eq('USER#' + uploader)
+def find_uploaded_matches_for_user_id(uploader):
+    pk = Key('pk').eq('USER#' + str(uploader))
     sk = Key('sk').begins_with('UPLOAD#')
     expression = pk & sk
 

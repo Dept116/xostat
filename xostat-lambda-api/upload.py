@@ -2,54 +2,53 @@ import json
 import boto3
 import uuid
 
-from profile import findUploadedMatchesForUserID
+from profile import find_uploaded_matches_for_user_id
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
 table = dynamodb.Table('xodat')
 
-def uploadMatch(event, context):
-    body = json.loads(event['body'])
-    uploader = body['uploader_uid']
+def upload_matches(event, context):
+    uploader = event['uploader_uid']
 
-    previouslyUploadedMatches = findUploadedMatchesForUserID(uploader)
+    previouslyUploadedMatches = find_uploaded_matches_for_user_id(uploader)
     
-    for match in body['match_list']:
+    for match in event['match_list']:
         if match['match_id'] not in previouslyUploadedMatches:
-            uploadMatch(uploader, match)
+            upload_match(uploader, match)
 
-    #for build in body['build_list']:
-        #uploadBuild(build)
+    # for build in body['build_list']:
+    #     upload_build(build)
 
-    body = {
-        "message": "Sucess!",
-        "input": event,
-    }
+    # body = {
+    #     "message": "Sucess!",
+    #     "input": event,
+    # }
 
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps(body)
+        'body': event
     }
 
-def uploadMatch(uploader, match):
-    uploadMatchAttributes(match)
-    #for round in match['rounds']:
-    #    uploadRound(round)
-    #uploadResources(uploader, match)
+def upload_match(uploader, match):
+    upload_match_attributes(match)
+    for round in match['rounds']:
+       upload_round(round)
+    upload_resources(uploader, match)
     return 
 
-def uploadUploadRecord(uploader, match):
+def upload_upload_record(uploader, match):
     item = {
-        'pk': 'USER#' + uploader,
-        'sk': 'UPLOAD#' + match['match_id']
+        'pk': 'USER#' + str(uploader),
+        'sk': 'UPLOAD#' + str(match['match_id'])
     }
     table.put_item(Item=item)
     return
 
-def uploadMatchAttributes(match):
+def upload_match_attributes(match):
     item = {
-        'pk': 'MATCH#' + match['match_id'],
+        'pk': 'MATCH#' + str(match['match_id']),
         'sk': 'ATTRIBUTES#',
         'match_type' : match['match_id'],
         'match_classification' : match['match_classification'],
@@ -66,37 +65,28 @@ def uploadMatchAttributes(match):
     table.put_item(Item=item)
     return
 
-def uploadRound(round):
+def upload_round(round):
     roundID = str(uuid.uuid4())
-    uploadRoundAttributes(roundID, round)
+    upload_round_attributes(roundID, round)
     for player in round['players']:
-        uploadPlayerRound(roundID, player)
+        upload_player_round(roundID, player)
     return
 
-def uploadRoundAttributes(roundID, round):
+def upload_round_attributes(roundID, round):
     item = {
-        'pk': 'ROUND#' + roundID,
+        'pk': 'ROUND#' + str(roundID),
         'sk': 'ATTRIBUTES#',
-        'match_type' : round['match_id'],
-        'match_classification' : round['match_classification'],
-        'match_start' : round['match_start'],
-        'match_end' : round['match_end'],
-        'map_name' : round['map_name'],
-        'map_display_name' : round['map_display_name'],
-        'winning_team' : round['winning_team'],
-        'win_conidtion' : round['win_conidtion'],
-        'client_version' : round['client_version'],
-        'co_driver_version' : round['co_driver_version'],
-        'host_name' : round['host_name'],
-        'round_damage_records' : round['damage_records']
+        'round_start' : round['round_start'],
+        'round_end' : round['round_end'],
+        'winning_team' : round['winning_team']
     }
     table.put_item(Item=item)
     return
 
-def uploadPlayerRound(roundID, player):
+def upload_player_round(roundID, player):
     item = {
-        'pk': 'ROUND#' + roundID,
-        'sk': 'USER#' + player['uid'],
+        'pk': 'ROUND#' + str(roundID),
+        'sk': 'USER#' + str(player['uid']),
         'match_id' : player['match_id'],
         'round_id' : roundID,
         'bot' : player['bot'],
@@ -117,19 +107,19 @@ def uploadPlayerRound(roundID, player):
     table.put_item(Item=item)
     return
 
-def uploadResources(uploader, match):
+def upload_resources(uploader, match):
     item = {
-        'pk': 'MATCH#' + match['match_id'],
-        'sk': 'RESOURCE#USER#' + uploader,
+        'pk': 'MATCH#' + str(match['match_id']),
+        'sk': 'RESOURCE#USER#' + str(uploader),
         'resources' : match['resources']
     }
     table.put_item(Item=item)
     return
 
-def uploadBuild(build):
+def upload_build(build):
     item = {
-        'pk': 'BUILD#' + build['build_hash'],
-        'sk': 'POWER_SCORE#' + build['power_score'],
+        'pk': 'BUILD#' + str(build['build_hash']),
+        'sk': 'POWER_SCORE#' + str(build['power_score']),
         'parts' : build['parts']
     }
     table.put_item(Item=item)
