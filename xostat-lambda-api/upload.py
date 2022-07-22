@@ -1,7 +1,10 @@
 import json
+from tokenize import Double
+from unicodedata import decimal
 import boto3
 import uuid
 
+from decimal import Decimal
 from profile import find_uploaded_matches_for_user_id
 from boto3.dynamodb.conditions import Key
 
@@ -11,10 +14,10 @@ table = dynamodb.Table('xodat')
 def upload_matches(event, context):
     uploader = event['uploader_uid']
 
-    previouslyUploadedMatches = find_uploaded_matches_for_user_id(uploader)
+    previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
     
     for match in event['match_list']:
-        if match['match_id'] not in previouslyUploadedMatches:
+        if match['match_id'] not in previously_uploaded_match:
             upload_match(uploader, match)
 
     # for build in body['build_list']:
@@ -99,8 +102,8 @@ def upload_player_round(roundID, player):
         'drone_kills' : player['drone_kills'],
         'deaths' : player['deaths'],
         'score' : player['score'],
-        'damage' : player['damage'],
-        'damage_taken' : player['damage_taken'],
+        'damage' : str(player['damage']),
+        'damage_taken' : str(player['damage_taken']),
         'scores' : player['scores'],
         'medals' : player['medals']
     }
