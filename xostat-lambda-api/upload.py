@@ -1,6 +1,4 @@
 import json
-from tokenize import Double
-from unicodedata import decimal
 import boto3
 import uuid
 
@@ -22,11 +20,6 @@ def upload_matches(event, context):
 
     # for build in body['build_list']:
     #     upload_build(build)
-
-    # body = {
-    #     "message": "Sucess!",
-    #     "input": event,
-    # }
 
     return {
         'statusCode': 200,
