@@ -14,14 +14,88 @@ import {
   MapPin,
   Users,
   Share,
+  Activity,
+  Crosshair,
+  BarChart2,
+  DollarSign,
 } from "react-feather";
+
+const analyticsSection = [
+  {
+    href: "/user",
+    icon: Users,
+    title: "User Profiles",
+  },
+  {
+    href: "/user",
+    icon: Activity,
+    title: "Player Activity",
+  },
+  {
+    href: "/user",
+    icon: Crosshair,
+    title: "Part Performance",
+    children: [
+      {
+        href: "/dashboard/default",
+        title: "Weapons",
+      },
+      {
+        href: "/dashboard/default",
+        title: "Movement",
+      },
+      {
+        href: "/dashboard/default",
+        title: "Cabins",
+      },
+    ],
+  },
+  {
+    href: "/user",
+    icon: BarChart2,
+    title: "Meta Analaysis",
+    children: [
+      {
+        href: "/dashboard/default",
+        title: "Clan Wars",
+      },
+      {
+        href: "/dashboard/default",
+        title: "8 vs 8",
+      },
+      {
+        href: "/dashboard/default",
+        title: "Brawl",
+      },
+      {
+        href: "/dashboard/default",
+        title: "PvE",
+      },
+    ],
+  },
+  {
+    href: "/user",
+    icon: DollarSign,
+    title: "Coin Revenue",
+  },
+] as SidebarItemsType[];
+
+const leaderboardSection = [
+  {
+    href: "/user",
+    icon: DollarSign,
+    title: "Coin Revenue",
+  },
+] as SidebarItemsType[];
+const profileSection = [] as SidebarItemsType[];
+const toolsSection = [] as SidebarItemsType[];
+const scheduleSection = [] as SidebarItemsType[];
 
 const pagesSection = [
   {
     href: "/dashboard",
     icon: Sliders,
     title: "Dashboards",
-    badge: "5",
     children: [
       {
         href: "/dashboard/default",
@@ -360,16 +434,24 @@ const pluginsSection = [
 
 const navItems = [
   {
-    title: "Pages",
-    pages: pagesSection,
+    title: "Analytics",
+    pages: analyticsSection,
   },
   {
-    title: "Tools & Components",
-    pages: componentsSection,
+    title: "Leaderboards",
+    pages: leaderboardSection,
   },
   {
-    title: "Plugins & Addons",
-    pages: pluginsSection,
+    title: "User Profiles",
+    pages: profileSection,
+  },
+  {
+    title: "Tools",
+    pages: toolsSection,
+  },
+  {
+    title: "Schedules",
+    pages: scheduleSection,
   },
 ];
 

@@ -13,7 +13,7 @@ import Statistics from "./Statistics";
 
 const Default = () => (
   <React.Fragment>
-    <Helmet title="Default Dashboard" />
+    <Helmet title="XOStat" />
     <Container fluid className="p-0">
       <Header />
       <Statistics />

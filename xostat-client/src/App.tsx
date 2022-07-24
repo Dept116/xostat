@@ -23,8 +23,8 @@ const App = () => {
   return (
     <HelmetProvider>
       <Helmet
-        titleTemplate="%s | AppStack - React Admin & Dashboard Template"
-        defaultTitle="AppStack - React Admin & Dashboard Template"
+        titleTemplate="%s | Crossout Analytics"
+        defaultTitle="XOStat - Crossout Analytics"
       />
       <Provider store={store}>
         <ThemeProvider>

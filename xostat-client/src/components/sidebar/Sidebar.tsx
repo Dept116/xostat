@@ -5,7 +5,7 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import useSidebar from "../../hooks/useSidebar";
 import SidebarFooter from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
-import { ReactComponent as Logo } from "../../assets/img/logo.svg";
+import { ReactComponent as Logo } from "../../assets/img/xostat-banner-2.svg";
 
 import { SidebarItemsType } from "../../types/sidebar";
 
@@ -26,11 +26,11 @@ const Sidebar = ({ items, showFooter = true }: SidebarProps) => {
       <div className="sidebar-content">
         <PerfectScrollbar>
           <a className="sidebar-brand" href="/">
-            <Logo /> <span className="align-middle me-3">AppStack</span>
+            <Logo /> <span className="align-middle me-3">XOStat.gg</span>
           </a>
 
           <SidebarNav items={items} />
-          {!!showFooter && <SidebarFooter />}
+          {/* {!!showFooter && <SidebarFooter />} */}
         </PerfectScrollbar>
       </div>
     </nav>
