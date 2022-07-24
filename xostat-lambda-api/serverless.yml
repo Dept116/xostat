@@ -40,3 +40,10 @@ functions:
           path: /player/{id}
           method: get
           cors: true
+  getUserTotals:
+    handler: xostat-lambda-api/profile.get_user_totals
+    events:
+      - http:
+          path: /player_totals/{id}
+          method: get
+          cors: true
