@@ -5,9 +5,20 @@ import { Badge, Col, Card, Row } from "react-bootstrap";
 import { DollarSign, ShoppingBag } from "react-feather";
 
 import illustration from "../../../assets/img/illustrations/customer-support.png";
+import useAuth from "../../../hooks/useAuth";
 
 const Statistics = () => {
   const { t } = useTranslation();
+  let { user } = useAuth();
+  const nicknames = ["nickname1", "nickname2"];
+
+  const userDisplay = user ? user : "visitor";
+  const nicknameDisplay = nicknames.map((_nickname, i, _container) => (
+    <>
+      {_nickname}
+      {i < _container.length - 1 ? ", " : ""}
+    </>
+  ));
 
   return (
     <Row>
@@ -18,9 +29,9 @@ const Statistics = () => {
               <Col xs="6">
                 <div className="illustration-text p-3 m-1">
                   <h4 className="illustration-text">
-                    {t("Welcome back")}, Chris!
+                    {t("Welcome back")}, {userDisplay}!
                   </h4>
-                  <p className="mb-0">AppStack Dashboard</p>
+                  <p className="mb-0">{nicknameDisplay}</p>
                 </div>
               </Col>
               <Col xs={6} className="align-self-end text-end">
