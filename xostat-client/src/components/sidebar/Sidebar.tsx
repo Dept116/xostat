@@ -3,7 +3,7 @@ import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import useSidebar from "../../hooks/useSidebar";
-import SidebarFooter from "./SidebarFooter";
+// import SidebarFooter from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
 import { ReactComponent as Logo } from "../../assets/img/xostat-banner-2.svg";
 
