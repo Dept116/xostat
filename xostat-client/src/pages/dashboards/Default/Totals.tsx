@@ -27,7 +27,7 @@ const Totals = () => {
             <Row>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Games</h3>
                     <p className="mb-2">{games}</p>
                   </div>
@@ -35,7 +35,7 @@ const Totals = () => {
               </Col>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Wins</h3>
                     <p className="mb-2">{wins}</p>
                   </div>
@@ -43,7 +43,7 @@ const Totals = () => {
               </Col>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">WR</h3>
                     <p className="mb-2">{winRate}%</p>
                   </div>
@@ -53,7 +53,7 @@ const Totals = () => {
             <Row>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">MVP</h3>
                     <p className="mb-2">{mvp}</p>
                   </div>
@@ -61,7 +61,7 @@ const Totals = () => {
               </Col>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">MVP%</h3>
                     <p className="mb-2">{mvpRate}%</p>
                   </div>
@@ -71,7 +71,7 @@ const Totals = () => {
             <Row>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Kills</h3>
                     <p className="mb-2">{kills}</p>
                   </div>
@@ -79,7 +79,7 @@ const Totals = () => {
               </Col>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Assists</h3>
                     <p className="mb-2">{assists}</p>
                   </div>
@@ -87,7 +87,7 @@ const Totals = () => {
               </Col>
               <Col>
                 <div className="row d-flex justify-content-center">
-                  <div className="flex-grow-1">
+                  <div className="flex-grow-1 justify-content-center">
                     <h2 className="mb-2">
                       <MathComponent
                         mathml={String.raw`

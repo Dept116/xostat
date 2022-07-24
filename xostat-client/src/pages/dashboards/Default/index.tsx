@@ -4,13 +4,12 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import Header from "./Header";
 import Appointments from "./Appointments";
-import BarChart from "./BarChart";
 import Calendar from "./Calendar";
-import Feed from "./Feed";
 import PieChart from "./PieChart";
 import Projects from "./Projects";
 import Titlecard from "./Titlecard";
 import Totals from "./Totals";
+import MinMaxAvg from "./MinMaxAvg";
 
 const Default = () => (
   <React.Fragment>
@@ -22,12 +21,7 @@ const Default = () => (
         <Totals />
       </Row>
       <Row>
-        <Col lg="8" className="d-flex">
-          <BarChart />
-        </Col>
-        <Col lg="4" className="d-flex">
-          <Feed />
-        </Col>
+        <MinMaxAvg />
       </Row>
       <Row>
         <Col lg="6" xl="4" className="d-flex">

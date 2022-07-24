@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Col, Card, Row } from "react-bootstrap";
+import { Col, Card } from "react-bootstrap";
 
 import useAuth from "../../../hooks/useAuth";
 
