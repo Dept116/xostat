@@ -20,9 +20,9 @@ jobs:
       - name: build
         working-directory: ./xostat-client
         run: npm run build
-      - name: test
-        working-directory: ./xostat-client
-        run: npm test
+       #- name: test
+       # working-directory: ./xostat-client
+       # run: npm test
         
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
