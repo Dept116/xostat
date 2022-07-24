@@ -8,8 +8,8 @@ import useAuth from "../../../hooks/useAuth";
 const Statistics = () => {
   const { t } = useTranslation();
 
-  let { user } = useAuth();
-  const nicknames = ["nickname1", "nickname2"];
+  let { user } = useAuth(); // TODO stubs for now
+  const nicknames = ["nickname1", "nickname2", "nickname3"];
   const games = 9999;
   const wins = 9999;
   const mvp = 9999;
@@ -39,16 +39,12 @@ const Statistics = () => {
       <Col md="6" xl className="d-flex">
         <Card className="illustration flex-fill">
           <Card.Body className="p-0 d-flex flex-fill">
-            <Row className="g-0 w-100">
-              <Col xs="6">
-                <div className="illustration-text p-3 m-1">
-                  <h4 className="illustration-text">
-                    {t("Welcome back")}, {userDisplay}!
-                  </h4>
-                  <p className="mb-0">{nicknameDisplay}</p>
-                </div>
-              </Col>
-            </Row>
+            <div className="illustration-text p-3 m-1">
+              <h1 className="illustration-text">
+                {t("Welcome back")}, {userDisplay}!
+              </h1>
+              <h2 className="mb-0">{nicknameDisplay}</h2>
+            </div>
           </Card.Body>
         </Card>
       </Col>
