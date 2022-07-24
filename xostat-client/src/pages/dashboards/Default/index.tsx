@@ -9,14 +9,18 @@ import Calendar from "./Calendar";
 import Feed from "./Feed";
 import PieChart from "./PieChart";
 import Projects from "./Projects";
-import Statistics from "./Statistics";
+import Titlecard from "./Titlecard";
+import Totals from "./Totals";
 
 const Default = () => (
   <React.Fragment>
     <Helmet title="XOStat" />
     <Container fluid className="p-0">
       <Header />
-      <Statistics />
+      <Row>
+        <Titlecard />
+        <Totals />
+      </Row>
       <Row>
         <Col lg="8" className="d-flex">
           <BarChart />
