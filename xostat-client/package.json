@@ -63,6 +63,7 @@
     "i18next": "21.6.16",
     "jsonwebtoken": "8.5.1",
     "jwt-decode": "3.1.2",
+    "mathjax-react": "^2.0.1",
     "moment": "2.29.3",
     "notyf": "3.10.0",
     "react": "17.0.2",

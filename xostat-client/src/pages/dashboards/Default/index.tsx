@@ -4,26 +4,24 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import Header from "./Header";
 import Appointments from "./Appointments";
-import BarChart from "./BarChart";
 import Calendar from "./Calendar";
-import Feed from "./Feed";
 import PieChart from "./PieChart";
 import Projects from "./Projects";
-import Statistics from "./Statistics";
+import Titlecard from "./Titlecard";
+import Totals from "./Totals";
+import MinMaxAvg from "./MinMaxAvg";
 
 const Default = () => (
   <React.Fragment>
     <Helmet title="XOStat" />
     <Container fluid className="p-0">
       <Header />
-      <Statistics />
       <Row>
-        <Col lg="8" className="d-flex">
-          <BarChart />
-        </Col>
-        <Col lg="4" className="d-flex">
-          <Feed />
-        </Col>
+        <Titlecard />
+        <Totals />
+      </Row>
+      <Row>
+        <MinMaxAvg />
       </Row>
       <Row>
         <Col lg="6" xl="4" className="d-flex">
