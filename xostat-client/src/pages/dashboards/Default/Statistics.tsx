@@ -1,16 +1,30 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Badge, Col, Card, Row } from "react-bootstrap";
+import { Col, Card, Row, Container } from "react-bootstrap";
+import { MathComponent } from "mathjax-react";
 
-import { DollarSign, ShoppingBag } from "react-feather";
-
-import illustration from "../../../assets/img/illustrations/customer-support.png";
 import useAuth from "../../../hooks/useAuth";
 
 const Statistics = () => {
   const { t } = useTranslation();
+
   let { user } = useAuth();
   const nicknames = ["nickname1", "nickname2"];
+  const games = 9999;
+  const wins = 9999;
+  const mvp = 9999;
+  const kills = 9999;
+  const assists = 9999;
+
+  let winRate = 0;
+  let mvpRate = 0;
+  let contribRate = 0;
+
+  if (games > 0) {
+    winRate = (100.0 * wins) / games;
+    mvpRate = (100.0 * mvp) / games;
+    contribRate = (100.0 * (kills + assists)) / games;
+  }
 
   const userDisplay = user ? user : "visitor";
   const nicknameDisplay = nicknames.map((_nickname, i, _container) => (
@@ -34,83 +48,98 @@ const Statistics = () => {
                   <p className="mb-0">{nicknameDisplay}</p>
                 </div>
               </Col>
-              <Col xs={6} className="align-self-end text-end">
-                <img
-                  src={illustration}
-                  alt="Customer Support"
-                  className="img-fluid illustration-img"
-                />
-              </Col>
             </Row>
           </Card.Body>
         </Card>
       </Col>
       <Col md="6" xl className="d-flex">
         <Card className="flex-fill">
-          <Card.Body className=" py-4">
-            <div className="d-flex align-items-start">
-              <div className="flex-grow-1">
-                <h3 className="mb-2">$ 24.300</h3>
-                <p className="mb-2">Total Earnings</p>
-                <div className="mb-0">
-                  <Badge bg="" className="badge-soft-success me-2">
-                    +5.35%
-                  </Badge>
-                  <span className="text-muted">Since last week</span>
-                </div>
-              </div>
-              <div className="d-inline-block ms-3">
-                <div className="stat">
-                  <DollarSign className="align-middle text-success" />
-                </div>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
-      <Col md="6" xl className="d-flex">
-        <Card className="flex-fill">
-          <Card.Body className=" py-4">
-            <div className="d-flex align-items-start">
-              <div className="flex-grow-1">
-                <h3 className="mb-2">43</h3>
-                <p className="mb-2">Pending Orders</p>
-                <div className="mb-0">
-                  <Badge bg="" className="badge-soft-danger me-2">
-                    -4.25%
-                  </Badge>
-                  <span className="text-muted">Since last week</span>
-                </div>
-              </div>
-              <div className="d-inline-block ms-3">
-                <div className="stat">
-                  <ShoppingBag className="align-middle text-success" />
-                </div>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
-      <Col md="6" xl className="d-flex">
-        <Card className="flex-fill">
-          <Card.Body className=" py-4">
-            <div className="d-flex align-items-start">
-              <div className="flex-grow-1">
-                <h3 className="mb-2">$ 18.700</h3>
-                <p className="mb-2">Total Revenue</p>
-                <div className="mb-0">
-                  <Badge bg="" className="badge-soft-success me-2">
-                    +8.65%
-                  </Badge>
-                  <span className="text-muted">Since last week</span>
-                </div>
-              </div>
-              <div className="d-inline-block ms-3">
-                <div className="stat">
-                  <DollarSign className="align-middle text-success" />
-                </div>
-              </div>
-            </div>
+          <Card.Body className="py-4">
+            <Container>
+              <Row>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">Games</h3>
+                      <p className="mb-2">{games}</p>
+                    </div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">Wins</h3>
+                      <p className="mb-2">{wins}</p>
+                    </div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">WR</h3>
+                      <p className="mb-2">{winRate}%</p>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">MVP</h3>
+                      <p className="mb-2">{mvp}</p>
+                    </div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">MVP%</h3>
+                      <p className="mb-2">{mvpRate}%</p>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">Kills</h3>
+                      <p className="mb-2">{kills}</p>
+                    </div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h3 className="mb-2">Assists</h3>
+                      <p className="mb-2">{assists}</p>
+                    </div>
+                  </div>
+                </Col>
+                <Col>
+                  <div className="row d-flex justify-content-center">
+                    <div className="flex-grow-1">
+                      <h2 className="mb-2">
+                        <MathComponent
+                          mathml={String.raw`
+                        <math>
+                          <mrow>
+                            <mfrac>
+                            <mi>K+A</mi>
+                            <mi>G</mi>
+                            </mfrac>
+                          </mrow>
+                        </math>
+                        `}
+                        />
+                      </h2>
+                      <p className="mb-2">{contribRate}%</p>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </Container>
           </Card.Body>
         </Card>
       </Col>
