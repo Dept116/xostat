@@ -13,7 +13,7 @@ const Invoice = () => (
       <Card>
         <Card.Body className="m-sm-3 m-md-5">
           <div className="mb-4">
-            Hello <strong>Chris Wood</strong>,
+            Hello <strong>Rot_Fish_Bandit</strong>,
             <br /> This is the receipt for a payment of <strong>
               $268.00
             </strong>{" "}
@@ -36,7 +36,7 @@ const Invoice = () => (
           <Row className="mb-4">
             <Col md="6">
               <div className="text-muted">Client</div>
-              <strong>Chris Wood</strong>
+              <strong>Rot_Fish_Bandit</strong>
               <p>
                 4183 Forest Avenue <br /> New York City <br /> 10011 <br /> USA{" "}
                 <br />

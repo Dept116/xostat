@@ -10,12 +10,12 @@ const User = () => (
     <Card.Body className="text-center">
       <img
         src={avatar1}
-        alt="Chris Wood"
+        alt="Rot_Fish_Bandit"
         className="img-fluid rounded-circle mb-2"
         width="128"
         height="128"
       />
-      <Card.Title className="mb-0">Chris Wood</Card.Title>
+      <Card.Title className="mb-0">Rot_Fish_Bandit</Card.Title>
       <div className="text-muted mb-2">UX Engineer</div>
 
       <div>

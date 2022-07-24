@@ -31,7 +31,7 @@ const Following = () => (
           width="56"
           height="56"
           className="rounded-circle me-2"
-          alt="Chris Wood"
+          alt="Rot_Fish_Bandit"
         />
         <div className="flex-grow-1 ms-3">
           <p className="my-1">

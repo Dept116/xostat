@@ -19,7 +19,7 @@ const SignInPage = () => (
           <div className="text-center">
             <img
               src={avatar}
-              alt="Chris Wood"
+              alt="Rot_Fish_Bandit"
               className="img-fluid rounded-circle"
               width="132"
               height="132"

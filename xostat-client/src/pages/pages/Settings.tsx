@@ -78,7 +78,7 @@ const PublicInfo = () => (
           <Col md="4">
             <div className="text-center">
               <img
-                alt="Chris Wood"
+                alt="Rot_Fish_Bandit"
                 src={avatar1}
                 className="rounded-circle img-responsive mt-2"
                 width="128"

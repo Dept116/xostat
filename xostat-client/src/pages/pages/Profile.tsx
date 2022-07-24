@@ -163,11 +163,11 @@ const Activities = () => (
           width="36"
           height="36"
           className="rounded-circle me-2"
-          alt="Chris Wood"
+          alt="Rot_Fish_Bandit"
         />
         <div className="flex-grow-1">
           <small className="float-end text-navy">30m ago</small>
-          <strong>Chris Wood</strong> posted something on{" "}
+          <strong>Rot_Fish_Bandit</strong> posted something on{" "}
           <strong>Stacie Hall</strong>'s timeline
           <br />
           <small className="text-muted">Today 7:21 pm</small>
@@ -287,11 +287,11 @@ const Activities = () => (
           width="36"
           height="36"
           className="rounded-circle me-2"
-          alt="Chris Wood"
+          alt="Rot_Fish_Bandit"
         />
         <div className="flex-grow-1">
           <small className="float-end text-navy">1d ago</small>
-          <strong>Chris Wood</strong> started following{" "}
+          <strong>Rot_Fish_Bandit</strong> started following{" "}
           <strong>Stacie Hall</strong>
           <br />
           <small className="text-muted">Yesterdag 1:51 pm</small>

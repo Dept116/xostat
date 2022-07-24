@@ -59,7 +59,7 @@ const messages = [
     time: "15m ago",
   },
   {
-    name: "Chris Wood",
+    name: "Rot_Fish_Bandit",
     avatar: avatar1,
     description: "Curabitur ligula sapien euismod vitae.",
     time: "2h ago",
@@ -104,7 +104,7 @@ const NavbarComponent = () => {
 
       <Navbar.Collapse>
         <Nav className="navbar-align">
-          <NavbarDropdown
+          {/* <NavbarDropdown
             header="New Messages"
             footer="Show all messages"
             icon={MessageCircle}
@@ -129,9 +129,9 @@ const NavbarComponent = () => {
                 />
               );
             })}
-          </NavbarDropdown>
+          </NavbarDropdown> */}
 
-          <NavbarDropdown
+          {/* <NavbarDropdown
             header="New Notifications"
             footer="Show all notifications"
             icon={BellOff}
@@ -162,7 +162,7 @@ const NavbarComponent = () => {
                 />
               );
             })}
-          </NavbarDropdown>
+          </NavbarDropdown> */}
 
           <NavbarLanguages />
           <NavbarUser />

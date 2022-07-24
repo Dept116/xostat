@@ -259,7 +259,7 @@ const HoverableRows = () => (
               className="rounded-circle me-2"
               alt="Avatar"
             />{" "}
-            Chris Wood
+            Rot_Fish_Bandit
           </td>
           <td>914-939-2458</td>
           <td>May 15, 1948</td>

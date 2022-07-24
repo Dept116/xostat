@@ -17,9 +17,9 @@ const NavbarUser = () => {
           <img
             src={avatar1}
             className="avatar img-fluid rounded-circle me-1"
-            alt="Chris Wood"
+            alt="Rot_Fish_Bandit"
           />
-          <span className="text-dark">Chris Wood</span>
+          <span className="text-dark">Rot_Fish_Bandit</span>
         </Dropdown.Toggle>
       </span>
       <Dropdown.Menu>

@@ -81,12 +81,12 @@ const Activity = () => (
           width="56"
           height="56"
           className="rounded-circle me-3"
-          alt="Chris Wood"
+          alt="Rot_Fish_Bandit"
         />
         <div className="flex-grow-1 ms-3">
           <small className="float-end text-navy">30m ago</small>
           <p className="mb-2">
-            <strong>Chris Wood</strong>
+            <strong>Rot_Fish_Bandit</strong>
           </p>
           <p>
             Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem
