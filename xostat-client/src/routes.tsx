@@ -110,11 +110,27 @@ import ProtectedPage from "./pages/protected/ProtectedPage";
 const routes = [
   {
     path: "/",
-    element: <LandingLayout />,
+    element: <DashboardLayout />,
     children: [
       {
         path: "",
-        element: <Landing />,
+        element: <Default />,
+      },
+      {
+        path: "analytics",
+        element: <Analytics />,
+      },
+      {
+        path: "saas",
+        element: <SaaS />,
+      },
+      {
+        path: "social",
+        element: <Social />,
+      },
+      {
+        path: "crypto",
+        element: <Crypto />,
       },
     ],
   },

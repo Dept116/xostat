@@ -3,9 +3,13 @@ import { useTranslation } from "react-i18next";
 import { Dropdown } from "react-bootstrap";
 
 import usFlag from "../../assets/img/flags/us.png";
-import frFlag from "../../assets/img/flags/fr.png";
+import ruFlag from "../../assets/img/flags/ru.png";
 import deFlag from "../../assets/img/flags/de.png";
-import nlFlag from "../../assets/img/flags/nl.png";
+import esFlag from "../../assets/img/flags/es.png";
+import frFlag from "../../assets/img/flags/fr.png";
+import plFlag from "../../assets/img/flags/pl.png";
+import cnFlag from "../../assets/img/flags/cn.png";
+import krFlag from "../../assets/img/flags/kr.png";
 
 interface languageOptionsType {
   [key: string]: {
@@ -19,17 +23,33 @@ const languageOptions: languageOptionsType = {
     icon: usFlag,
     name: "English",
   },
-  fr: {
-    icon: frFlag,
-    name: "French",
+  ru: {
+    icon: ruFlag,
+    name: "Pусский",
   },
   de: {
     icon: deFlag,
-    name: "German",
+    name: "Deutsch",
   },
-  nl: {
-    icon: nlFlag,
-    name: "Dutch",
+  es: {
+    icon: esFlag,
+    name: "Español",
+  },
+  fr: {
+    icon: frFlag,
+    name: "Français",
+  },
+  pl: {
+    icon: plFlag,
+    name: "Polski",
+  },
+  cn: {
+    icon: cnFlag,
+    name: "简体中文",
+  },
+  kr: {
+    icon: krFlag,
+    name: "한국어",
   },
 };
 
