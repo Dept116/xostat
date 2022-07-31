@@ -4,6 +4,7 @@ $font-weight-light: 300 !default;
 $font-weight-normal: 400 !default;
 $font-weight-bold: 500 !default;
 $font-size-base: .825rem !default;
+$font-size-jumbo: 1rem !default;
 $font-size-lg: .95rem !default;
 $font-size-sm: .75rem !default;
 $headings-font-weight: 500 !default;
@@ -241,6 +242,8 @@ $card-title-font-weight: $font-weight-bold !default;
 $card-title-color: $gray-700 !default;
 $card-spacer-y: $spacer*1.25 !default;
 $card-spacer-x: $spacer*1.25 !default;
+$card-footer-spacer-x: $spacer*0.5 !default;
+$card-footer-spacer-y: 0 !default;
 $card-cap-padding-y: $spacer !default;
 $card-cap-padding-x: $card-spacer-x !default;
 
@@ -509,3 +512,7 @@ $stat-padding: $spacer * 0.75 !default;
 // Illustration
 $illustration-bg: lighten($primary, 35%) !default;
 $illustration-color: $primary !default;
+
+//UserProfile
+$userprofile-bg: lighten($primary, 35%) !default;
+$userprofile-color: $primary !default;

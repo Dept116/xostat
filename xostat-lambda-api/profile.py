@@ -30,7 +30,6 @@ def get_user_totals(event, context):
     )
 
     player_stats = stats()
-
     for round in userRounds['Items']:
         player_stats.add_round(round)
         

@@ -11,7 +11,7 @@ const Page404 = () => (
       <h1 className="display-1 fw-bold">404</h1>
       <p className="h1">Page not found.</p>
       <p className="h2 fw-normal mt-3 mb-4">
-        The page you are looking for might have been removed.
+        The page you are looking for does not exist.
       </p>
       <Link to="/dashboard/default">
         <Button variant="primary" size="lg">

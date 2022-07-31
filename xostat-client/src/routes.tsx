@@ -18,6 +18,7 @@ import Analytics from "./pages/dashboards/Analytics";
 import SaaS from "./pages/dashboards/SaaS";
 import Social from "./pages/dashboards/Social";
 import Crypto from "./pages/dashboards/Crypto";
+import UserProfile from "./pages/dashboards/UserProfile";
 
 // Pages
 import Profile from "./pages/pages/Profile";
@@ -115,6 +116,10 @@ const routes = [
       {
         path: "",
         element: <Default />,
+      },
+      {
+        path: "user",
+        element: <UserProfile />,
       },
       {
         path: "analytics",
