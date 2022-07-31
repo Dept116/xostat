@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+from decimal import *
 from player_stats import stats
 from ast import Expression
 from boto3.dynamodb.conditions import Key
@@ -47,7 +48,7 @@ def get_user_totals(event, context):
         'mvp' : player_stats.game_mvp
     }
 
-    return json.dumps(item)
+    return json.dumps(item, cls=DecimalEncoder)
 
 def get_upload_records(event, context):
     userID = event['pathParameters']['id']
@@ -69,3 +70,9 @@ def find_uploaded_matches_for_user_id(uploader):
     )
     
     return uploadRecords['Items']
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return str(obj)
+        return json.JSONEncoder.default(self, obj)

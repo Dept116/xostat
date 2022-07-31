@@ -1,4 +1,5 @@
 import json
+import datetime
 
 class stats:
     def __init__(self):
@@ -38,8 +39,8 @@ class stats:
         if round.get('nickname') not in self.nicknames:
             self.nicknames.append(round.get('nickname'))
 
-        if round.get('round_start', 0) > 0 and round.get('round_end', 0) > 0:
-            self.duration += round.get('round_end') - round.get('round_start')
+        if round.get('round_start', None) != None and round.get('round_end', None) != None:
+            self.duration += (datetime.datetime.strptime(round.get('round_end'), '%Y-%m-%dT%H:%M:%S.%fZ') -datetime.datetime.strptime(round.get('round_start'), '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
         
         self.rounds += 1
         if round.get('round_winning_team', -1) == -1 or round.get('team', -1) <= 0:
