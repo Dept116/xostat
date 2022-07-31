@@ -40,25 +40,6 @@ def upload_upload_record(uploader, match):
     table.put_item(Item=item)
     return
 
-def upload_match_attributes(match):
-    item = {
-        'pk': 'MATCH#' + str(match['match_id']),
-        'sk': 'ATTRIBUTES#',
-        'match_type' : match['match_id'],
-        'match_classification' : match['match_classification'],
-        'match_start' : match['match_start'],
-        'match_end' : match['match_end'],
-        'map_name' : match['map_name'],
-        'map_display_name' : match['map_display_name'],
-        'winning_team' : match['winning_team'],
-        'win_condition' : match['win_conidtion'],
-        'client_version' : match['client_version'],
-        'co_driver_version' : match['co_driver_version'],
-        'host_name' : match['host_name']
-    }
-    table.put_item(Item=item)
-    return
-
 def upload_player_round_attributes(roundID, match, round, player):
     item = {
         'pk': 'ROUND#' + str(roundID),
@@ -81,14 +62,14 @@ def upload_player_round_attributes(roundID, match, round, player):
         'medals' : player['medals'],
         'round_start' : round['round_start'],
         'round_end' : round['round_end'],
-        'winning_team' : round['winning_team'],
+        'round_winning_team' : round['winning_team'],
         'match_type' : match['match_id'],
         'match_classification' : match['match_classification'],
         'match_start' : match['match_start'],
         'match_end' : match['match_end'],
         'map_name' : match['map_name'],
         'map_display_name' : match['map_display_name'],
-        'winning_team' : match['winning_team'],
+        'match_winning_team' : match['winning_team'],
         'win_condition' : match['win_conidtion'],
         'client_version' : match['client_version'],
         'co_driver_version' : match['co_driver_version'],

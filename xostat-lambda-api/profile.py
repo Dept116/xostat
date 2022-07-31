@@ -1,45 +1,14 @@
-from ast import Expression
 import json
 import boto3
 import os
+from player_stats import stats
+from ast import Expression
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 
 TABLE_NAME = os.environ['DYNAMODB_TABLE']
 table = dynamodb.Table(TABLE_NAME)
-
-class Stats:
-    def __init__(self):
-        self.rounds = 0
-        self.kills = 0
-        self.deaths = 0
-        self.assists = 0
-        self.drone_kills = 0
-        self.damage = 0
-        self.cabin_damage = 0
-        self.damage_recieved = 0
-
-    def __init__(self, json):
-        self.rounds = 1
-        self.kills = json.get('rounds', 0)
-        self.deaths = json.get('deaths', 0)
-        self.assists = json.get('assists', 0)
-        self.drone_kills = json.get('drone_kills', 0)
-        self.damage = json.get('damage', 0)
-        self.cabin_damage = json.get('cabin_damage', 0)
-        self.damage_recieved = json.get('damage_recieved', 0)
-
-    def __add__(self, other):
-        self.rounds += other.rounds
-        self.games += other.games
-        self.kills += other.kills
-        self.deaths += other.deaths
-        self.assists += other.assists
-        self.drone_kills += other.drone_kills
-        self.damage += other.damage
-        self.cabin_damage += other.cabin_damage
-        self.damage_recieved += other.damage_recieved
 
 def get_user_names(event, context):
     return ""
@@ -59,34 +28,23 @@ def get_user_totals(event, context):
         KeyConditionExpression= expression,
     )
 
-    nicknames = []
-    games = []
-    mvp = 0
-    stats = Stats()
+    player_stats = stats()
 
     for round in userRounds['Items']:
-        stats += Stats(round)
-        if round['nickname'] not in nicknames:
-            nicknames.append(round['nickname'])
-        if round['match_id'] not in games:
-            games.append(round['match_id'])
-        if round['team'] == round['winning_team']:
-            wins += 1
-        if 'MvpWin' in round['medals']:
-            mvp += 1
+        player_stats.add_round(round)
         
     item = {
-        'nicknames': nicknames,
-        'games' : len(games),
-        'rounds' : stats.rounds,
-        'wins' : stats.wins,
-        'kills' : stats.kills,
-        'assists' : stats.assists,
-        'deaths' : stats.deaths,
-        'damage' : stats.damage,
-        'cabin_damage' : stats.cabin_damage,
-        'damage_recieved' : stats.damage_recieved,
-        'mvp' : mvp
+        'nicknames': player_stats.nicknames,
+        'games' : player_stats.games,
+        'rounds' : player_stats.rounds,
+        'wins' : player_stats.game_wins,
+        'kills' : player_stats.kills,
+        'assists' : player_stats.assists,
+        'deaths' : player_stats.deaths,
+        'damage' : player_stats.damage,
+        'cabin_damage' : player_stats.cabin_damage,
+        'damage_recieved' : player_stats.damage_recieved,
+        'mvp' : player_stats.game_mvp
     }
 
     return json.dumps(item)
