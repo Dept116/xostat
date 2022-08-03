@@ -19,6 +19,9 @@ import SaaS from "./pages/dashboards/SaaS";
 import Social from "./pages/dashboards/Social";
 import Crypto from "./pages/dashboards/Crypto";
 import UserProfile from "./pages/dashboards/UserProfile";
+import PlayerActivity from "./pages/dashboards/PlayerActivity";
+import Performance from "./pages/dashboards/Performance";
+import Meta from "./pages/dashboards/Meta";
 
 // Pages
 import Profile from "./pages/pages/Profile";
@@ -115,23 +118,23 @@ const routes = [
     children: [
       {
         path: "",
-        element: <Default />,
+        element: <UserProfile />,
       },
       {
         path: "user",
         element: <UserProfile />,
       },
       {
-        path: "analytics",
-        element: <Analytics />,
+        path: "activity",
+        element: <PlayerActivity />,
       },
       {
-        path: "saas",
-        element: <SaaS />,
+        path: "performance",
+        element: <Performance />,
       },
       {
-        path: "social",
-        element: <Social />,
+        path: "Meta",
+        element: <Meta />,
       },
       {
         path: "crypto",

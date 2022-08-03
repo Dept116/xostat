@@ -22,54 +22,54 @@ const analyticsSection = [
     title: "User Profiles",
   },
   {
-    href: "/user",
+    href: "/activity",
     icon: Activity,
     title: "Player Activity",
   },
   {
-    href: "/user",
+    href: "/performance",
     icon: Crosshair,
     title: "Part Performance",
     children: [
       {
-        href: "/dashboard/default",
+        href: "/performance/weapon",
         title: "Weapons",
       },
       {
-        href: "/dashboard/default",
+        href: "/performance/movement",
         title: "Movement",
       },
       {
-        href: "/dashboard/default",
+        href: "/performance/cabin",
         title: "Cabins",
       },
     ],
   },
   {
-    href: "/user",
+    href: "/meta",
     icon: BarChart2,
     title: "Meta Analaysis",
     children: [
       {
-        href: "/dashboard/default",
+        href: "/meta/cw",
         title: "Clan Wars",
       },
       {
-        href: "/dashboard/default",
+        href: "/meta/8v8",
         title: "8 vs 8",
       },
       {
-        href: "/dashboard/default",
+        href: "/meta/brawl",
         title: "Brawl",
       },
       {
-        href: "/dashboard/default",
+        href: "/meta/pve",
         title: "PvE",
       },
     ],
   },
   {
-    href: "/user",
+    href: "/revenue",
     icon: DollarSign,
     title: "Coin Revenue",
   },
@@ -77,31 +77,31 @@ const analyticsSection = [
 
 const leaderboardSection = [
   {
-    href: "/user",
+    href: "/mmr",
     icon: TrendingUp,
     title: "Match Making Rank",
   },
   {
-    href: "/user",
+    href: "/leader",
     icon: List,
     title: "Part Leaders",
     children: [
       {
-        href: "/dashboard/default",
+        href: "/leader/weapon",
         title: "Weapons",
       },
       {
-        href: "/dashboard/default",
+        href: "/leader/movement",
         title: "Movement",
       },
       {
-        href: "/dashboard/default",
+        href: "/leader/cabin",
         title: "Cabins",
       },
     ],
   },
   {
-    href: "/user",
+    href: "/speedrunning",
     icon: Watch,
     title: "Speed Running",
   },
@@ -109,32 +109,32 @@ const leaderboardSection = [
 
 const toolsSection = [
   {
-    href: "/user",
+    href: "/sched",
     icon: Calendar,
     title: "Schedules",
     children: [
       {
-        href: "/dashboard/default",
+        href: "/sched/cw",
         title: "Clan War Schedule",
       },
       {
-        href: "/dashboard/default",
+        href: "/sched/brawl",
         title: "Brawl Schedule",
       },
     ],
   },
   {
-    href: "/user",
+    href: "/fcalc",
     icon: DivideSquare,
     title: "Fusion Calculator",
   },
   {
-    href: "/user",
+    href: "/parts",
     icon: Layout,
     title: "Part Picker",
   },
   {
-    href: "/user",
+    href: "/buildopt",
     icon: Cpu,
     title: "Build Optimization",
   },

@@ -8,7 +8,7 @@ import Titlecard from "./Titlecard";
 import Totals from "./Totals";
 import MinMaxAvg from "./MinMaxAvg";
 
-const Default = () => (
+const UserProfile = () => (
   <React.Fragment>
     <Helmet title="XOStat" />
     <Container fluid className="p-0">
@@ -24,4 +24,4 @@ const Default = () => (
   </React.Fragment>
 );
 
-export default Default;
+export default UserProfile;
