@@ -13,6 +13,9 @@ import {
   DivideSquare,
   Cpu,
   Layout,
+  HelpCircle,
+  GitHub,
+  Link,
 } from "react-feather";
 
 const analyticsSection = [
@@ -140,6 +143,24 @@ const toolsSection = [
   },
 ] as SidebarItemsType[];
 
+const aboutSection = [
+  {
+    href: "/",
+    icon: HelpCircle,
+    title: "About",
+  },
+  {
+    href: "/",
+    icon: GitHub,
+    title: "GitHub",
+  },
+  {
+    href: "/",
+    icon: Link,
+    title: "Community Links",
+  },
+] as SidebarItemsType[];
+
 const navItems = [
   {
     title: "Analytics",
@@ -152,6 +173,10 @@ const navItems = [
   {
     title: "Tools",
     pages: toolsSection,
+  },
+  {
+    title: "About",
+    pages: aboutSection,
   },
 ];
 

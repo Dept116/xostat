@@ -24,7 +24,7 @@ const Footer = () => (
         <Col xs="6" className="text-end">
           <p className="mb-0">
             &copy; {new Date().getFullYear()} -{" "}
-            <span className="text-muted">AppStack</span>
+            <span className="text-muted">XOStat.gg</span>
           </p>
         </Col>
       </Row>

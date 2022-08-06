@@ -22,6 +22,7 @@ import UserProfile from "./pages/dashboards/UserProfile";
 import PlayerActivity from "./pages/dashboards/PlayerActivity";
 import Performance from "./pages/dashboards/Performance";
 import Meta from "./pages/dashboards/Meta";
+import Revenue from "./pages/dashboards/Revenue";
 
 // Pages
 // import Profile from "./pages/pages/Profile";
@@ -134,7 +135,7 @@ const routes = [
       },
       {
         path: "revenue",
-        element: <Meta />,
+        element: <Revenue />,
       },
       {
         path: "mmr",

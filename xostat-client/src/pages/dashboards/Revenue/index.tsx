@@ -7,11 +7,10 @@ import { Container, Row } from "react-bootstrap";
 // import Titlecard from "./Titlecard";
 // import Totals from "./Totals";
 // import MinMaxAvg from "./MinMaxAvg";
-import UploadCount from "./UploadCount";
-import UploadTracking from "./UploadTracking";
-import AveragePlayer from "./AveragePlayer";
-import GameModeBreakDown from "./GameModeBreakDown";
-import WeaponTracking from "./WeaponTracking";
+import UploadCount from "./CostOfFuel";
+import UploadTracking from "./ResourcesEarnedToday";
+import AveragePlayer from "./Best8v8";
+import GameModeBreakDown from "./BestGameMode";
 
 const UserProfile = () => (
   <React.Fragment>
@@ -24,9 +23,6 @@ const UserProfile = () => (
       <Row>
         <AveragePlayer />
         <GameModeBreakDown />
-      </Row>
-      <Row>
-        <WeaponTracking />
       </Row>
     </Container>
   </React.Fragment>
