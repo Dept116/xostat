@@ -7,6 +7,7 @@ import Header from "./Header";
 import Titlecard from "./Titlecard";
 import Totals from "./Totals";
 import MinMaxAvg from "./MinMaxAvg";
+import MatchHistory from "./MatchHistory";
 
 const UserProfile = () => (
   <React.Fragment>
@@ -19,6 +20,9 @@ const UserProfile = () => (
       </Row>
       <Row>
         <MinMaxAvg />
+      </Row>
+      <Row>
+        <MatchHistory />
       </Row>
     </Container>
   </React.Fragment>

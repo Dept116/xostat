@@ -16,6 +16,10 @@ const Titlecard = () => {
   //   </>
   // ));
 
+  let upload_count = 0;
+  let recorded_count = 0;
+  let mmr = 0;
+
   return (
     <Col md="6" xl className="d-flex">
       <Card className="flex-fill">
@@ -26,7 +30,7 @@ const Titlecard = () => {
                 <div className="row d-flex justify-content-center">
                   <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Uploaded</h3>
-                    <p className="mb-2">{"0"}</p>
+                    <p className="mb-2">{upload_count}</p>
                   </div>
                 </div>
               </Col>
@@ -34,7 +38,7 @@ const Titlecard = () => {
                 <div className="row d-flex justify-content-center">
                   <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Recorded</h3>
-                    <p className="mb-2">{"0"}</p>
+                    <p className="mb-2">{recorded_count}</p>
                   </div>
                 </div>
               </Col>
@@ -44,7 +48,7 @@ const Titlecard = () => {
                 <div className="row d-flex justify-content-center">
                   <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">MMR</h3>
-                    <p className="mb-2">{"0"}</p>
+                    <p className="mb-2">{mmr}</p>
                   </div>
                 </div>
               </Col>

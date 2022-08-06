@@ -3,11 +3,11 @@ import { Col, Card, Row, Container } from "react-bootstrap";
 import { MathComponent } from "mathjax-react";
 
 const Totals = () => {
-  const games = 9999;
-  const wins = 9999;
-  const mvp = 9999;
-  const kills = 9999;
-  const assists = 9999;
+  let games = 0;
+  let wins = 0;
+  let mvp = 0;
+  let kills = 0;
+  let assists = 0;
 
   let winRate = 0;
   let mvpRate = 0;

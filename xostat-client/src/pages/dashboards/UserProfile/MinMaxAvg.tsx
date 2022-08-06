@@ -2,18 +2,18 @@ import React from "react";
 import { Col, Card, Row, Container } from "react-bootstrap";
 
 const MinMaxAvg = () => {
-  const totals = 9999;
-  const min = 9999;
-  const max = 9999;
-  const avg = 9999;
-  const kills = 9999;
-  const assists = 9999;
-  const deaths = 9999;
-  const damage = 9999;
-  const damageReceived = 9999;
-  const mvp = 9999;
-  const score = 9999;
-  const time = 9999;
+  let totals = 0;
+  let min = 0;
+  let max = 0;
+  let avg = 0;
+  let kills = 0;
+  let assists = 0;
+  let deaths = 0;
+  let damage = 0;
+  let damageReceived = 0;
+  let mvp = 0;
+  let score = 0;
+  let time = 0;
 
   return (
     <Col className="d-flex">
