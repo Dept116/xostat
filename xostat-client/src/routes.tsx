@@ -13,26 +13,26 @@ import AuthGuard from "./components/guards/AuthGuard";
 // import Landing from "./pages/landing/Landing";
 
 // Dashboards
-import Default from "./pages/dashboards/Default";
-import Analytics from "./pages/dashboards/Analytics";
-import SaaS from "./pages/dashboards/SaaS";
-import Social from "./pages/dashboards/Social";
-import Crypto from "./pages/dashboards/Crypto";
+// import Default from "./pages/dashboards/Default";
+// import Analytics from "./pages/dashboards/Analytics";
+// import SaaS from "./pages/dashboards/SaaS";
+// import Social from "./pages/dashboards/Social";
+// import Crypto from "./pages/dashboards/Crypto";
 import UserProfile from "./pages/dashboards/UserProfile";
 import PlayerActivity from "./pages/dashboards/PlayerActivity";
 import Performance from "./pages/dashboards/Performance";
 import Meta from "./pages/dashboards/Meta";
 
 // Pages
-import Profile from "./pages/pages/Profile";
-import Settings from "./pages/pages/Settings";
-import Clients from "./pages/pages/Clients";
-import Projects from "./pages/pages/Projects";
-import Invoice from "./pages/pages/Invoice";
-import Pricing from "./pages/pages/Pricing";
-import Tasks from "./pages/pages/Tasks";
-import Chat from "./pages/pages/Chat";
-import Blank from "./pages/pages/Blank";
+// import Profile from "./pages/pages/Profile";
+// import Settings from "./pages/pages/Settings";
+// import Clients from "./pages/pages/Clients";
+// import Projects from "./pages/pages/Projects";
+// import Invoice from "./pages/pages/Invoice";
+// import Pricing from "./pages/pages/Pricing";
+// import Tasks from "./pages/pages/Tasks";
+// import Chat from "./pages/pages/Chat";
+// import Blank from "./pages/pages/Blank";
 
 // Auth
 import Page500 from "./pages/auth/Page500";
@@ -133,80 +133,104 @@ const routes = [
         element: <Performance />,
       },
       {
-        path: "Meta",
+        path: "revenue",
         element: <Meta />,
       },
       {
-        path: "crypto",
-        element: <Crypto />,
+        path: "mmr",
+        element: <Meta />,
+      },
+      {
+        path: "speedrunning",
+        element: <Meta />,
+      },
+      {
+        path: "speedrunning",
+        element: <Meta />,
+      },
+      {
+        path: "fcalc",
+        element: <Meta />,
+      },
+      {
+        path: "parts",
+        element: <Meta />,
+      },
+      {
+        path: "buildopt",
+        element: <Meta />,
       },
     ],
   },
   {
-    path: "dashboard",
+    path: "leader",
     element: <DashboardLayout />,
     children: [
       {
-        path: "default",
-        element: <Default />,
+        path: "weapon",
+        element: <Meta />,
       },
       {
-        path: "analytics",
-        element: <Analytics />,
+        path: "movement",
+        element: <Meta />,
       },
       {
-        path: "saas",
-        element: <SaaS />,
-      },
-      {
-        path: "social",
-        element: <Social />,
-      },
-      {
-        path: "crypto",
-        element: <Crypto />,
+        path: "cabin",
+        element: <Meta />,
       },
     ],
   },
   {
-    path: "pages",
+    path: "performance",
     element: <DashboardLayout />,
     children: [
       {
-        path: "profile",
-        element: <Profile />,
+        path: "weapon",
+        element: <Meta />,
       },
       {
-        path: "settings",
-        element: <Settings />,
+        path: "movement",
+        element: <Meta />,
       },
       {
-        path: "clients",
-        element: <Clients />,
+        path: "cabin",
+        element: <Meta />,
+      },
+    ],
+  },
+  {
+    path: "meta",
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "cw",
+        element: <Meta />,
       },
       {
-        path: "projects",
-        element: <Projects />,
+        path: "8v8",
+        element: <Meta />,
       },
       {
-        path: "invoice",
-        element: <Invoice />,
+        path: "brawl",
+        element: <Meta />,
       },
       {
-        path: "pricing",
-        element: <Pricing />,
+        path: "pve",
+        element: <Meta />,
+      },
+    ],
+  },
+  {
+    path: "sched",
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "cw",
+        element: <Meta />,
       },
       {
-        path: "tasks",
-        element: <Tasks />,
-      },
-      {
-        path: "chat",
-        element: <Chat />,
-      },
-      {
-        path: "blank",
-        element: <Blank />,
+        path: "brawl",
+        element: <Meta />,
       },
     ],
   },

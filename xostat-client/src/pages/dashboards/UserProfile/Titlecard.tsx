@@ -2,11 +2,11 @@ import React from "react";
 // import { useTranslation } from "react-i18next";
 import { Col, Card, Container, Row } from "react-bootstrap";
 
-import useAuth from "../../../hooks/useAuth";
+// import useAuth from "../../../hooks/useAuth";
 
 const Titlecard = () => {
   // const { t } = useTranslation();
-  let { user } = useAuth(); // TODO stubs for now
+  // let { user } = useAuth(); // TODO stubs for now
   // const nicknames = ["nickname1", "nickname2", "nickname3"];
   // const userDisplay = user ? user : "Rot_Fish_Bandit";
   // const nicknameDisplay = nicknames.map((_nickname, i, _container) => (
