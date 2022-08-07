@@ -18,7 +18,8 @@ import AuthGuard from "./components/guards/AuthGuard";
 // import SaaS from "./pages/dashboards/SaaS";
 // import Social from "./pages/dashboards/Social";
 // import Crypto from "./pages/dashboards/Crypto";
-import UserProfile from "./pages/dashboards/UserProfile";
+import UserProfile from "./pages/dashboards/User";
+import UserProfiles from "./pages/dashboards/UserProfiles";
 import PlayerActivity from "./pages/dashboards/PlayerActivity";
 import Performance from "./pages/dashboards/Performance";
 import Meta from "./pages/dashboards/Meta";
@@ -123,7 +124,7 @@ const routes = [
       },
       {
         path: "user",
-        element: <UserProfile />,
+        element: <UserProfiles />,
       },
       {
         path: "activity",
