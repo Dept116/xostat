@@ -1,13 +1,21 @@
 import React from "react";
+import { useEffect } from "react";
 import { Col, Card, Row, Container } from "react-bootstrap";
 import { MathComponent } from "mathjax-react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { getProfileData } from "../../../redux/slices/profile";
 
 const Totals = () => {
-  const games = 9999;
-  const wins = 9999;
-  const mvp = 9999;
-  const kills = 9999;
-  const assists = 9999;
+  const dispatch = useDispatch();
+
+  const { games, wins, mvp, tot_kills, tot_assists } = useSelector(
+    (state: RootState) => state.profile
+  );
+
+  useEffect(() => {
+    dispatch(getProfileData("7907969"));
+  }, [dispatch]);
 
   let winRate = 0;
   let mvpRate = 0;
@@ -16,7 +24,7 @@ const Totals = () => {
   if (games > 0) {
     winRate = (100.0 * wins) / games;
     mvpRate = (100.0 * mvp) / games;
-    contribRate = (100.0 * (kills + assists)) / games;
+    contribRate = (100.0 * (tot_kills + tot_assists)) / games;
   }
 
   return (
@@ -73,7 +81,7 @@ const Totals = () => {
                 <div className="row d-flex justify-content-center">
                   <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Kills</h3>
-                    <p className="mb-2">{kills}</p>
+                    <p className="mb-2">{tot_kills}</p>
                   </div>
                 </div>
               </Col>
@@ -81,7 +89,7 @@ const Totals = () => {
                 <div className="row d-flex justify-content-center">
                   <div className="flex-grow-1 justify-content-center">
                     <h3 className="mb-2">Assists</h3>
-                    <p className="mb-2">{assists}</p>
+                    <p className="mb-2">{tot_assists}</p>
                   </div>
                 </div>
               </Col>
