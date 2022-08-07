@@ -20,7 +20,7 @@ def get_match_history(event, context):
 def get_user_totals(event, context):
     userID = event['pathParameters']['id']
 
-    pk = Key('sk').eq('USER#' + str(userID))
+    pk = Key('sk').begins_with('USER#' + str(userID))
     sk = Key('pk').begins_with('ROUND#')
     expression = pk & sk
 
