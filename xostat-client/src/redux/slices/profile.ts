@@ -168,7 +168,11 @@ export const { reducer } = slice;
 
 export function getProfileData(id: string) {
   return async (dispatch: Dispatch) => {
-    const response = await axios.get(`/dev/profile/${id}`); // TODO points to dev
+    //7907969
+
+    const response = await axios.get(
+      `https://s0lfp19zc9.execute-api.us-east-2.amazonaws.com/dev/profile/${id}`
+    ); // TODO points to dev
     dispatch(slice.actions.setProfileData(response.data));
   };
 }
