@@ -2,7 +2,7 @@ import json
 import boto3
 import os
 from decimal import *
-from player_stats import stats
+from classes.player_stats import stats
 from ast import Expression
 from boto3.dynamodb.conditions import Key
 
