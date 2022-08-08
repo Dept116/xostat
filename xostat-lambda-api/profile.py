@@ -20,6 +20,23 @@ def get_match_history(event, context):
 def get_user_totals(event, context):
     userID = event['pathParameters']['id']
 
+    pk = Key('pk').eq('USER#' + str(userID))
+    sk = Key('sk').eq('PROFILE#ALL')
+    expression = pk & sk
+
+    userTotals = table.query(
+        KeyConditionExpression=expression
+    )
+
+    return {
+        "statusCode": 200,
+        "headers": {"Access-Control-Allow-Origin": "*"},
+        "body": json.dumps(userTotals['Items'], cls=DecimalEncoder)
+    }
+
+def get_user_totals_from_history(event, context):
+    userID = event['pathParameters']['id']
+
     pk = Key('sk').begins_with('USER#' + str(userID))
     sk = Key('pk').begins_with('ROUND#')
     expression = pk & sk

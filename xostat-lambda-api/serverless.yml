@@ -40,10 +40,23 @@ functions:
           path: /player/{id}
           method: get
           cors: true
-  getUserTotals:
+  getUserProfile:
     handler: xostat-lambda-api/profile.get_user_totals
+    events:
+      - http:
+          path: /profile/{id}
+          method: get
+          cors: true        
+  getUserTotals:
+    handler: xostat-lambda-api/profile.get_user_totals_from_history
     events:
       - http:
           path: /player_totals/{id}
           method: get
           cors: true
+  # updateItemDefinitions:
+  #   handler: xostat-lambda-api/load_static_assets.update_item_definitions
+  #   events:
+  #     - schedule: 
+  #         rate: cron (0 59 23 1/1 * ? *)
+  #         enabled: false
