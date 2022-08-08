@@ -168,9 +168,7 @@ export const { reducer } = slice;
 
 export function getProfileData(id: string) {
   return async (dispatch: Dispatch) => {
-    if (!id || id.length === 0) return;
-
-    const response = await axios.get(`/player/${id}`);
+    const response = await axios.get(`/dev/profile/${id}`); // TODO points to dev
     dispatch(slice.actions.setProfileData(response.data));
   };
 }

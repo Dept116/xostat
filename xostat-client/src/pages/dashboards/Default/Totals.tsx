@@ -13,6 +13,8 @@ const Totals = () => {
     (state: RootState) => state.profile
   );
 
+  console.log("test");
+
   useEffect(() => {
     dispatch(getProfileData("7907969"));
   }, [dispatch]);
