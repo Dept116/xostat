@@ -6,8 +6,8 @@ export interface profileData {
   record_count: number;
   mmr: number;
   games: number;
-  tot_wins: number;
-  tot_mvp: number;
+  wins: number;
+  mvp: number;
   tot_kills: number;
   tot_assists: number;
   tot_deaths: number;
@@ -118,8 +118,8 @@ const slice = createSlice({
         parseProfileDatum("record_count", state, action.payload);
         parseProfileDatum("mmr", state, action.payload);
         parseProfileDatum("games", state, action.payload);
-        parseProfileDatum("tot_wins", state, action.payload);
-        parseProfileDatum("tot_mvp", state, action.payload);
+        parseProfileDatum("wins", state, action.payload);
+        parseProfileDatum("mvp", state, action.payload);
         parseProfileDatum("tot_kills", state, action.payload);
         parseProfileDatum("tot_assists", state, action.payload);
         parseProfileDatum("tot_deaths", state, action.payload);
