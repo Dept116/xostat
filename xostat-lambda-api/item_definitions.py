@@ -9,9 +9,10 @@ dynamodb = boto3.resource('dynamodb')
 TABLE_NAME = os.environ['DYNAMODB_TABLE']
 table = dynamodb.Table(TABLE_NAME)
 
-def load_items():
+def get_item_dict():
     pk = Key('pk').begins_with('LOG_NAME#')
-    expression = pk
+    sk = Key('sk').begins_with('NAME#')
+    expression = pk & sk
 
     xoItems = table.query(
         KeyConditionExpression=expression

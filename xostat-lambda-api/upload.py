@@ -1,8 +1,10 @@
 import json
 import boto3
 
-from decimal import Decimal
+from decimal import *
+from classes.decoder import *
 from profile import find_uploaded_matches_for_user_id
+from item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
@@ -11,18 +13,19 @@ table = dynamodb.Table('xodat')
 def upload_matches(event, context):
     uploader = event['uploader_uid']
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
-    
-    for match in event['match_list']:
-        if match['match_id'] not in previously_uploaded_match:
-            upload_match(uploader, match)
+    item_dict = get_item_dict()
 
-    for build in event['build_list']:
-        upload_build(build)
+    # for build in event['build_list']:
+    #     upload_build(build)
+
+    # for match in event['match_list']:
+    #     if match['match_id'] not in previously_uploaded_match:
+    #         upload_match(uploader, match)
 
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': "Success"
+        'body': json.dumps(item_dict['Items'], cls=DecimalEncoder)
     }
 
 def upload_match(uploader, match):

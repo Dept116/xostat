@@ -2,7 +2,8 @@ import json
 import boto3
 import os
 from decimal import *
-from classes.player_stats import stats
+from classes.player_stats import *
+from classes.decoder import *
 from ast import Expression
 from boto3.dynamodb.conditions import Key
 
@@ -86,9 +87,3 @@ def find_uploaded_matches_for_user_id(uploader):
     )
     
     return uploadRecords['Items']
-
-class DecimalEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Decimal):
-            return str(obj)
-        return json.JSONEncoder.default(self, obj)
