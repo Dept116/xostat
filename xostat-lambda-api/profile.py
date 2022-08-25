@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+
 from decimal import *
 from classes.player_stats import *
 from classes.decoder import *
@@ -38,7 +39,7 @@ def get_user_totals(event, context):
 def get_user_totals_from_history(event, context):
     userID = event['pathParameters']['id']
 
-    pk = Key('sk').begins_with('USER#' + str(userID))
+    pk = Key('sk').eq('USER#' + str(userID))
     sk = Key('pk').begins_with('ROUND#')
     expression = pk & sk
 

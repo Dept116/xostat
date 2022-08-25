@@ -15,7 +15,8 @@ def update_item_definitions(event, context):
             if xodb_item['name'] == log_item['enName']:
                 item = {
                     'pk': 'LOG_NAME#' + log_item['name'],
-                    'sk': 'NAME#' + log_item['enName'],
+                    'sk': 'ATTRIBUTE#',
+                    'name' : log_item['enName'],
                     'xodb_id' : xodb_item['id'],
                     'category': xodb_item['categoryName'],
                     'type': xodb_item['typeName'],

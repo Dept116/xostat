@@ -54,10 +54,10 @@ functions:
           path: /player_totals/{id}
           method: get
           cors: true
-  # updateStaticElements:
-  #   handler: xostat-lambda-api/load_static_assets.update_item_definitions
-  #   events:
-  #     - http:
-  #         path: /static
-  #         method: get
-  #         cors: true
+  updateStaticElements:
+    handler: xostat-lambda-api/load_static_assets.update_item_definitions
+    events:
+      - http:
+          path: /static
+          method: get
+          cors: true
