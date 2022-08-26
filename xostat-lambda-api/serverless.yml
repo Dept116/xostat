@@ -22,6 +22,8 @@ provider:
 functions:
   uploadMatch:
     handler: xostat-lambda-api/upload.upload_matches
+    description: upload a list of matches to xodat 
+    memorySize: 2048
     events:
       - http:
           path: /upload
@@ -56,6 +58,7 @@ functions:
           cors: true
   updateStaticElements:
     handler: xostat-lambda-api/load_static_assets.update_item_definitions
+    # timeout: 600
     events:
       - http:
           path: /static

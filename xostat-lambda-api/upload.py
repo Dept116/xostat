@@ -9,42 +9,49 @@ from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
 table = dynamodb.Table('xodat')
+queue = []
+players = []
 
 def upload_matches(event, context):
     uploader = event['uploader_uid']
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
     item_dict = get_item_dict()
 
-    with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
-        for build in event['build_list']:
-            upload_build(batch, build)
+    
 
-        for match in event['match_list']:
-            if match['match_id'] not in previously_uploaded_match:
-                upload_match(uploader, match)
+    # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
+    for build in event['build_list']:
+        upload_build(build)
+
+    for match in event['match_list']:
+        if match['match_id'] not in previously_uploaded_match:
+            upload_match(uploader, match)
 
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps(item_dict, default=vars)
+        'body': json.dumps(queue, default=vars)
     }
 
-def upload_match(batch, uploader, match):
+def upload_match(uploader, match):
     for round in match['rounds']:
         roundID = str(round['round_start'])
         for player in round['players']:
-            upload_player_round_attributes(batch, roundID, match, round, player)
+            upload_player_round_attributes(roundID, match, round, player)
     return 
 
-def upload_upload_record(batch, uploader, match):
+def upload_upload_record(uploader, match):
     item = {
         'pk': 'USER#' + str(uploader),
         'sk': 'UPLOAD#' + str(match['match_id'])
     }
-    batch.put_item(Item=item)
+    queue.append(item)
     return
 
-def upload_player_round_attributes(batch, roundID, match, round, player):
+def upload_player_round_attributes(roundID, match, round, player):
+    if player['uid'] not in players:
+        players.append(player['uid'])
+
     item = {
         'pk': 'ROUND#' + str(roundID),
         'sk': 'USER#' + str(player['uid']),
@@ -67,7 +74,7 @@ def upload_player_round_attributes(batch, roundID, match, round, player):
         'round_start' : round['round_start'],
         'round_end' : round['round_end'],
         'round_winning_team' : round['winning_team'],
-        'match_type' : match['match_id'],
+        'match_type' : match['match_type'],
         'match_classification' : match['match_classification'],
         'match_start' : match['match_start'],
         'match_end' : match['match_end'],
@@ -80,14 +87,14 @@ def upload_player_round_attributes(batch, roundID, match, round, player):
         'host_name' : match['host_name'],
         'resources' : match['resources']
     }
-    batch.put_item(Item=item)
+    queue.append(item)
     return
 
-def upload_build(batch, build):
+def upload_build(build):
     item = {
         'pk': 'BUILD#' + str(build['build_hash']),
         'sk': 'POWER_SCORE#' + str(build['power_score']),
         'parts' : build['parts']
     }
-    batch.put_item(Item=item)
+    queue.append(item)
     return 
