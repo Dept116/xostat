@@ -27,11 +27,10 @@ def upload_matches(event, context):
     for match in event['match_list']:
         if match['match_id'] not in previously_uploaded_match:
             for round in match['rounds']:
-                roundID = str(round['round_start'])
                 for player in round['players']:
-                    queue_player_round_attributes(roundID, match, round, player)
+                    queue_player_round_attributes(match, round, player)
                     build_player_profile(match, round, player)
-
+                    
     queue_player_profiles()
 
     # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
@@ -43,9 +42,9 @@ def upload_matches(event, context):
         'body': json.dumps(queue, default=vars)
     }
 
-def queue_player_round_attributes(roundID, match, round, player):
+def queue_player_round_attributes(match, round, player):
     item = {
-        'pk': 'ROUND#' + str(roundID),
+        'pk': 'ROUND#' + str(round['round_start']),
         'sk': 'USER#' + str(player['uid']),
         'match_id' : player['match_id'],
         'round_id' : roundID,
@@ -236,6 +235,23 @@ def queue_player_profiles():
 
 
 def queue_build(build):
+    pk = Key('pk').eq('BUILD#' + str(build['build_hash']))
+    sk = Key('sk').eq('USER#' + str(build['power_score']))
+
+    expression = pk & sk
+
+    existing_build = table.query(
+        KeyConditionExpression= expression,
+    )['Item']
+
+    parts = []
+    for part in existing_build['parts']:
+        parts.append(part)
+
+    for part in build['parts']:
+        if part not in parts:
+            parts.append(part)
+
     item = {
         'pk': 'BUILD#' + str(build['build_hash']),
         'sk': 'POWER_SCORE#' + str(build['power_score']),
