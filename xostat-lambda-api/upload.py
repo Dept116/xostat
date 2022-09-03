@@ -15,14 +15,12 @@ table = dynamodb.Table('xodat')
 queue = []
 uploader = 0
 players = {}
-unique_uid = []
 
 def upload_matches(event, context):
     uploader = event['uploader_uid']
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
     item_dict = get_item_dict()
 
-    # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
     for build in event['build_list']:
         queue_build(build)
 
@@ -32,8 +30,12 @@ def upload_matches(event, context):
                 roundID = str(round['round_start'])
                 for player in round['players']:
                     queue_player_round_attributes(roundID, match, round, player)
+                    build_player_profile(match, round, player)
 
     queue_player_profiles()
+
+    # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
+    #     for i in range(50):
 
     return {
         'statusCode': 200,
@@ -42,12 +44,6 @@ def upload_matches(event, context):
     }
 
 def queue_player_round_attributes(roundID, match, round, player):
-
-    if player['uid'] not in unique_uid:
-        unique_uid.append(player['uid'])
-
-    build_player_profile(match, round, player)
-    
     item = {
         'pk': 'ROUND#' + str(roundID),
         'sk': 'USER#' + str(player['uid']),
