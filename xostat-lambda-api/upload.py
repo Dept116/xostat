@@ -28,23 +28,18 @@ def upload_matches(event, context):
 
     for match in event['match_list']:
         if match['match_id'] not in previously_uploaded_match:
-            queue_match(match)
+            for round in match['rounds']:
+                roundID = str(round['round_start'])
+                for player in round['players']:
+                    queue_player_round_attributes(roundID, match, round, player)
 
-    update_player_profiles()
+    queue_player_profiles()
 
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
         'body': json.dumps(queue, default=vars)
     }
-
-def queue_match(match):
-    for round in match['rounds']:
-        roundID = str(round['round_start'])
-        for player in round['players']:
-            queue_player_round_attributes(roundID, match, round, player)
-    return 
-
 
 def queue_player_round_attributes(roundID, match, round, player):
 
