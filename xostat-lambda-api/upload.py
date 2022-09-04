@@ -5,6 +5,7 @@ import datetime
 from decimal import *
 from classes.decoder import *
 from classes.player_profile import *
+from classes.xo_activity import *
 from profile import find_uploaded_matches_for_user_id
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
@@ -15,17 +16,20 @@ table = dynamodb.Table('xodat')
 queue = []
 uploader = 0
 players = {}
+# builds = {}
+activity = []
 
 def upload_matches(event, context):
     uploader = event['uploader_uid']
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
-    item_dict = get_item_dict()
+    # item_dict = get_item_dict()
 
     for build in event['build_list']:
         queue_build(build)
 
     for match in event['match_list']:
         if match['match_id'] not in previously_uploaded_match:
+            queue_upload_record(match)
             for round in match['rounds']:
                 for player in round['players']:
                     queue_player_round_attributes(match, round, player)
@@ -47,7 +51,7 @@ def queue_player_round_attributes(match, round, player):
         'pk': 'ROUND#' + str(round['round_start']),
         'sk': 'USER#' + str(player['uid']),
         'match_id' : player['match_id'],
-        'round_id' : roundID,
+        'round_id' : round['round_id'],
         'bot' : player['bot'],
         'nickname' : player['nickname'],
         'team' : player['team'],
@@ -81,6 +85,32 @@ def queue_player_round_attributes(match, round, player):
     }
     queue.append(item)
     return
+
+def build_activity_records(match, round):
+    p = []
+    for round in match['rounds']:
+        for player in round['players']:
+            if player['uid'] not in p:
+                p.append(player['uid'])
+
+    if match['match_type'] in activity:
+        type_rec = activity[match['match_type']]
+        type_rec.uploads += 1
+        p = []
+        for round in match['rounds']:
+            for player in round['players']:
+                if player['uid'] not in p:
+                    p.append(player['uid'])
+        type_rec.players += len(p)
+    else:
+        type_rec = xo_activity()
+        type_rec.match_type = match['match_type']
+        type_rec.match_classification = match['match_classification']
+        type_rec.uploads += 1
+        type_rec.players += len(p)
+
+    return
+
 
 def build_player_profile(match, round, player):
     if player['uid'] in players:
@@ -233,6 +263,25 @@ def queue_player_profiles():
         queue.append(item)
     return
 
+def queue_activity():
+    for a in activity:
+        pk = Key('pk').eq('ACTIVITY#' + str(a.match_type))
+        sk = Key('sk').eq('USER#' + str(build['power_score']))
+
+        expression = pk & sk
+
+        existing_build = table.query(
+            KeyConditionExpression= expression,
+        )['Item']
+
+
+        item = {
+            'pk': 'ACTIVITY#' + str(build['build_hash']),
+            'sk': 'POWER_SCORE#' + str(build['power_score']),
+            'parts' : build['parts']
+        }
+        queue.append(item)
+    return
 
 def queue_build(build):
     pk = Key('pk').eq('BUILD#' + str(build['build_hash']))
