@@ -212,7 +212,7 @@ def build_player_profile(match, round, player):
         players[player['uid']] = profile
 
 def queue_player_profiles():
-    for player in players:
+    for player in players.values():
         pk = Key('sk').eq('PROFILE#ALL')
         sk = Key('pk').eq('USER#' + str(player.uid))
         expression = pk & sk
@@ -220,40 +220,43 @@ def queue_player_profiles():
         profile = table.query(
             IndexName='sk-pk-index',
             KeyConditionExpression= expression,
-        )['Item']
+        )
+
+        if 'Item' in profile:
+            profile = profile['Item']
 
         item = {
             'pk': 'USER#' + str(player.uid),
             'sk': 'PROFILE#ALL',
-            'uploads' : (profile['uploads'] or 0) + profile.uploads,
-            'games' : (profile['games'] or 0) + profile.games,
-            'rounds' : (profile['rounds'] or 0) + profile.rounds,
-            'duration' : (profile['duration'] or 0) + profile.duration,
-            'wins' : (profile['wins'] or 0) + profile.wins,
-            'losses' : (profile['losses'] or 0) + profile.losses,
-            'draws' : (profile['draws'] or 0) + profile.draws,
-            'unfinished' : (profile['unfinished'] or 0) + profile.unfinished,
-            'round_wins' : (profile['round_wins'] or 0) + profile.round_wins,
-            'round_losses' : (profile['round_losses'] or 0) + profile.round_losses,
-            'round_draws' : (profile['round_draws'] or 0) + profile.round_draws,
-            'round_unfinished' : (profile['round_unfinished'] or 0) + profile.round_unfinished,
-            'mmr' : profile.mmr,
-            'kills' : (profile['kills'] or 0) + profile.kills,
-            'assists' : (profile['assists'] or 0) + profile.assists,
-            'drone_kills' : (profile['drone_kills'] or 0) + profile.drone_kills,
-            'deaths' : (profile['deaths'] or 0) + profile.deaths,
-            'score' : (profile['score'] or 0) + profile.score,
-            'damage' : (profile['damage'] or 0) + profile.damage,
-            'cabin_damage' : (profile['cabin_damage'] or 0) + profile.cabin_damage,
-            'damage_recieved' : (profile['damage_recieved'] or 0) + profile.damage_recieved,
-            'max_kills' : max(player.max_kills, profile['max_kills']),
-            'max_assists' : max(player.max_assists, profile['max_assists']),
-            'max_drone_kills' : max(player.max_drone_kills, profile['max_drone_kills']),
-            'max_deaths' : max(player.max_deaths, profile['max_deaths']),
-            'max_damage' : max(player.max_damage, profile['max_damage']),
-            'max_cabin_damage' : max(player.max_cabin_damage, profile['max_cabin_damage']),
-            'max_damage_recieved' : max(player.max_damage_recieved, profile['max_damage_recieved']),
-            'max_score' : max(player.max_score, profile['max_score'])
+            'uploads' : profile.get('uploads', 0) + player.uploads,
+            'games' : profile.get('games', 0) + player.games,
+            'rounds' : profile.get('rounds', 0) + player.rounds,
+            'duration' : profile.get('duration', 0) + player.duration,
+            'wins' : profile.get('wins', 0) + player.wins,
+            'losses' : profile.get('losses', 0) + player.losses,
+            'draws' : profile.get('draws', 0) + player.draws,
+            'unfinished' : profile.get('unfinished', 0) + player.unfinished,
+            'round_wins' : profile.get('round_wins', 0) + player.round_wins,
+            'round_losses' : profile.get('round_losses', 0) + player.round_losses,
+            'round_draws' : profile.get('round_draws', 0) + player.round_draws,
+            'round_unfinished' : profile.get('round_unfinished', 0) + player.round_unfinished,
+            'mmr' : player.mmr,
+            'kills' : profile.get('kills', 0) + player.kills,
+            'assists' : profile.get('assists', 0) + player.assists,
+            'drone_kills' : profile.get('drone_kills', 0) + player.drone_kills,
+            'deaths' : profile.get('deaths', 0) + player.deaths,
+            'score' : profile.get('score', 0) + player.score,
+            'damage' : profile.get('damage', 0) + player.damage,
+            'cabin_damage' : profile.get('cabin_damage', 0) + player.cabin_damage,
+            'damage_recieved' : profile.get('damage_recieved', 0) + player.damage_recieved,
+            'max_kills' : max(player.max_kills, profile.get('max_kills', 0)),
+            'max_assists' : max(player.max_assists, profile.get('max_assists', 0)),
+            'max_drone_kills' : max(player.max_drone_kills, profile.get('max_drone_kills', 0)),
+            'max_deaths' : max(player.max_deaths, profile.get('max_deaths', 0)),
+            'max_damage' : max(player.max_damage, profile.get('max_damage', 0)),
+            'max_cabin_damage' : max(player.max_cabin_damage, profile.get('max_cabin_damage', 0)),
+            'max_damage_recieved' : max(player.max_damage_recieved, profile.get('max_damage_recieved', 0)),
+            'max_score' : max(player.max_score, profile.get('max_score', 0))
         }
         queue.append(item)
     return
@@ -266,7 +269,10 @@ def queue_activity_records():
 
         rec = table.query(
             KeyConditionExpression= expression,
-        )['Item']
+        )
+
+        if 'Item' in rec:
+            rec = rec['Item']
 
         item = {
             'pk': 'ACTIVITY#' + str(a.match_type),
