@@ -16,7 +16,6 @@ table = dynamodb.Table('xodat')
 queue = []
 uploader = 0
 players = {}
-# builds = {}
 activity = []
 
 def upload_matches(event, context):
@@ -213,7 +212,6 @@ def queue_player_profiles():
     for player in players:
         pk = Key('sk').eq('PROFILE#ALL')
         sk = Key('pk').eq('USER#' + str(player.uid))
-
         expression = pk & sk
 
         profile = table.query(
@@ -260,19 +258,18 @@ def queue_player_profiles():
 def queue_activity_records():
     for a in activity:
         pk = Key('pk').eq('ACTIVITY#' + str(a.match_type))
-        sk = Key('sk').eq('USER#' + str(build['power_score']))
-
+        sk = Key('sk').eq('MONTH#' + str(a.month))
         expression = pk & sk
 
-        existing_build = table.query(
+        rec = table.query(
             KeyConditionExpression= expression,
         )['Item']
 
-
         item = {
-            'pk': 'ACTIVITY#' + str(build['build_hash']),
-            'sk': 'POWER_SCORE#' + str(build['power_score']),
-            'parts' : build['parts']
+            'pk': 'ACTIVITY#' + str(a.match_type),
+            'sk': 'MONTH#' + str(a.month),
+            'uploads' : a.uploads + rec.get('uploads', 0),
+            'players' : a.players + rec.get('players', 0)
         }
         queue.append(item)
     return
@@ -280,7 +277,6 @@ def queue_activity_records():
 def queue_build(build):
     pk = Key('pk').eq('BUILD#' + str(build['build_hash']))
     sk = Key('sk').eq('USER#' + str(build['power_score']))
-
     expression = pk & sk
 
     existing_build = table.query(
