@@ -88,7 +88,7 @@ def queue_player_round_attributes(match, round, player):
     return
 
 def build_activity_records(match):
-    month = datetime.strptime(match['match_start'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(day=0, hour=0, minute=0, second=0, microsecond=0)
+    month = datetime.datetime.strptime(match['match_start'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     p = []
     for round in match['rounds']:
@@ -137,20 +137,22 @@ def build_player_profile(match, round, player):
             profile.max_cabin_damage = player['cabin_damage']
         if player['damage_taken'] >  profile.max_damage_recieved:
             profile.max_damage_recieved = player['damage_taken']
+
         if round['round_id'] == 0:
-            if round['winning_team'] == -1 or round['team'] <= 0:
+            if match['winning_team'] == -1 or player['team'] <= 0:
                 profile.unfinished += 1
-            elif round['winning_team'] == 0:
+            elif match['winning_team'] == 0:
                 profile.draws += 1
-            elif round['winning_team'] == round['team']:
+            elif match['winning_team'] == player['team']:
                 profile.wins += 1
             else:
                 profile.losses += 1
-        if round['round_winning_team'] == -1 or round['team'] <= 0:
+
+        if round['winning_team'] == -1 or player['team'] <= 0:
             profile.round_unfinished += 1
-        elif round['round_winning_team'] == 0:
+        elif round['winning_team'] == 0:
             profile.round_draws += 1
-        elif round['round_winning_team'] == round['team']:
+        elif round['winning_team'] == player['team']:
             profile.round_wins += 1
         else:
             profile.round_losses += 1
@@ -188,25 +190,26 @@ def build_player_profile(match, round, player):
         profile.max_cabin_damage = player['cabin_damage']
         profile.max_damage_recieved = player['damage_taken']
 
-        if round['winning_team'] == -1 or round['team'] <= 0:
-            profile.unfinished = 1
-        elif round['winning_team'] == 0:
-            profile.draws = 1
-        elif round['winning_team'] == round['team']:
-            profile.wins = 1
-        else:
-            profile.losses = 1
+        if round['round_id'] == 0:
+            if match['winning_team'] == -1  or player['team'] <= 0:
+                profile.unfinished = 1
+            elif match['winning_team'] == 0:
+                profile.draws = 1
+            elif match['winning_team'] == player['team']:
+                profile.wins = 1
+            else:
+                profile.losses = 1
 
-        if round['round_winning_team'] == -1 or round['team'] <= 0:
+        if round['winning_team'] == -1 or player['team'] <= 0:
             profile.round_unfinished = 1
-        elif round['round_winning_team'] == 0:
+        elif round['winning_team'] == 0:
             profile.round_draws = 1
-        elif round['round_winning_team'] == round['team']:
+        elif round['winning_team'] == player['team']:
             profile.round_wins = 1
         else:
             profile.round_losses = 1
 
-        players.insert(player['uid'], profile)
+        players[player['uid']] = profile
 
 def queue_player_profiles():
     for player in players:
@@ -281,11 +284,12 @@ def queue_build(build):
 
     existing_build = table.query(
         KeyConditionExpression= expression,
-    )['Item']
+    )
 
     parts = []
-    for part in existing_build['parts']:
-        parts.append(part)
+    if 'Item' in existing_build:
+        for part in existing_build['Item']['parts']:
+            parts.append(part)
 
     for part in build['parts']:
         if part not in parts:
