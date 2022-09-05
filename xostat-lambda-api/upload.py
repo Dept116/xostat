@@ -93,7 +93,7 @@ def build_activity_records(match):
     p = []
     for round in match['rounds']:
         for player in round['players']:
-            if player['uid'] not in p:
+            if player['uid'] not in p and player['bot'] == 0:
                 p.append(player['uid'])
 
     if not any(x for x in activity if x.match_type == match['match_type'] and x.month == month):
