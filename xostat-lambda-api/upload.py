@@ -97,7 +97,7 @@ def build_activity_records(match):
             if player['uid'] not in p:
                 p.append(player['uid'])
 
-    if any(x for x in activity if x.match_type == match['match_type'] and x.month == month):
+    if not any(x for x in activity if x.match_type == match['match_type'] and x.month == month):
         activity.append(xo_activity(month, match['match_type'], match['match_classification']))
 
     rec = next ((x for x in activity if x.match_type == match['match_type'] and x.month == month))
