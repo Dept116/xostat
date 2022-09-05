@@ -30,12 +30,14 @@ def upload_matches(event, context):
     for match in event['match_list']:
         if match['match_id'] not in previously_uploaded_match:
             queue_upload_record(match)
+            build_activity_records(match)
             for round in match['rounds']:
                 for player in round['players']:
                     queue_player_round_attributes(match, round, player)
                     build_player_profile(match, round, player)
                     
     queue_player_profiles()
+    queue_activity_records()
 
     # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
     #     for i in range(50):
@@ -86,29 +88,21 @@ def queue_player_round_attributes(match, round, player):
     queue.append(item)
     return
 
-def build_activity_records(match, round):
+def build_activity_records(match):
+    month = datetime.strptime(match['match_start'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(day=0, hour=0, minute=0, second=0, microsecond=0)
+
     p = []
     for round in match['rounds']:
         for player in round['players']:
             if player['uid'] not in p:
                 p.append(player['uid'])
 
-    if match['match_type'] in activity:
-        type_rec = activity[match['match_type']]
-        type_rec.uploads += 1
-        p = []
-        for round in match['rounds']:
-            for player in round['players']:
-                if player['uid'] not in p:
-                    p.append(player['uid'])
-        type_rec.players += len(p)
-    else:
-        type_rec = xo_activity()
-        type_rec.match_type = match['match_type']
-        type_rec.match_classification = match['match_classification']
-        type_rec.uploads += 1
-        type_rec.players += len(p)
+    if any(x for x in activity if x.match_type == match['match_type'] and x.month == month):
+        activity.append(xo_activity(month, match['match_type'], match['match_classification']))
 
+    rec = next ((x for x in activity if x.match_type == match['match_type'] and x.month == month))
+    rec.uploads += 1
+    rec.players += len(p)
     return
 
 
@@ -263,7 +257,7 @@ def queue_player_profiles():
         queue.append(item)
     return
 
-def queue_activity():
+def queue_activity_records():
     for a in activity:
         pk = Key('pk').eq('ACTIVITY#' + str(a.match_type))
         sk = Key('sk').eq('USER#' + str(build['power_score']))
