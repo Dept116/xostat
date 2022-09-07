@@ -35,14 +35,14 @@ def upload_matches(event, context):
     for match in event['match_list']:
         if match['match_id'] not in previously_uploaded_match:
             queue_upload_record(match)
-            build_activity_records(match)
+            # build_activity_records(match)
             for round in match['rounds']:
                 for player in round['players']:
                     queue_player_round_attributes(match, round, player)
                     build_player_profile(match, round, player)
                     
     queue_player_profiles()
-    queue_activity_records()
+    # queue_activity_records()
 
     # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
     #     for i in range(50):
@@ -93,28 +93,27 @@ def queue_player_round_attributes(match, round, player):
     queue.append(item)
     return
 
-def build_activity_records(match):
-    month = datetime.datetime.strptime(match['match_start'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+# def build_activity_records(match):
+#     month = datetime.datetime.strptime(match['match_start'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
-    p = []
-    for round in match['rounds']:
-        for player in round['players']:
-            if player['uid'] not in p and player['bot'] == 0:
-                p.append(player['uid'])
+#     p = []
+#     for round in match['rounds']:
+#         for player in round['players']:
+#             if player['uid'] not in p and player['bot'] == 0:
+#                 p.append(player['uid'])
 
-    if not any(x for x in activity if x.match_type == match['match_type'] and x.month == month):
-        activity.append(xo_activity(month, match['match_type'], match['match_classification']))
+#     if not any(x for x in activity if x.match_type == match['match_type'] and x.month == month):
+#         activity.append(xo_activity(month, match['match_type'], match['match_classification']))
 
-    rec = next ((x for x in activity if x.match_type == match['match_type'] and x.month == month))
-    rec.uploads += 1
-    rec.players += len(p)
-    return
+#     rec = next ((x for x in activity if x.match_type == match['match_type'] and x.month == month))
+#     rec.uploads += 1
+#     rec.players += len(p)
+#     return
 
 
 def build_player_profile(match, round, player):
     if player['uid'] in players:
         profile = players[player['uid']]
-        profile.uploads += 1 if uploader == player['uid'] else 0
         profile.games += 1
         profile.rounds += 1
         profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
@@ -126,6 +125,9 @@ def build_player_profile(match, round, player):
         profile.damage += player['damage']
         profile.cabin_damage += player['cabin_damage']
         profile.damage_recieved += player['damage_taken']
+
+        if player['nickname'] not in profile.nicknames:
+            profile.nicknames.append(player['nickname'])
 
         if player['kills'] >  profile.max_kills:
             profile.max_kills = player['kills']
@@ -145,6 +147,9 @@ def build_player_profile(match, round, player):
             profile.max_damage_recieved = player['damage_taken']
 
         if round['round_id'] == 0:
+            if int(uploader) == int(player['uid']):
+                profile.uploads += 1
+
             if match['winning_team'] == -1 or player['team'] <= 0:
                 profile.unfinished += 1
             elif match['winning_team'] == 0:
@@ -165,8 +170,8 @@ def build_player_profile(match, round, player):
     else:
         profile = player_profile()
         profile.uid = player['uid']
-        profile.nickname = player['nickname']
-        profile.uploads = 1 if uploader == player['uid'] else 0
+        profile.nicknames.append(player['nickname'])
+        profile.uploads = 0 
         profile.games = 1
         profile.rounds = 1
         profile.duration = (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') -datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
@@ -178,7 +183,6 @@ def build_player_profile(match, round, player):
         profile.round_losses = 0
         profile.round_draws = 0
         profile.round_unfinished = 0
-        profile.mmr = 1600
         profile.kills = player['kills']
         profile.assists = player['assists']
         profile.drone_kills = player['drone_kills']
@@ -197,6 +201,9 @@ def build_player_profile(match, round, player):
         profile.max_damage_recieved = player['damage_taken']
 
         if round['round_id'] == 0:
+            if int(uploader) == int(player['uid']):
+                profile.uploads = 1
+
             if match['winning_team'] == -1  or player['team'] <= 0:
                 profile.unfinished = 1
             elif match['winning_team'] == 0:
@@ -246,7 +253,6 @@ def queue_player_profiles():
             'round_losses' : profile.get('round_losses', 0) + player.round_losses,
             'round_draws' : profile.get('round_draws', 0) + player.round_draws,
             'round_unfinished' : profile.get('round_unfinished', 0) + player.round_unfinished,
-            'mmr' : player.mmr,
             'kills' : profile.get('kills', 0) + player.kills,
             'assists' : profile.get('assists', 0) + player.assists,
             'drone_kills' : profile.get('drone_kills', 0) + player.drone_kills,
@@ -267,27 +273,27 @@ def queue_player_profiles():
         queue.append(item)
     return
 
-def queue_activity_records():
-    for a in activity:
-        pk = Key('pk').eq('ACTIVITY#' + str(a.match_type))
-        sk = Key('sk').eq('MONTH#' + str(a.month))
-        expression = pk & sk
+# def queue_activity_records():
+#     for a in activity:
+#         pk = Key('pk').eq('ACTIVITY#' + str(a.match_type))
+#         sk = Key('sk').eq('MONTH#' + str(a.month))
+#         expression = pk & sk
 
-        rec = table.query(
-            KeyConditionExpression= expression,
-        )
+#         rec = table.query(
+#             KeyConditionExpression= expression,
+#         )
 
-        if 'Item' in rec:
-            rec = rec['Item']
+#         if 'Item' in rec:
+#             rec = rec['Item']
 
-        item = {
-            'pk': 'ACTIVITY#' + str(a.match_type),
-            'sk': 'MONTH#' + str(a.month),
-            'uploads' : a.uploads + rec.get('uploads', 0),
-            'players' : a.players + rec.get('players', 0)
-        }
-        queue.append(item)
-    return
+#         item = {
+#             'pk': 'ACTIVITY#' + str(a.match_type),
+#             'sk': 'MONTH#' + str(a.month),
+#             'uploads' : a.uploads + rec.get('uploads', 0),
+#             'players' : a.players + rec.get('players', 0)
+#         }
+#         queue.append(item)
+#     return
 
 def queue_build(build):
     pk = Key('pk').eq('BUILD#' + str(build['build_hash']))

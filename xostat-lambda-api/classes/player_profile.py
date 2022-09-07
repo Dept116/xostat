@@ -1,7 +1,7 @@
 class player_profile:
     def __init__(self):
         self.uid = 0
-        self.nickname = ""
+        self.nicknames = []
         self.match_type = ""
         self.uploads = 0
         self.games = 0
@@ -15,7 +15,6 @@ class player_profile:
         self.round_losses = 0
         self.round_draws = 0
         self.round_unfinished = 0
-        self.mmr = 0
         self.kills = 0
         self.assists = 0
         self.drone_kills = 0
