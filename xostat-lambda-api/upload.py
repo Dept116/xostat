@@ -19,10 +19,16 @@ players = {}
 activity = []
 
 def upload_matches(event, context):
-    uploader = event['uploader_uid']
-    previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
-    # item_dict = get_item_dict()
+    if event.get('uploader_uid', None) is None:
+        return {
+            'statusCode': 500,
+            'headers': {'Access-Control-Allow-Origin': '*'},
+            'body': 'Invalid uid, upload aborted'
+        }
 
+    uploader = int(event.get('uploader_uid'))
+    previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
+    
     for build in event['build_list']:
         queue_build(build)
 
@@ -111,7 +117,7 @@ def build_player_profile(match, round, player):
         profile.uploads += 1 if uploader == player['uid'] else 0
         profile.games += 1
         profile.rounds += 1
-        profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') -datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
+        profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
         profile.kills += player['kills']
         profile.assists += player['assists']
         profile.drone_kills += player['drone_kills']
