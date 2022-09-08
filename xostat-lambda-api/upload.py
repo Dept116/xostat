@@ -26,7 +26,9 @@ def upload_matches(event, context):
             'body': 'Invalid uid, upload aborted'
         }
 
+    global uploader
     uploader = int(event.get('uploader_uid'))
+
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
     
     for build in event['build_list']:
@@ -42,6 +44,10 @@ def upload_matches(event, context):
                     build_player_profile(match, round, player)
                     
     queue_player_profiles()
+
+    for x in queue:
+        print (x)
+
     # queue_activity_records()
 
     # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
