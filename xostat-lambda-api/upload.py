@@ -1,3 +1,4 @@
+import sys
 import json
 import boto3
 import datetime
@@ -31,6 +32,7 @@ def upload_matches(event, context):
     uploader = int(event.get('uploader_uid'))
 
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
+    # data = json.loads(json.dumps(event), parse_float=Decimal)
     
     for build in event['build_list']:
         queue_build(build)
@@ -56,15 +58,16 @@ def upload_matches(event, context):
     for x in queue:
         print (x)
 
-    # queue_activity_records()
-
-    # with table.batch_writer(overwrite_by_pkeys=['partition_key', 'sort_key']) as batch:
-    #     for i in range(50):
+    with table.batch_writer() as batch:
+        for item in queue:
+            print (item)
+            batch.put_item(replace_float(item))
+        
 
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps(queue, default=vars)
+        'body': json.dumps("Success", default=vars)
     }
 
 # def queue_player_round_attributes(match, round, player):
@@ -342,3 +345,20 @@ def queue_upload_record(match):
     }
     queue.append(item)
     return
+
+def replace_float(obj):
+    if isinstance(obj, list):
+        for i in range(len(obj)):
+            obj[i] = replace_float(obj[i])
+        return obj
+    elif isinstance(obj, dict):
+        for k in obj.keys():
+            obj[k] = replace_float(obj[k])
+        return obj
+    elif isinstance(obj, float):
+        if obj % 1 == 0:
+            return int(obj)
+        else:
+            return Decimal(str(obj))
+    else:
+        return obj

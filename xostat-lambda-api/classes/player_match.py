@@ -1,4 +1,5 @@
 import datetime
+from decimal import *
 
 class player_match:
     def __init__(self, match, round, player):
@@ -111,6 +112,6 @@ class player_match:
             'medals' : self.medals,
             'resources' : self.resources
         }
-        return item, self
+        return item
     
 
