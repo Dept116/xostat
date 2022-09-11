@@ -53,7 +53,7 @@ class player_match:
         self.medals = player['medals']
         self.resources = match['resources']
 
-    def add_round(self, match, round, player):
+    def add_round(self, round, player):
         self.rounds += 1
         self.r_kills.append([player['kills']])
         self.r_assists.append(player['assists'])
@@ -69,6 +69,48 @@ class player_match:
         self.r_winning_teams.append(round['winning_team'])
 
     def db_item(self):
-        item = {}
-        return item
+        item = {
+            'pk': 'MATCH#' + str(self.match_id),
+            'sk': 'USER#' + str(self.uid),
+            'build_hash' : self.build_hash,
+            'power_score' : self.power_score,
+            'nickname' : self.nickname,
+            'rounds' : self.rounds,
+            'match_type' : self.match_type,
+            'match_classification' : self.match_classification,
+            'match_start' : self.match_start,
+            'match_end' : self.match_end,
+            'map_name' : self.map_name,
+            'map_display_name' : self.map_display_name,
+            'client_version' : self.client_version,
+            'co_driver_version' : self.co_driver_version,
+            'host_name' : self.host_name,
+            'duration' : self.duration,
+            'team' : self.team,
+            'kills' : self.kills,
+            'assists' : self.assists,
+            'drone_kills' : self.drone_kills,
+            'deaths' : self.deaths,
+            'score' : self.score,
+            'damage' : self.damage,
+            'cabin_damage' : self.cabin_damage,
+            'damage_recieved' : self.damage_recieved,
+            'score' : self.score,
+            'r_kills' : self.r_kills,
+            'r_assists' : self.r_assists,
+            'r_drone_kills' : self.r_drone_kills,
+            'r_deaths' : self.r_deaths,
+            'r_score' : self.r_score,
+            'r_damage' : self.r_damage,
+            'r_cabin_damage' : self.r_cabin_damage,
+            'r_damage_recieved' : self.r_damage_recieved,
+            'r_score' : self.r_score,
+            'r_start' : self.r_start,
+            'r_end' : self.r_end,
+            'r_winning_teams' : self.r_winning_teams,
+            'medals' : self.medals,
+            'resources' : self.resources
+        }
+        return item, self
     
+

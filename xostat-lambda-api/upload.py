@@ -5,6 +5,7 @@ import datetime
 from decimal import *
 from classes.decoder import *
 from classes.player_profile import *
+from classes.player_match import *
 from classes.xo_activity import *
 from profile import find_uploaded_matches_for_user_id
 from lib.item_definitions import get_item_dict
@@ -15,7 +16,7 @@ table = dynamodb.Table('xodat')
 
 queue = []
 uploader = 0
-players = {}
+player_profiles = {}
 activity = []
 
 def upload_matches(event, context):
@@ -37,11 +38,18 @@ def upload_matches(event, context):
     for match in event['match_list']:
         if match['match_id'] not in previously_uploaded_match:
             queue_upload_record(match)
-            # build_activity_records(match)
+            players = {}
             for round in match['rounds']:
                 for player in round['players']:
-                    queue_player_round_attributes(match, round, player)
                     build_player_profile(match, round, player)
+
+                    if player['uid'] in players:
+                        players[player['uid']].add_round(round, player)
+                    else:
+                        players[player['uid']] = player_match(match, round, player)
+            
+            for p in players.values():
+                queue.append(p.db_item())
                     
     queue_player_profiles()
 
@@ -59,45 +67,45 @@ def upload_matches(event, context):
         'body': json.dumps(queue, default=vars)
     }
 
-def queue_player_round_attributes(match, round, player):
-    item = {
-        'pk': 'ROUND#' + str(round['round_start']),
-        'sk': 'USER#' + str(player['uid']),
-        'match_id' : player['match_id'],
-        'round_id' : round['round_id'],
-        'bot' : player['bot'],
-        'nickname' : player['nickname'],
-        'team' : player['team'],
-        'build_hash' : player['build_hash'],
-        'power_score' : player['power_score'],
-        'kills' : player['kills'],
-        'assists' : player['assists'],
-        'drone_kills' : player['drone_kills'],
-        'deaths' : player['deaths'],
-        'score' : player['score'],
-        'damage' : str(player['damage']),
-        'cabin_damage' : str(player['cabin_damage']),
-        'damage_taken' : str(player['damage_taken']),
-        'scores' : player['scores'],
-        'medals' : player['medals'],
-        'round_start' : round['round_start'],
-        'round_end' : round['round_end'],
-        'round_winning_team' : round['winning_team'],
-        'match_type' : match['match_type'],
-        'match_classification' : match['match_classification'],
-        'match_start' : match['match_start'],
-        'match_end' : match['match_end'],
-        'map_name' : match['map_name'],
-        'map_display_name' : match['map_display_name'],
-        'match_winning_team' : match['winning_team'],
-        'win_condition' : match['win_conidtion'],
-        'client_version' : match['client_version'],
-        'co_driver_version' : match['co_driver_version'],
-        'host_name' : match['host_name'],
-        'resources' : match['resources']
-    }
-    queue.append(item)
-    return
+# def queue_player_round_attributes(match, round, player):
+#     item = {
+#         'pk': 'ROUND#' + str(round['round_start']),
+#         'sk': 'USER#' + str(player['uid']),
+#         'match_id' : player['match_id'],
+#         'round_id' : round['round_id'],
+#         'bot' : player['bot'],
+#         'nickname' : player['nickname'],
+#         'team' : player['team'],
+#         'build_hash' : player['build_hash'],
+#         'power_score' : player['power_score'],
+#         'kills' : player['kills'],
+#         'assists' : player['assists'],
+#         'drone_kills' : player['drone_kills'],
+#         'deaths' : player['deaths'],
+#         'score' : player['score'],
+#         'damage' : str(player['damage']),
+#         'cabin_damage' : str(player['cabin_damage']),
+#         'damage_taken' : str(player['damage_taken']),
+#         'scores' : player['scores'],
+#         'medals' : player['medals'],
+#         'round_start' : round['round_start'],
+#         'round_end' : round['round_end'],
+#         'round_winning_team' : round['winning_team'],
+#         'match_type' : match['match_type'],
+#         'match_classification' : match['match_classification'],
+#         'match_start' : match['match_start'],
+#         'match_end' : match['match_end'],
+#         'map_name' : match['map_name'],
+#         'map_display_name' : match['map_display_name'],
+#         'match_winning_team' : match['winning_team'],
+#         'win_condition' : match['win_conidtion'],
+#         'client_version' : match['client_version'],
+#         'co_driver_version' : match['co_driver_version'],
+#         'host_name' : match['host_name'],
+#         'resources' : match['resources']
+#     }
+#     queue.append(item)
+#     return
 
 # def build_activity_records(match):
 #     month = datetime.datetime.strptime(match['match_start'], '%Y-%m-%dT%H:%M:%S.%fZ').replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -118,8 +126,8 @@ def queue_player_round_attributes(match, round, player):
 
 
 def build_player_profile(match, round, player):
-    if player['uid'] in players:
-        profile = players[player['uid']]
+    if player['uid'] in player_profiles:
+        profile = player_profiles[player['uid']]
         profile.games += 1
         profile.rounds += 1
         profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
@@ -228,10 +236,10 @@ def build_player_profile(match, round, player):
         else:
             profile.round_losses = 1
 
-        players[player['uid']] = profile
+        player_profiles[player['uid']] = profile
 
 def queue_player_profiles():
-    for player in players.values():
+    for player in player_profiles.values():
         pk = Key('sk').eq('PROFILE#ALL')
         sk = Key('pk').eq('USER#' + str(player.uid))
         expression = pk & sk
