@@ -32,7 +32,6 @@ def upload_matches(event, context):
     uploader = int(event.get('uploader_uid'))
 
     previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
-    # data = json.loads(json.dumps(event), parse_float=Decimal)
     
     for build in event['build_list']:
         queue_build(build)
