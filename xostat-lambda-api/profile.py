@@ -76,9 +76,7 @@ def get_upload_records(event, context):
     return {
         "statusCode": 200,
         "headers": {"Access-Control-Allow-Origin": "*"},
-        "body": json.dumps({
-            'uploaded_matches' : previouslyUploadedMatches
-        })
+        "body": json.dumps(previouslyUploadedMatches)
     }
 
 def find_uploaded_matches_for_user_id(uploader):
@@ -95,4 +93,4 @@ def find_uploaded_matches_for_user_id(uploader):
     for match in uploadRecords.get('Items'):
         matches.append(int(match.get('sk', 0).strip('UPLOAD#')))
     
-    return matches
+    return {'uploaded_matches' : matches}

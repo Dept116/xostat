@@ -31,13 +31,13 @@ def upload_matches(event, context):
     global uploader
     uploader = int(event.get('uploader_uid'))
 
-    previously_uploaded_match = find_uploaded_matches_for_user_id(uploader)
+    previous_matches = find_uploaded_matches_for_user_id(uploader)
     
     for build in event['build_list']:
         queue_build(build)
 
     for match in event['match_list']:
-        if match['match_id'] not in previously_uploaded_match:
+        if match['match_id'] not in previous_matches['uploaded_matches']:
             queue_upload_record(match)
             players = {}
             for round in match['rounds']:
@@ -61,12 +61,13 @@ def upload_matches(event, context):
         for item in queue:
             print (item)
             batch.put_item(replace_float(item))
-        
 
+    previous_matches = find_uploaded_matches_for_user_id(uploader)
+        
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps("Success", default=vars)
+        'body': json.dumps(previous_matches, default=vars)
     }
 
 # def queue_player_round_attributes(match, round, player):
