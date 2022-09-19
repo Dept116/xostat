@@ -5,6 +5,7 @@ import os
 from decimal import *
 from classes.player_stats import *
 from classes.decoder import *
+from classes.upload_return import *
 from ast import Expression
 from boto3.dynamodb.conditions import Key
 
@@ -75,10 +76,14 @@ def get_upload_records(event, context):
     return {
         "statusCode": 200,
         "headers": {"Access-Control-Allow-Origin": "*"},
-        "body": json.dumps(previouslyUploadedMatches)
+        "body": json.dumps({
+            'uploaded_matches' : previouslyUploadedMatches
+        })
     }
 
 def find_uploaded_matches_for_user_id(uploader):
+    matches = []
+
     pk = Key('pk').eq('USER#' + str(uploader))
     sk = Key('sk').begins_with('UPLOAD#')
     expression = pk & sk
@@ -86,5 +91,8 @@ def find_uploaded_matches_for_user_id(uploader):
     uploadRecords = table.query(
         KeyConditionExpression=expression
     )
+
+    for match in uploadRecords.get('Items'):
+        matches.append(int(match.get('sk', 0).strip('UPLOAD#')))
     
-    return uploadRecords['Items']
+    return matches
