@@ -5,7 +5,6 @@ import os
 from decimal import *
 from classes.player_stats import *
 from classes.decoder import *
-from classes.upload_return import *
 from ast import Expression
 from boto3.dynamodb.conditions import Key
 
