@@ -70,7 +70,7 @@ def get_user_totals_from_history(event, context):
 
 def get_upload_records(event, context):
     userID = event['pathParameters']['id']
-    previouslyUploadedMatches = find_uploaded_matches_for_user_id(userID)
+    previouslyUploadedMatches = find_uploads_for_user_id(userID)
 
     return {
         "statusCode": 200,
@@ -78,7 +78,7 @@ def get_upload_records(event, context):
         "body": json.dumps(previouslyUploadedMatches)
     }
 
-def find_uploaded_matches_for_user_id(uploader):
+def find_uploads_for_user_id(uploader):
     matches = []
 
     pk = Key('pk').eq('USER#' + str(uploader))
@@ -92,4 +92,5 @@ def find_uploaded_matches_for_user_id(uploader):
     for match in uploadRecords.get('Items'):
         matches.append(int(match.get('sk', 0).strip('UPLOAD#')))
     
-    return {'uploaded_matches' : matches}
+    return {'uploaded_matches' : matches,
+            'uploaded_builds' : 0}

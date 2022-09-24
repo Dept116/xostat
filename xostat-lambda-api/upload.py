@@ -8,7 +8,7 @@ from classes.decoder import *
 from classes.player_profile import *
 from classes.player_match import *
 from classes.xo_activity import *
-from profile import find_uploaded_matches_for_user_id
+from profile import find_uploads_for_user_id
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
@@ -31,7 +31,7 @@ def upload_matches(event, context):
     global uploader
     uploader = int(event.get('uploader_uid'))
 
-    previous_matches = find_uploaded_matches_for_user_id(uploader)
+    previous_matches = find_uploads_for_user_id(uploader)
     
     for build in event['build_list']:
         queue_build(build)
@@ -54,16 +54,16 @@ def upload_matches(event, context):
                     
     queue_player_profiles()
 
-    for x in queue:
-        print (x)
+    # for x in queue:
+    #     print (x)
 
     with table.batch_writer() as batch:
         for item in queue:
             print (item)
             batch.put_item(replace_float(item))
 
-    previous_matches = find_uploaded_matches_for_user_id(uploader)
-        
+    previous_matches = find_uploads_for_user_id(uploader)
+
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
