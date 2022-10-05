@@ -12,7 +12,7 @@ from profile import find_uploads_for_user_id
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
-dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
+dynamodb = boto3.resource('dynamodb', region_name = "us-east-2")
 table = dynamodb.Table('xodat')
 
 queue = []
@@ -20,8 +20,8 @@ uploader = 0
 player_profiles = {}
 activity = []
 
-def upload_matches(event, context):
-    if event.get('uploader_uid', None) is None:
+def upload_matches(body, context):
+    if body.get('uploader_uid', None) is None:
         return {
             'statusCode': 500,
             'headers': {'Access-Control-Allow-Origin': '*'},
@@ -29,14 +29,14 @@ def upload_matches(event, context):
         }
 
     global uploader
-    uploader = int(event.get('uploader_uid'))
+    uploader = int(body.get('uploader_uid'))
 
     previous_matches = find_uploads_for_user_id(uploader)
     
-    for build in event['build_list']:
+    for build in body['build_list']:
         queue_build(build)
 
-    for match in event['match_list']:
+    for match in body['match_list']:
         if match['match_id'] not in previous_matches['uploaded_matches']:
             queue_upload_record(match)
             players = {}
@@ -48,7 +48,7 @@ def upload_matches(event, context):
                         players[player['uid']].add_round(round, player)
                     else:
                         players[player['uid']] = player_match(match, round, player)
-            
+        
             for p in players.values():
                 queue.append(p.db_item())
                     
@@ -57,7 +57,7 @@ def upload_matches(event, context):
     # for x in queue:
     #     print (x)
 
-    with table.batch_writer() as batch:
+    with table.batch_writer(overwrite_by_pkeys=['pk', 'sk']) as batch:
         for item in queue:
             print (item)
             batch.put_item(replace_float(item))
@@ -146,21 +146,21 @@ def build_player_profile(match, round, player):
         if player['nickname'] not in profile.nicknames:
             profile.nicknames.append(player['nickname'])
 
-        if player['kills'] >  profile.max_kills:
+        if player['kills'] > profile.max_kills:
             profile.max_kills = player['kills']
-        if player['assists'] >  profile.max_assists:
+        if player['assists'] > profile.max_assists:
             profile.max_assists = player['assists']
-        if player['drone_kills'] >  profile.max_drone_kills:
+        if player['drone_kills'] > profile.max_drone_kills:
             profile.max_drone_kills = player['drone_kills']
-        if player['deaths'] >  profile.max_deaths:
+        if player['deaths'] > profile.max_deaths:
             profile.max_deaths = player['deaths']
-        if player['score'] >  profile.max_score:
+        if player['score'] > profile.max_score:
             profile.max_score = player['score']
-        if player['damage'] >  profile.max_damage:
+        if player['damage'] > profile.max_damage:
             profile.max_damage = player['damage']
-        if player['cabin_damage'] >  profile.max_cabin_damage:
+        if player['cabin_damage'] > profile.max_cabin_damage:
             profile.max_cabin_damage = player['cabin_damage']
-        if player['damage_taken'] >  profile.max_damage_recieved:
+        if player['damage_taken'] > profile.max_damage_recieved:
             profile.max_damage_recieved = player['damage_taken']
 
         if round['round_id'] == 0:
@@ -318,7 +318,7 @@ def queue_build(build):
     expression = pk & sk
 
     existing_build = table.query(
-        KeyConditionExpression= expression,
+        KeyConditionExpression = expression,
     )
 
     parts = []
@@ -333,7 +333,7 @@ def queue_build(build):
     item = {
         'pk': 'BUILD#' + str(build['build_hash']),
         'sk': 'POWER_SCORE#' + str(build['power_score']),
-        'parts' : build['parts']
+        'parts' : parts
     }
     queue.append(item)
     return 
