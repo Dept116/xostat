@@ -258,6 +258,9 @@
                 "damage": {
                     "type": "number"
                 },
+                "cabin_damage": {
+                    "type": "number"
+                },
                 "damage_taken": {
                     "type": "number"
                 },

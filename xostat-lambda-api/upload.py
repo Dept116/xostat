@@ -20,7 +20,8 @@ uploader = 0
 player_profiles = {}
 activity = []
 
-def upload_matches(body, context):
+def upload_matches(data, context):
+    body = json.loads(data['body'])
     if body.get('uploader_uid', None) is None:
         return {
             'statusCode': 500,
@@ -30,7 +31,6 @@ def upload_matches(body, context):
 
     global uploader
     uploader = int(body.get('uploader_uid'))
-
     previous_matches = find_uploads_for_user_id(uploader)
     
     for build in body['build_list']:

@@ -29,7 +29,7 @@ functions:
       - http:
           path: /upload
           method: post
-          cors: true
+          cors: false
           request:
             schemas:
               application/json: 
