@@ -21,6 +21,7 @@ player_profiles = {}
 activity = []
 
 def upload_matches(data, context):
+    # print(data)
     body = json.loads(data['body'])
     if body.get('uploader_uid', None) is None:
         return {
@@ -60,7 +61,7 @@ def upload_matches(data, context):
     with table.batch_writer(overwrite_by_pkeys=['pk', 'sk']) as batch:
         for item in queue:
             print (item)
-            batch.put_item(replace_float(item))
+            # batch.put_item(replace_float(item))
 
     previous_matches = find_uploads_for_user_id(uploader)
 

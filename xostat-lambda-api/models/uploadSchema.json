@@ -30,7 +30,7 @@
             "title": "UploadModel"
         },
         "BuildList": {
-            "type": "object",
+            "type": "array",
             "additionalProperties": false,
             "properties": {
                 "build_hash": {
