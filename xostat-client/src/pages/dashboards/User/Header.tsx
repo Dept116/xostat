@@ -12,16 +12,23 @@ const Header = () => {
       </Col>
 
       <Col xs="auto" className="ms-auto text-end mt-n1">
-        <Dropdown className="d-inline me-2">
+      <Dropdown className="d-inline me-2">
           <Dropdown.Toggle variant="light" className="bg-white shadow-sm">
-            <Calendar className="feather align-middle mt-n1" /> Today
+            Game Mode
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item>Action</Dropdown.Item>
-            <Dropdown.Item>Another Action</Dropdown.Item>
-            <Dropdown.Item>Something else here</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Item>Seperated link</Dropdown.Item>
+            <Dropdown.Item></Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        <Dropdown className="d-inline me-2">
+          <Dropdown.Toggle variant="light" className="bg-white shadow-sm">
+            Game Category
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item>PvP</Dropdown.Item>
+            <Dropdown.Item>PvE</Dropdown.Item>
+            <Dropdown.Item>Brawl</Dropdown.Item>
+            <Dropdown.Item>Custom</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
 
