@@ -5,7 +5,7 @@ const UploadCount = () => {
   return (
     <Col className="d-flex">
       <Card className="flex-fill">
-        <Card.Header></Card.Header>
+        <Card.Header>Raids</Card.Header>
         <Card.Body>List c/hr for game mode, order by c/hr</Card.Body>
       </Card>
     </Col>

@@ -5,8 +5,8 @@ const UploadCount = () => {
   return (
     <Col className="d-flex">
       <Card className="flex-fill">
-        <Card.Header></Card.Header>
-        <Card.Body>C/hr affect of fuel, show affect on wr</Card.Body>
+        <Card.Header>Top 3</Card.Header>
+        <Card.Body>Top 3 earners</Card.Body>
       </Card>
     </Col>
   );

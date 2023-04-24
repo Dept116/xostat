@@ -74,7 +74,7 @@ const analyticsSection = [
   {
     href: "/revenue",
     icon: DollarSign,
-    title: "Coin Revenue",
+    title: "Revenue",
   },
 ] as SidebarItemsType[];
 

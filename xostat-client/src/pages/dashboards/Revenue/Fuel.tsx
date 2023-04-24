@@ -5,8 +5,8 @@ const UploadCount = () => {
   return (
     <Col className="d-flex">
       <Card className="flex-fill">
-        <Card.Header></Card.Header>
-        <Card.Body>Best 8v8 Gamemode, list game modes and c/hr</Card.Body>
+        <Card.Header>Fuel</Card.Header>
+        <Card.Body>C/hr affect of fuel, show affect on wr</Card.Body>
       </Card>
     </Col>
   );

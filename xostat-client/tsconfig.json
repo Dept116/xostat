@@ -18,5 +18,5 @@
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true
   },
-  "include": ["src"]
+  "include": ["src", "src/pages/dashboards/Revenue/Missions/.tsx"]
 }

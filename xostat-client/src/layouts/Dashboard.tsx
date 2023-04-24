@@ -24,7 +24,7 @@ const Dashboard: React.FC = ({ children }) => (
         <Footer />
       </Main>
     </Wrapper>
-    <Settings />
+    {/* <Settings /> */}
   </React.Fragment>
 );
 
