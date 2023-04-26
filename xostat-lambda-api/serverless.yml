@@ -20,6 +20,8 @@ provider:
       Resource: 
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/sk-pk-index"
+plugins:
+ - serverless-offline
 functions:
   uploadMatch:
     handler: xostat-lambda-api/upload.upload_matches

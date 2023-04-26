@@ -8,7 +8,7 @@ from classes.decoder import *
 from classes.player_profile import *
 from classes.player_match import *
 from classes.xo_activity import *
-from profile import find_uploads_for_user_id
+from profile import *
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
@@ -22,7 +22,7 @@ activity = []
 
 def upload_matches(data, context):
     # print(data)
-    body = json.loads(data['body'])
+    body = json.loads(data.get('body'))
     if body.get('uploader_uid', None) is None:
         return {
             'statusCode': 500,

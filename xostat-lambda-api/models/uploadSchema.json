@@ -335,11 +335,6 @@
         },
         "ScoreType": {
             "type": "string",
-            "enum": [
-                "First Hit",
-                "Part Detach",
-                "Kill"
-            ],
             "title": "ScoreType"
         }
     }
