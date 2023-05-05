@@ -10,7 +10,6 @@ class stats:
         self.assists = 0
         self.drone_kills = 0
         self.damage = 0
-        self.cabin_damage = 0
         self.damage_recieved = 0
         self.score = 0
         self.duration = 0
@@ -32,7 +31,6 @@ class stats:
         self.assists += round.get('assists', 0)
         self.drone_kills += round.get('drone_kills', 0)
         self.damage += float(round.get('damage', 0))
-        self.cabin_damage += float(round.get('cabin_damage', 0))
         self.damage_recieved += float(round.get('damage_recieved', 0))
         self.score += round.get('score', 0)
 

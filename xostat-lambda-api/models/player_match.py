@@ -32,7 +32,6 @@ class player_match:
         self.deaths = player['deaths']
         self.score = player['score']
         self.damage = player['damage']
-        self.cabin_damage = player['cabin_damage']
         self.damage_recieved = player['damage_taken']
         self.score = player['score']
 
@@ -43,7 +42,6 @@ class player_match:
         self.r_deaths = [player['deaths']]
         self.r_score = [player['score']]
         self.r_damage = [player['damage']]
-        self.r_cabin_damage = [player['cabin_damage']]
         self.r_damage_recieved = [player['damage_taken']]
         self.r_score = [player['score']]
         self.r_start = [round['round_start']]
@@ -62,7 +60,6 @@ class player_match:
         self.r_deaths.append(player['deaths'])
         self.r_score.append(player['score'])
         self.r_damage.append(player['damage'])
-        self.r_cabin_damage.append(player['cabin_damage'])
         self.r_damage_recieved.append(player['damage_taken'])
         self.r_score.append(player['score'])
         self.r_start.append(round['round_start'])
@@ -94,7 +91,6 @@ class player_match:
             'deaths' : self.deaths,
             'score' : self.score,
             'damage' : self.damage,
-            'cabin_damage' : self.cabin_damage,
             'damage_recieved' : self.damage_recieved,
             'score' : self.score,
             'r_kills' : self.r_kills,
@@ -103,7 +99,6 @@ class player_match:
             'r_deaths' : self.r_deaths,
             'r_score' : self.r_score,
             'r_damage' : self.r_damage,
-            'r_cabin_damage' : self.r_cabin_damage,
             'r_damage_recieved' : self.r_damage_recieved,
             'r_score' : self.r_score,
             'r_start' : self.r_start,

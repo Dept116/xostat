@@ -2,17 +2,21 @@ import sys
 import json
 import boto3
 import datetime
+import logging
 
 from decimal import *
-from classes.decoder import *
-from classes.player_profile import *
-from classes.player_match import *
-from classes.xo_activity import *
+from models.decoder import *
+from models.player_profile import *
+from models.player_match import *
+from models.xo_activity import *
 from profile import *
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
-dynamodb = boto3.resource('dynamodb', region_name = "us-east-2")
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
 table = dynamodb.Table('xodat')
 
 queue = []
@@ -20,8 +24,8 @@ uploader = 0
 player_profiles = {}
 activity = []
 
+
 def upload_matches(data, context):
-    # print(data)
     body = json.loads(data.get('body'))
     if body.get('uploader_uid', None) is None:
         return {
@@ -33,7 +37,7 @@ def upload_matches(data, context):
     global uploader
     uploader = int(body.get('uploader_uid'))
     previous_matches = find_uploads_for_user_id(uploader)
-    
+
     for build in body['build_list']:
         queue_build(build)
 
@@ -48,11 +52,12 @@ def upload_matches(data, context):
                     if player['uid'] in players:
                         players[player['uid']].add_round(round, player)
                     else:
-                        players[player['uid']] = player_match(match, round, player)
-        
+                        players[player['uid']] = player_match(
+                            match, round, player)
+
             for p in players.values():
                 queue.append(p.db_item())
-                    
+
     queue_player_profiles()
 
     # for x in queue:
@@ -60,8 +65,7 @@ def upload_matches(data, context):
 
     with table.batch_writer(overwrite_by_pkeys=['pk', 'sk']) as batch:
         for item in queue:
-            print (item)
-            # batch.put_item(replace_float(item))
+            batch.put_item(replace_float(item))
 
     previous_matches = find_uploads_for_user_id(uploader)
 
@@ -88,7 +92,6 @@ def upload_matches(data, context):
 #         'deaths' : player['deaths'],
 #         'score' : player['score'],
 #         'damage' : str(player['damage']),
-#         'cabin_damage' : str(player['cabin_damage']),
 #         'damage_taken' : str(player['damage_taken']),
 #         'scores' : player['scores'],
 #         'medals' : player['medals'],
@@ -134,14 +137,14 @@ def build_player_profile(match, round, player):
         profile = player_profiles[player['uid']]
         profile.games += 1
         profile.rounds += 1
-        profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
+        profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(
+            round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
         profile.kills += player['kills']
         profile.assists += player['assists']
         profile.drone_kills += player['drone_kills']
         profile.deaths += player['deaths']
         profile.score += player['score']
         profile.damage += player['damage']
-        profile.cabin_damage += player['cabin_damage']
         profile.damage_recieved += player['damage_taken']
 
         if player['nickname'] not in profile.nicknames:
@@ -159,8 +162,6 @@ def build_player_profile(match, round, player):
             profile.max_score = player['score']
         if player['damage'] > profile.max_damage:
             profile.max_damage = player['damage']
-        if player['cabin_damage'] > profile.max_cabin_damage:
-            profile.max_cabin_damage = player['cabin_damage']
         if player['damage_taken'] > profile.max_damage_recieved:
             profile.max_damage_recieved = player['damage_taken']
 
@@ -189,12 +190,13 @@ def build_player_profile(match, round, player):
         profile = player_profile()
         profile.uid = player['uid']
         profile.nicknames.append(player['nickname'])
-        profile.uploads = 0 
+        profile.uploads = 0
         profile.games = 1
         profile.rounds = 1
-        profile.duration = (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') -datetime.datetime.strptime(round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
+        profile.duration = (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(
+            round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
         profile.wins = 0
-        profile.losses = 0 
+        profile.losses = 0
         profile.draws = 0
         profile.unfinished = 0
         profile.round_wins = 0
@@ -207,7 +209,6 @@ def build_player_profile(match, round, player):
         profile.deaths = player['deaths']
         profile.score = player['score']
         profile.damage = player['damage']
-        profile.cabin_damage = player['cabin_damage']
         profile.damage_recieved = player['damage_taken']
         profile.max_kills = player['kills']
         profile.max_assists = player['assists']
@@ -215,14 +216,13 @@ def build_player_profile(match, round, player):
         profile.max_deaths = player['deaths']
         profile.max_score = player['score']
         profile.max_damage = player['damage']
-        profile.max_cabin_damage = player['cabin_damage']
         profile.max_damage_recieved = player['damage_taken']
 
         if round['round_id'] == 0:
             if int(uploader) == int(player['uid']):
                 profile.uploads = 1
 
-            if match['winning_team'] == -1  or player['team'] <= 0:
+            if match['winning_team'] == -1 or player['team'] <= 0:
                 profile.unfinished = 1
             elif match['winning_team'] == 0:
                 profile.draws = 1
@@ -242,6 +242,7 @@ def build_player_profile(match, round, player):
 
         player_profiles[player['uid']] = profile
 
+
 def queue_player_profiles():
     for player in player_profiles.values():
         pk = Key('sk').eq('PROFILE#ALL')
@@ -250,7 +251,7 @@ def queue_player_profiles():
 
         profile = table.query(
             IndexName='sk-pk-index',
-            KeyConditionExpression= expression,
+            KeyConditionExpression=expression,
         )
 
         if 'Item' in profile:
@@ -259,34 +260,32 @@ def queue_player_profiles():
         item = {
             'pk': 'USER#' + str(player.uid),
             'sk': 'PROFILE#ALL',
-            'uploads' : profile.get('uploads', 0) + player.uploads,
-            'games' : profile.get('games', 0) + player.games,
-            'rounds' : profile.get('rounds', 0) + player.rounds,
-            'duration' : profile.get('duration', 0) + player.duration,
-            'wins' : profile.get('wins', 0) + player.wins,
-            'losses' : profile.get('losses', 0) + player.losses,
-            'draws' : profile.get('draws', 0) + player.draws,
-            'unfinished' : profile.get('unfinished', 0) + player.unfinished,
-            'round_wins' : profile.get('round_wins', 0) + player.round_wins,
-            'round_losses' : profile.get('round_losses', 0) + player.round_losses,
-            'round_draws' : profile.get('round_draws', 0) + player.round_draws,
-            'round_unfinished' : profile.get('round_unfinished', 0) + player.round_unfinished,
-            'kills' : profile.get('kills', 0) + player.kills,
-            'assists' : profile.get('assists', 0) + player.assists,
-            'drone_kills' : profile.get('drone_kills', 0) + player.drone_kills,
-            'deaths' : profile.get('deaths', 0) + player.deaths,
-            'score' : profile.get('score', 0) + player.score,
-            'damage' : profile.get('damage', 0) + player.damage,
-            'cabin_damage' : profile.get('cabin_damage', 0) + player.cabin_damage,
-            'damage_recieved' : profile.get('damage_recieved', 0) + player.damage_recieved,
-            'max_kills' : max(player.max_kills, profile.get('max_kills', 0)),
-            'max_assists' : max(player.max_assists, profile.get('max_assists', 0)),
-            'max_drone_kills' : max(player.max_drone_kills, profile.get('max_drone_kills', 0)),
-            'max_deaths' : max(player.max_deaths, profile.get('max_deaths', 0)),
-            'max_damage' : max(player.max_damage, profile.get('max_damage', 0)),
-            'max_cabin_damage' : max(player.max_cabin_damage, profile.get('max_cabin_damage', 0)),
-            'max_damage_recieved' : max(player.max_damage_recieved, profile.get('max_damage_recieved', 0)),
-            'max_score' : max(player.max_score, profile.get('max_score', 0))
+            'uploads': profile.get('uploads', 0) + player.uploads,
+            'games': profile.get('games', 0) + player.games,
+            'rounds': profile.get('rounds', 0) + player.rounds,
+            'duration': profile.get('duration', 0) + player.duration,
+            'wins': profile.get('wins', 0) + player.wins,
+            'losses': profile.get('losses', 0) + player.losses,
+            'draws': profile.get('draws', 0) + player.draws,
+            'unfinished': profile.get('unfinished', 0) + player.unfinished,
+            'round_wins': profile.get('round_wins', 0) + player.round_wins,
+            'round_losses': profile.get('round_losses', 0) + player.round_losses,
+            'round_draws': profile.get('round_draws', 0) + player.round_draws,
+            'round_unfinished': profile.get('round_unfinished', 0) + player.round_unfinished,
+            'kills': profile.get('kills', 0) + player.kills,
+            'assists': profile.get('assists', 0) + player.assists,
+            'drone_kills': profile.get('drone_kills', 0) + player.drone_kills,
+            'deaths': profile.get('deaths', 0) + player.deaths,
+            'score': profile.get('score', 0) + player.score,
+            'damage': profile.get('damage', 0) + player.damage,
+            'damage_recieved': profile.get('damage_recieved', 0) + player.damage_recieved,
+            'max_kills': max(player.max_kills, profile.get('max_kills', 0)),
+            'max_assists': max(player.max_assists, profile.get('max_assists', 0)),
+            'max_drone_kills': max(player.max_drone_kills, profile.get('max_drone_kills', 0)),
+            'max_deaths': max(player.max_deaths, profile.get('max_deaths', 0)),
+            'max_damage': max(player.max_damage, profile.get('max_damage', 0)),
+            'max_damage_recieved': max(player.max_damage_recieved, profile.get('max_damage_recieved', 0)),
+            'max_score': max(player.max_score, profile.get('max_score', 0))
         }
         queue.append(item)
     return
@@ -313,13 +312,14 @@ def queue_player_profiles():
 #         queue.append(item)
 #     return
 
+
 def queue_build(build):
     pk = Key('pk').eq('BUILD#' + str(build['build_hash']))
     sk = Key('sk').eq('USER#' + str(build['power_score']))
     expression = pk & sk
 
     existing_build = table.query(
-        KeyConditionExpression = expression,
+        KeyConditionExpression=expression,
     )
 
     parts = []
@@ -334,10 +334,11 @@ def queue_build(build):
     item = {
         'pk': 'BUILD#' + str(build['build_hash']),
         'sk': 'POWER_SCORE#' + str(build['power_score']),
-        'parts' : parts
+        'parts': parts
     }
     queue.append(item)
-    return 
+    return
+
 
 def queue_upload_record(match):
     item = {
@@ -346,6 +347,7 @@ def queue_upload_record(match):
     }
     queue.append(item)
     return
+
 
 def replace_float(obj):
     if isinstance(obj, list):

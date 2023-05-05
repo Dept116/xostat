@@ -18,5 +18,5 @@
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true
   },
-  "include": ["src", "src/pages/dashboards/Revenue/Missions/.tsx"]
+  "include": ["src", "src/pages/dashboards/Revenue/Best8v8.tsx"]
 }

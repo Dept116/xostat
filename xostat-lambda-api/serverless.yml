@@ -17,15 +17,15 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:GetItem
         - dynamodb:BatchWriteItem
-      Resource: 
+      Resource:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/sk-pk-index"
 plugins:
- - serverless-offline
+  - serverless-offline
 functions:
   uploadMatch:
-    handler: xostat-lambda-api/upload.upload_matches
-    description: upload a list of matches to xodat 
+    handler: controllers/upload.upload_matches
+    description: upload a list of matches to xodat
     memorySize: 2048
     events:
       - http:
@@ -34,33 +34,33 @@ functions:
           cors: false
           request:
             schemas:
-              application/json: 
-                schema: ${file(models/uploadSchema.json)}
+              application/json:
+                schema: ${file(schema/uploadSchema.json)}
                 name: UploadModel
-                description: 'Validation for uploading match'
+                description: "Validation for uploading match"
   getUploadRecords:
-    handler: xostat-lambda-api/profile.get_upload_records
+    handler: controllers/profile.get_upload_records
     events:
       - http:
           path: /player/{id}
           method: get
           cors: true
   getUserProfile:
-    handler: xostat-lambda-api/profile.get_user_totals
+    handler: controllers/profile.get_user_totals
     events:
       - http:
           path: /profile/{id}
           method: get
-          cors: true        
+          cors: true
   getUserTotals:
-    handler: xostat-lambda-api/profile.get_user_totals_from_history
+    handler: controllers/profile.get_user_totals_from_history
     events:
       - http:
           path: /player_totals/{id}
           method: get
           cors: true
   updateStaticElements:
-    handler: xostat-lambda-api/load_static_assets.update_item_definitions
+    handler: controllers/load_static_assets.update_item_definitions
     # timeout: 600
     events:
       - http:
