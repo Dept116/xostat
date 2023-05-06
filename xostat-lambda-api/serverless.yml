@@ -6,6 +6,7 @@ provider:
   name: aws
   runtime: python3.8
   region: us-east-2
+  stage: ${opt:stage, 'dev'}
   environment:
     DYNAMODB_TABLE: xodat
   iamRoleStatements:
@@ -23,6 +24,17 @@ provider:
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
+custom:
+  dynamodb:
+    start:
+      stages:
+        - dev
+      port: 8000
+      inMemory: true
+      migrate: true
+  serverless-offline:
+    host: localhost
+    port: 3000
 functions:
   uploadMatch:
     handler: controllers/upload.upload_matches
@@ -68,11 +80,3 @@ functions:
           path: /static
           method: get
           cors: true
-custom:
-  dynamodb:
-    start:
-      port: 8000
-      inMemory: true
-  serverless-offline:
-    host: localhost
-    port: 3000

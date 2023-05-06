@@ -110,22 +110,21 @@ serverless offline
 
 ### Local DynamoDB
 
-Local DynamoDB can be installed [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html).
-
-Once the files are extracted the following command can be run in the target directory to install.
+Pull amazon/dynamodb-local and run using the following commands
 
 ```bash
-java -jar DynamoDBLocal.jar -sharedDb
+docker pull amazon/dynamodb-local
+docker run -p 8000:8000 amazon/dynamodb-local
 ```
 
-Toggle the local DB with the following enviroment variable
+Configure table with:
 
 ```bash
-set DYNAMO_DB_ENV=local
+python .\local-config\create-local-dynamodb-table.py
 ```
 
-The run the DB locally with
+Confirm tables exist with:
 
 ```bash
-serverless dynamodb start
+aws dynamodb list-tables --endpoint-url http://localhost:8000
 ```
