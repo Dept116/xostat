@@ -8,7 +8,11 @@ from models.decoder import *
 from ast import Expression
 from boto3.dynamodb.conditions import Key
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource(
+    'dynamodb',
+    endpoint_url='http://localhost:8000' if os.environ.get(
+        'DYNAMO_DB_ENV') == 'local' else None
+)
 
 TABLE_NAME = os.environ['DYNAMODB_TABLE']
 table = dynamodb.Table(TABLE_NAME)

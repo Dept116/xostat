@@ -22,6 +22,7 @@ provider:
         - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/sk-pk-index"
 plugins:
   - serverless-offline
+  - serverless-dynamodb-local
 functions:
   uploadMatch:
     handler: controllers/upload.upload_matches
@@ -67,3 +68,11 @@ functions:
           path: /static
           method: get
           cors: true
+custom:
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+  serverless-offline:
+    host: localhost
+    port: 3000

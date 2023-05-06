@@ -3,6 +3,7 @@ import json
 import boto3
 import datetime
 import logging
+import os
 
 from decimal import *
 from models.decoder import *
@@ -13,10 +14,12 @@ from profile import *
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+dynamodb = boto3.resource(
+    'dynamodb',
+    endpoint_url='http://localhost:8000' if os.environ.get(
+        'DYNAMO_DB_ENV') == 'local' else None
+)
 
-dynamodb = boto3.resource('dynamodb', region_name="us-east-2")
 table = dynamodb.Table('xodat')
 
 queue = []
