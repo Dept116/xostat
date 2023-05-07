@@ -22,62 +22,61 @@ dynamodb = boto3.resource(
 
 table = dynamodb.Table('xodat')
 
-queue = []
-uploader = 0
-player_profiles = {}
-activity = []
-
 
 def upload_matches(data, context):
-    print("upload_matches")
-
     body = json.loads(data.get('body'))
-    if body.get('uploader_uid', None) is None:
+    uploader = body.get('uploader_uid')
+    if uploader is None:
         return {
             'statusCode': 500,
             'headers': {'Access-Control-Allow-Origin': '*'},
             'body': 'Invalid uid, upload aborted'
         }
 
-    global uploader
-    uploader = int(body.get('uploader_uid'))
-    previous_matches = find_uploads_for_user_id(uploader)
+    uploader = int(uploader)
+    uploaded_matches = set(find_uploads_for_user_id(
+        uploader)['uploaded_matches'])
 
     build_list = body.get('build_list', [])
-    for build in build_list:
-        queue_build(build)
-
     match_list = body.get('match_list', [])
-    uploaded_matches = set(previous_matches['uploaded_matches'])
-
-    for match in match_list:
-        if match['match_id'] not in uploaded_matches:
-            queue_upload_record(match)
-            players = {}
-            for round in match['rounds']:
-                for player in round['players']:
-                    build_player_profile(match, round, player)
-
-                    if player['uid'] in players:
-                        players[player['uid']].add_round(round, player)
-                    else:
-                        players[player['uid']] = player_match(
-                            match, round, player)
-
-            for p in players.values():
-                queue.append(p.db_item())
 
     with table.batch_writer(overwrite_by_pkeys=['pk', 'sk']) as batch:
-        for item in queue:
-            batch.put_item(replace_float(item))
-
-    previous_matches = find_uploads_for_user_id(uploader)
+        process_builds(batch, build_list)
+        process_matches(batch, match_list, uploaded_matches, uploader)
 
     return {
         'statusCode': 200,
         'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps(previous_matches, default=vars)
+        'body': json.dumps(find_uploads_for_user_id(uploader), default=vars)
     }
+
+
+def process_builds(batch, build_list):
+    for build in build_list:
+        upload_build(batch, build)
+
+
+def process_matches(batch, match_list, uploaded_matches, uploader):
+    for match in match_list:
+        if match['match_id'] not in uploaded_matches:
+            upload_upload_record(batch, match, uploader)
+            process_rounds(batch, match, uploader)
+
+
+def process_rounds(batch, match, uploader):
+    players = {}
+    player_profiles = {}
+    for round in match['rounds']:
+        for player in round['players']:
+            # build_player_profile(match, round, player, uploader, player_profiles)
+
+            if player['uid'] in players:
+                players[player['uid']].add_round(round, player)
+            else:
+                players[player['uid']] = player_match(match, round, player)
+
+    for p in players.values():
+        batch.put_item(p.db_item())
 
 # def queue_player_round_attributes(match, round, player):
 #     item = {
@@ -136,7 +135,7 @@ def upload_matches(data, context):
 #     return
 
 
-def build_player_profile(match, round, player):
+def build_player_profile(match, round, player, uploader, player_profiles):
     if player['uid'] in player_profiles:
         profile = player_profiles[player['uid']]
         profile.games += 1
@@ -291,7 +290,7 @@ def queue_player_profiles():
             'max_damage_recieved': max(player.max_damage_recieved, profile.get('max_damage_recieved', 0)),
             'max_score': max(player.max_score, profile.get('max_score', 0))
         }
-        queue.append(item)
+        # queue.append(item)
     return
 
 # def queue_activity_records():
@@ -317,7 +316,7 @@ def queue_player_profiles():
 #     return
 
 
-def queue_build(build):
+def upload_build(batch, build):
     pk_value = 'BUILD#' + str(build['build_hash'])
     sk_value = 'POWER_SCORE#' + str(build['power_score'])
 
@@ -333,16 +332,15 @@ def queue_build(build):
         'sk': 'POWER_SCORE#' + str(build['power_score']),
         'parts': combined_parts
     }
-    queue.append(item)
-    return
+    batch.put_item(item)
 
 
-def queue_upload_record(match):
+def upload_upload_record(batch, match, uploader):
     item = {
         'pk': f'USER#{uploader}',
         'sk': f'UPLOAD#{match["match_id"]}',
     }
-    queue.append(item)
+    batch.put_item(item)
 
 
 def replace_float(obj):
