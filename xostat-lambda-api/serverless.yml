@@ -25,13 +25,6 @@ plugins:
   - serverless-offline
   - serverless-dynamodb-local
 custom:
-  dynamodb:
-    start:
-      stages:
-        - dev
-      port: 8000
-      inMemory: true
-      migrate: true
   serverless-offline:
     host: localhost
     port: 3000
@@ -40,6 +33,7 @@ functions:
     handler: controllers/upload.upload_matches
     description: upload a list of matches to xodat
     memorySize: 2048
+    timeout: 90
     events:
       - http:
           path: /upload

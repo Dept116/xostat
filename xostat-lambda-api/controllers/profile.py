@@ -88,18 +88,18 @@ def get_upload_records(event, context):
 
 
 def find_uploads_for_user_id(uploader):
-    matches = []
+    pk_value = 'USER#' + str(uploader)
+    sk_prefix = 'UPLOAD#'
 
-    pk = Key('pk').eq('USER#' + str(uploader))
-    sk = Key('sk').begins_with('UPLOAD#')
-    expression = pk & sk
-
-    uploadRecords = table.query(
-        KeyConditionExpression=expression
+    response = table.query(
+        KeyConditionExpression=Key('pk').eq(
+            pk_value) & Key('sk').begins_with(sk_prefix)
     )
 
-    for match in uploadRecords.get('Items'):
-        matches.append(int(match.get('sk', 0).strip('UPLOAD#')))
+    matches = [int(match['sk'][len(sk_prefix):])
+               for match in response.get('Items', [])]
 
-    return {'uploaded_matches': matches,
-            'uploaded_builds': 0}
+    return {
+        'uploaded_matches': matches,
+        'uploaded_builds': 0
+    }

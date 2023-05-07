@@ -10,7 +10,7 @@ from models.decoder import *
 from models.player_profile import *
 from models.player_match import *
 from models.xo_activity import *
-from profile import *
+from .profile import find_uploads_for_user_id
 from lib.item_definitions import get_item_dict
 from boto3.dynamodb.conditions import Key
 
@@ -29,6 +29,8 @@ activity = []
 
 
 def upload_matches(data, context):
+    print("upload_matches")
+
     body = json.loads(data.get('body'))
     if body.get('uploader_uid', None) is None:
         return {
@@ -41,11 +43,15 @@ def upload_matches(data, context):
     uploader = int(body.get('uploader_uid'))
     previous_matches = find_uploads_for_user_id(uploader)
 
-    for build in body['build_list']:
+    build_list = body.get('build_list', [])
+    for build in build_list:
         queue_build(build)
 
-    for match in body['match_list']:
-        if match['match_id'] not in previous_matches['uploaded_matches']:
+    match_list = body.get('match_list', [])
+    uploaded_matches = set(previous_matches['uploaded_matches'])
+
+    for match in match_list:
+        if match['match_id'] not in uploaded_matches:
             queue_upload_record(match)
             players = {}
             for round in match['rounds']:
@@ -60,11 +66,6 @@ def upload_matches(data, context):
 
             for p in players.values():
                 queue.append(p.db_item())
-
-    queue_player_profiles()
-
-    # for x in queue:
-    #     print (x)
 
     with table.batch_writer(overwrite_by_pkeys=['pk', 'sk']) as batch:
         for item in queue:
@@ -317,27 +318,20 @@ def queue_player_profiles():
 
 
 def queue_build(build):
-    pk = Key('pk').eq('BUILD#' + str(build['build_hash']))
-    sk = Key('sk').eq('USER#' + str(build['power_score']))
-    expression = pk & sk
+    pk_value = 'BUILD#' + str(build['build_hash'])
+    sk_value = 'POWER_SCORE#' + str(build['power_score'])
 
-    existing_build = table.query(
-        KeyConditionExpression=expression,
-    )
+    existing_build = table.get_item(
+        Key={'pk': pk_value, 'sk': sk_value}, ConsistentRead=False)
+    existing_parts = existing_build.get('Item', {}).get('parts', [])
+    new_parts = build['parts']
 
-    parts = []
-    if 'Item' in existing_build:
-        for part in existing_build['Item']['parts']:
-            parts.append(part)
-
-    for part in build['parts']:
-        if part not in parts:
-            parts.append(part)
+    combined_parts = list(set(existing_parts) | set(new_parts))
 
     item = {
         'pk': 'BUILD#' + str(build['build_hash']),
         'sk': 'POWER_SCORE#' + str(build['power_score']),
-        'parts': parts
+        'parts': combined_parts
     }
     queue.append(item)
     return
@@ -345,11 +339,10 @@ def queue_build(build):
 
 def queue_upload_record(match):
     item = {
-        'pk': 'USER#' + str(uploader),
-        'sk': 'UPLOAD#' + str(match['match_id'])
+        'pk': f'USER#{uploader}',
+        'sk': f'UPLOAD#{match["match_id"]}',
     }
     queue.append(item)
-    return
 
 
 def replace_float(obj):
