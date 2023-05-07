@@ -19,8 +19,8 @@ dynamodb = boto3.resource(
     endpoint_url='http://localhost:8000' if os.environ.get(
         'DYNAMO_DB_ENV') == 'local' else None
 )
-
-table = dynamodb.Table('xodat')
+TABLE_NAME = os.environ['DYNAMODB_TABLE']
+table = dynamodb.Table(TABLE_NAME)
 
 
 def upload_matches(data, context):
@@ -60,16 +60,13 @@ def process_matches(batch, match_list, uploaded_matches, uploader):
     for match in match_list:
         if match['match_id'] not in uploaded_matches:
             upload_upload_record(batch, match, uploader)
-            process_rounds(batch, match, uploader)
+            process_rounds(batch, match)
 
 
-def process_rounds(batch, match, uploader):
+def process_rounds(batch, match):
     players = {}
-    player_profiles = {}
     for round in match['rounds']:
         for player in round['players']:
-            # build_player_profile(match, round, player, uploader, player_profiles)
-
             if player['uid'] in players:
                 players[player['uid']].add_round(round, player)
             else:
@@ -246,52 +243,52 @@ def build_player_profile(match, round, player, uploader, player_profiles):
         player_profiles[player['uid']] = profile
 
 
-def queue_player_profiles():
-    for player in player_profiles.values():
-        pk = Key('sk').eq('PROFILE#ALL')
-        sk = Key('pk').eq('USER#' + str(player.uid))
-        expression = pk & sk
+# def queue_player_profiles():
+#     for player in player_profiles.values():
+#         pk = Key('sk').eq('PROFILE#ALL')
+#         sk = Key('pk').eq('USER#' + str(player.uid))
+#         expression = pk & sk
 
-        profile = table.query(
-            IndexName='sk-pk-index',
-            KeyConditionExpression=expression,
-        )
+#         profile = table.query(
+#             IndexName='sk-pk-index',
+#             KeyConditionExpression=expression,
+#         )
 
-        if 'Item' in profile:
-            profile = profile['Item']
+#         if 'Item' in profile:
+#             profile = profile['Item']
 
-        item = {
-            'pk': 'USER#' + str(player.uid),
-            'sk': 'PROFILE#ALL',
-            'uploads': profile.get('uploads', 0) + player.uploads,
-            'games': profile.get('games', 0) + player.games,
-            'rounds': profile.get('rounds', 0) + player.rounds,
-            'duration': profile.get('duration', 0) + player.duration,
-            'wins': profile.get('wins', 0) + player.wins,
-            'losses': profile.get('losses', 0) + player.losses,
-            'draws': profile.get('draws', 0) + player.draws,
-            'unfinished': profile.get('unfinished', 0) + player.unfinished,
-            'round_wins': profile.get('round_wins', 0) + player.round_wins,
-            'round_losses': profile.get('round_losses', 0) + player.round_losses,
-            'round_draws': profile.get('round_draws', 0) + player.round_draws,
-            'round_unfinished': profile.get('round_unfinished', 0) + player.round_unfinished,
-            'kills': profile.get('kills', 0) + player.kills,
-            'assists': profile.get('assists', 0) + player.assists,
-            'drone_kills': profile.get('drone_kills', 0) + player.drone_kills,
-            'deaths': profile.get('deaths', 0) + player.deaths,
-            'score': profile.get('score', 0) + player.score,
-            'damage': profile.get('damage', 0) + player.damage,
-            'damage_recieved': profile.get('damage_recieved', 0) + player.damage_recieved,
-            'max_kills': max(player.max_kills, profile.get('max_kills', 0)),
-            'max_assists': max(player.max_assists, profile.get('max_assists', 0)),
-            'max_drone_kills': max(player.max_drone_kills, profile.get('max_drone_kills', 0)),
-            'max_deaths': max(player.max_deaths, profile.get('max_deaths', 0)),
-            'max_damage': max(player.max_damage, profile.get('max_damage', 0)),
-            'max_damage_recieved': max(player.max_damage_recieved, profile.get('max_damage_recieved', 0)),
-            'max_score': max(player.max_score, profile.get('max_score', 0))
-        }
-        # queue.append(item)
-    return
+#         item = {
+#             'pk': 'USER#' + str(player.uid),
+#             'sk': 'PROFILE#ALL',
+#             'uploads': profile.get('uploads', 0) + player.uploads,
+#             'games': profile.get('games', 0) + player.games,
+#             'rounds': profile.get('rounds', 0) + player.rounds,
+#             'duration': profile.get('duration', 0) + player.duration,
+#             'wins': profile.get('wins', 0) + player.wins,
+#             'losses': profile.get('losses', 0) + player.losses,
+#             'draws': profile.get('draws', 0) + player.draws,
+#             'unfinished': profile.get('unfinished', 0) + player.unfinished,
+#             'round_wins': profile.get('round_wins', 0) + player.round_wins,
+#             'round_losses': profile.get('round_losses', 0) + player.round_losses,
+#             'round_draws': profile.get('round_draws', 0) + player.round_draws,
+#             'round_unfinished': profile.get('round_unfinished', 0) + player.round_unfinished,
+#             'kills': profile.get('kills', 0) + player.kills,
+#             'assists': profile.get('assists', 0) + player.assists,
+#             'drone_kills': profile.get('drone_kills', 0) + player.drone_kills,
+#             'deaths': profile.get('deaths', 0) + player.deaths,
+#             'score': profile.get('score', 0) + player.score,
+#             'damage': profile.get('damage', 0) + player.damage,
+#             'damage_recieved': profile.get('damage_recieved', 0) + player.damage_recieved,
+#             'max_kills': max(player.max_kills, profile.get('max_kills', 0)),
+#             'max_assists': max(player.max_assists, profile.get('max_assists', 0)),
+#             'max_drone_kills': max(player.max_drone_kills, profile.get('max_drone_kills', 0)),
+#             'max_deaths': max(player.max_deaths, profile.get('max_deaths', 0)),
+#             'max_damage': max(player.max_damage, profile.get('max_damage', 0)),
+#             'max_damage_recieved': max(player.max_damage_recieved, profile.get('max_damage_recieved', 0)),
+#             'max_score': max(player.max_score, profile.get('max_score', 0))
+#         }
+#         # queue.append(item)
+#     return
 
 # def queue_activity_records():
 #     for a in activity:
