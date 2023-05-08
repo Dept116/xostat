@@ -73,7 +73,7 @@ def process_rounds(batch, match):
                 players[player['uid']] = player_match(match, round, player)
 
     for p in players.values():
-        batch.put_item(p.db_item())
+        batch.put_item(replace_float(p.db_item()))
 
 # def queue_player_round_attributes(match, round, player):
 #     item = {
