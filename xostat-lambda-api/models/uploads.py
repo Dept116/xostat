@@ -11,7 +11,7 @@ metadata = MetaData()
 uploads = Table('uploads', metadata, autoload_with=engine)
 
 
-def insert_upload(match_id, uploader_user_id):
+def upload_upload_record(match_id, uploader_user_id):
     session = Session()
 
     uploaded_at = datetime.datetime.now()
