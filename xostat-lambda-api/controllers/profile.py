@@ -1,21 +1,25 @@
-import json
-import boto3
 import os
+import json
 
 from decimal import *
-from models.player_stats import *
-from models.decoder import *
-from ast import Expression
-from boto3.dynamodb.conditions import Key
+from models.response import *
+from models.uploads import get_uploads_by_user
+from sqlalchemy.exc import SQLAlchemyError
 
-dynamodb = boto3.resource(
-    'dynamodb',
-    endpoint_url='http://localhost:8000' if os.environ.get(
-        'DYNAMO_DB_ENV') == 'local' else None
-)
 
-TABLE_NAME = os.environ['DYNAMODB_TABLE']
-table = dynamodb.Table(TABLE_NAME)
+def get_upload_records(event, context):
+    try:
+        userID = event['pathParameters']['id']
+        if not userID.isdigit():
+            return build_response(400, "'id' must be a number.")
+
+        upload_records = get_uploads_by_user(userID)
+        return build_response(200, "Data fetched successfully", upload_records)
+
+    except KeyError:
+        return build_response(400, "'id' must be provided in the path parameters.")
+    except SQLAlchemyError as e:
+        return build_response(500, f"Internal Server Error: {str(e)}")
 
 
 def get_user_names(event, context):
@@ -74,32 +78,3 @@ def get_user_totals_from_history(event, context):
     }
 
     return json.dumps(item, cls=DecimalEncoder)
-
-
-def get_upload_records(event, context):
-    userID = event['pathParameters']['id']
-    previouslyUploadedMatches = find_uploads_for_user_id(userID)
-
-    return {
-        "statusCode": 200,
-        "headers": {"Access-Control-Allow-Origin": "*"},
-        "body": json.dumps(previouslyUploadedMatches)
-    }
-
-
-def find_uploads_for_user_id(uploader):
-    pk_value = 'USER#' + str(uploader)
-    sk_prefix = 'UPLOAD#'
-
-    response = table.query(
-        KeyConditionExpression=Key('pk').eq(
-            pk_value) & Key('sk').begins_with(sk_prefix)
-    )
-
-    matches = [int(match['sk'][len(sk_prefix):])
-               for match in response.get('Items', [])]
-
-    return {
-        'uploaded_matches': matches,
-        'uploaded_builds': 0
-    }

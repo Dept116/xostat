@@ -1,79 +1,48 @@
 import sys
 import json
-import boto3
 import datetime
-import logging
 import os
 
 from decimal import *
-from models.decoder import *
-from models.player_profile import *
-from models.player_match import *
-from models.xo_activity import *
+from models.response import *
+from models.builds import *
 from .profile import find_uploads_for_user_id
 from lib.item_definitions import get_item_dict
-from boto3.dynamodb.conditions import Key
-
-dynamodb = boto3.resource(
-    'dynamodb',
-    endpoint_url='http://localhost:8000' if os.environ.get(
-        'DYNAMO_DB_ENV') == 'local' else None
-)
-TABLE_NAME = os.environ['DYNAMODB_TABLE']
-table = dynamodb.Table(TABLE_NAME)
 
 
 def upload_matches(data, context):
     body = json.loads(data.get('body'))
     uploader = body.get('uploader_uid')
     if uploader is None:
-        return {
-            'statusCode': 500,
-            'headers': {'Access-Control-Allow-Origin': '*'},
-            'body': 'Invalid uid, upload aborted'
-        }
+        return build_response(500, "Invalid uid, upload aborted")
 
     uploader = int(uploader)
-    uploaded_matches = set(find_uploads_for_user_id(
-        uploader)['uploaded_matches'])
 
-    build_list = body.get('build_list', [])
-    match_list = body.get('match_list', [])
+    upload_build_list(body.get('build_list', []))
+    # process_matches(body.get('match_list', []), uploader)
 
-    with table.batch_writer(overwrite_by_pkeys=['pk', 'sk']) as batch:
-        process_builds(batch, build_list)
-        process_matches(batch, match_list, uploaded_matches, uploader)
+    return build_response(200, "Data fetched successfully", json.dumps(find_uploads_for_user_id(uploader)))
 
-    return {
-        'statusCode': 200,
-        'headers': {'Access-Control-Allow-Origin': '*'},
-        'body': json.dumps(find_uploads_for_user_id(uploader), default=vars)
-    }
+# def process_matches(match_list, uploader):
+#     uploaded_matches = set(find_uploads_for_user_id(
+#         uploader)['uploaded_matches'])
+#     for match in match_list:
+#         if match['match_id'] not in uploaded_matches:
+#             upload_upload_record(batch, match, uploader)
+#             process_rounds(batch, match)
 
 
-def process_builds(batch, build_list):
-    for build in build_list:
-        upload_build(batch, build)
+# def process_rounds(batch, match):
+#     players = {}
+#     for round in match['rounds']:
+#         for player in round['players']:
+#             if player['uid'] in players:
+#                 players[player['uid']].add_round(round, player)
+#             else:
+#                 players[player['uid']] = player_match(match, round, player)
 
-
-def process_matches(batch, match_list, uploaded_matches, uploader):
-    for match in match_list:
-        if match['match_id'] not in uploaded_matches:
-            upload_upload_record(batch, match, uploader)
-            process_rounds(batch, match)
-
-
-def process_rounds(batch, match):
-    players = {}
-    for round in match['rounds']:
-        for player in round['players']:
-            if player['uid'] in players:
-                players[player['uid']].add_round(round, player)
-            else:
-                players[player['uid']] = player_match(match, round, player)
-
-    for p in players.values():
-        batch.put_item(replace_float(p.db_item()))
+#     for p in players.values():
+#         batch.put_item(replace_float(p.db_item()))
 
 # def queue_player_round_attributes(match, round, player):
 #     item = {
@@ -132,115 +101,115 @@ def process_rounds(batch, match):
 #     return
 
 
-def build_player_profile(match, round, player, uploader, player_profiles):
-    if player['uid'] in player_profiles:
-        profile = player_profiles[player['uid']]
-        profile.games += 1
-        profile.rounds += 1
-        profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(
-            round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
-        profile.kills += player['kills']
-        profile.assists += player['assists']
-        profile.drone_kills += player['drone_kills']
-        profile.deaths += player['deaths']
-        profile.score += player['score']
-        profile.damage += player['damage']
-        profile.damage_recieved += player['damage_taken']
+# def build_player_profile(match, round, player, uploader, player_profiles):
+#     if player['uid'] in player_profiles:
+#         profile = player_profiles[player['uid']]
+#         profile.games += 1
+#         profile.rounds += 1
+#         profile.duration += (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(
+#             round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
+#         profile.kills += player['kills']
+#         profile.assists += player['assists']
+#         profile.drone_kills += player['drone_kills']
+#         profile.deaths += player['deaths']
+#         profile.score += player['score']
+#         profile.damage += player['damage']
+#         profile.damage_recieved += player['damage_taken']
 
-        if player['nickname'] not in profile.nicknames:
-            profile.nicknames.append(player['nickname'])
+#         if player['nickname'] not in profile.nicknames:
+#             profile.nicknames.append(player['nickname'])
 
-        if player['kills'] > profile.max_kills:
-            profile.max_kills = player['kills']
-        if player['assists'] > profile.max_assists:
-            profile.max_assists = player['assists']
-        if player['drone_kills'] > profile.max_drone_kills:
-            profile.max_drone_kills = player['drone_kills']
-        if player['deaths'] > profile.max_deaths:
-            profile.max_deaths = player['deaths']
-        if player['score'] > profile.max_score:
-            profile.max_score = player['score']
-        if player['damage'] > profile.max_damage:
-            profile.max_damage = player['damage']
-        if player['damage_taken'] > profile.max_damage_recieved:
-            profile.max_damage_recieved = player['damage_taken']
+#         if player['kills'] > profile.max_kills:
+#             profile.max_kills = player['kills']
+#         if player['assists'] > profile.max_assists:
+#             profile.max_assists = player['assists']
+#         if player['drone_kills'] > profile.max_drone_kills:
+#             profile.max_drone_kills = player['drone_kills']
+#         if player['deaths'] > profile.max_deaths:
+#             profile.max_deaths = player['deaths']
+#         if player['score'] > profile.max_score:
+#             profile.max_score = player['score']
+#         if player['damage'] > profile.max_damage:
+#             profile.max_damage = player['damage']
+#         if player['damage_taken'] > profile.max_damage_recieved:
+#             profile.max_damage_recieved = player['damage_taken']
 
-        if round['round_id'] == 0:
-            if int(uploader) == int(player['uid']):
-                profile.uploads += 1
+#         if round['round_id'] == 0:
+#             if int(uploader) == int(player['uid']):
+#                 profile.uploads += 1
 
-            if match['winning_team'] == -1 or player['team'] <= 0:
-                profile.unfinished += 1
-            elif match['winning_team'] == 0:
-                profile.draws += 1
-            elif match['winning_team'] == player['team']:
-                profile.wins += 1
-            else:
-                profile.losses += 1
+#             if match['winning_team'] == -1 or player['team'] <= 0:
+#                 profile.unfinished += 1
+#             elif match['winning_team'] == 0:
+#                 profile.draws += 1
+#             elif match['winning_team'] == player['team']:
+#                 profile.wins += 1
+#             else:
+#                 profile.losses += 1
 
-        if round['winning_team'] == -1 or player['team'] <= 0:
-            profile.round_unfinished += 1
-        elif round['winning_team'] == 0:
-            profile.round_draws += 1
-        elif round['winning_team'] == player['team']:
-            profile.round_wins += 1
-        else:
-            profile.round_losses += 1
-    else:
-        profile = player_profile()
-        profile.uid = player['uid']
-        profile.nicknames.append(player['nickname'])
-        profile.uploads = 0
-        profile.games = 1
-        profile.rounds = 1
-        profile.duration = (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(
-            round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
-        profile.wins = 0
-        profile.losses = 0
-        profile.draws = 0
-        profile.unfinished = 0
-        profile.round_wins = 0
-        profile.round_losses = 0
-        profile.round_draws = 0
-        profile.round_unfinished = 0
-        profile.kills = player['kills']
-        profile.assists = player['assists']
-        profile.drone_kills = player['drone_kills']
-        profile.deaths = player['deaths']
-        profile.score = player['score']
-        profile.damage = player['damage']
-        profile.damage_recieved = player['damage_taken']
-        profile.max_kills = player['kills']
-        profile.max_assists = player['assists']
-        profile.max_drone_kills = player['drone_kills']
-        profile.max_deaths = player['deaths']
-        profile.max_score = player['score']
-        profile.max_damage = player['damage']
-        profile.max_damage_recieved = player['damage_taken']
+#         if round['winning_team'] == -1 or player['team'] <= 0:
+#             profile.round_unfinished += 1
+#         elif round['winning_team'] == 0:
+#             profile.round_draws += 1
+#         elif round['winning_team'] == player['team']:
+#             profile.round_wins += 1
+#         else:
+#             profile.round_losses += 1
+#     else:
+#         profile = player_profile()
+#         profile.uid = player['uid']
+#         profile.nicknames.append(player['nickname'])
+#         profile.uploads = 0
+#         profile.games = 1
+#         profile.rounds = 1
+#         profile.duration = (datetime.datetime.strptime(round['round_end'], '%Y-%m-%dT%H:%M:%S.%fZ') - datetime.datetime.strptime(
+#             round['round_start'], '%Y-%m-%dT%H:%M:%S.%fZ')).total_seconds()
+#         profile.wins = 0
+#         profile.losses = 0
+#         profile.draws = 0
+#         profile.unfinished = 0
+#         profile.round_wins = 0
+#         profile.round_losses = 0
+#         profile.round_draws = 0
+#         profile.round_unfinished = 0
+#         profile.kills = player['kills']
+#         profile.assists = player['assists']
+#         profile.drone_kills = player['drone_kills']
+#         profile.deaths = player['deaths']
+#         profile.score = player['score']
+#         profile.damage = player['damage']
+#         profile.damage_recieved = player['damage_taken']
+#         profile.max_kills = player['kills']
+#         profile.max_assists = player['assists']
+#         profile.max_drone_kills = player['drone_kills']
+#         profile.max_deaths = player['deaths']
+#         profile.max_score = player['score']
+#         profile.max_damage = player['damage']
+#         profile.max_damage_recieved = player['damage_taken']
 
-        if round['round_id'] == 0:
-            if int(uploader) == int(player['uid']):
-                profile.uploads = 1
+#         if round['round_id'] == 0:
+#             if int(uploader) == int(player['uid']):
+#                 profile.uploads = 1
 
-            if match['winning_team'] == -1 or player['team'] <= 0:
-                profile.unfinished = 1
-            elif match['winning_team'] == 0:
-                profile.draws = 1
-            elif match['winning_team'] == player['team']:
-                profile.wins = 1
-            else:
-                profile.losses = 1
+#             if match['winning_team'] == -1 or player['team'] <= 0:
+#                 profile.unfinished = 1
+#             elif match['winning_team'] == 0:
+#                 profile.draws = 1
+#             elif match['winning_team'] == player['team']:
+#                 profile.wins = 1
+#             else:
+#                 profile.losses = 1
 
-        if round['winning_team'] == -1 or player['team'] <= 0:
-            profile.round_unfinished = 1
-        elif round['winning_team'] == 0:
-            profile.round_draws = 1
-        elif round['winning_team'] == player['team']:
-            profile.round_wins = 1
-        else:
-            profile.round_losses = 1
+#         if round['winning_team'] == -1 or player['team'] <= 0:
+#             profile.round_unfinished = 1
+#         elif round['winning_team'] == 0:
+#             profile.round_draws = 1
+#         elif round['winning_team'] == player['team']:
+#             profile.round_wins = 1
+#         else:
+#             profile.round_losses = 1
 
-        player_profiles[player['uid']] = profile
+#         player_profiles[player['uid']] = profile
 
 
 # def queue_player_profiles():
@@ -313,46 +282,28 @@ def build_player_profile(match, round, player, uploader, player_profiles):
 #     return
 
 
-def upload_build(batch, build):
-    pk_value = 'BUILD#' + str(build['build_hash'])
-    sk_value = 'POWER_SCORE#' + str(build['power_score'])
+# def upload_build(build):
+#     pk_value = 'BUILD#' + str(build['build_hash'])
+#     sk_value = 'POWER_SCORE#' + str(build['power_score'])
 
-    existing_build = table.get_item(
-        Key={'pk': pk_value, 'sk': sk_value}, ConsistentRead=False)
-    existing_parts = existing_build.get('Item', {}).get('parts', [])
-    new_parts = build['parts']
+#     existing_build = table.get_item(
+#         Key={'pk': pk_value, 'sk': sk_value}, ConsistentRead=False)
+#     existing_parts = existing_build.get('Item', {}).get('parts', [])
+#     new_parts = build['parts']
 
-    combined_parts = list(set(existing_parts) | set(new_parts))
+#     combined_parts = list(set(existing_parts) | set(new_parts))
 
-    item = {
-        'pk': 'BUILD#' + str(build['build_hash']),
-        'sk': 'POWER_SCORE#' + str(build['power_score']),
-        'parts': combined_parts
-    }
-    batch.put_item(item)
-
-
-def upload_upload_record(batch, match, uploader):
-    item = {
-        'pk': f'USER#{uploader}',
-        'sk': f'UPLOAD#{match["match_id"]}',
-    }
-    batch.put_item(item)
+#     item = {
+#         'pk': 'BUILD#' + str(build['build_hash']),
+#         'sk': 'POWER_SCORE#' + str(build['power_score']),
+#         'parts': combined_parts
+#     }
+#     batch.put_item(item)
 
 
-def replace_float(obj):
-    if isinstance(obj, list):
-        for i in range(len(obj)):
-            obj[i] = replace_float(obj[i])
-        return obj
-    elif isinstance(obj, dict):
-        for k in obj.keys():
-            obj[k] = replace_float(obj[k])
-        return obj
-    elif isinstance(obj, float):
-        if obj % 1 == 0:
-            return int(obj)
-        else:
-            return Decimal(str(obj))
-    else:
-        return obj
+# def upload_upload_record(batch, match, uploader):
+#     item = {
+#         'pk': f'USER#{uploader}',
+#         'sk': f'UPLOAD#{match["match_id"]}',
+#     }
+#     batch.put_item(item)
