@@ -1,8 +1,5 @@
-import os
 from lib.database import *
-from sqlalchemy import select, create_engine, Table, MetaData, and_
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import select, and_
 
 
 def upload_build_list(db, build_list):

@@ -1,8 +1,7 @@
 import os
 from lib.database import *
-from sqlalchemy import select, create_engine, Table, MetaData, and_
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import select
+from rounds import upload_rounds
 from uploads import get_uploads_by_user, upload_upload_record
 
 
@@ -34,3 +33,5 @@ def upload_match_list(db, metadata, uploader, match_list):
                     host_name=match['host_name']
                 )
                 db.execute(stmt)
+
+                upload_rounds(db, match)
