@@ -7,8 +7,9 @@ from decimal import *
 from lib.response import *
 from models.builds import *
 from models.matches import *
+from models.uploads import *
 from lib.database import *
-from .profile import find_uploads_for_user_id
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def upload_matches(data, context):
@@ -20,10 +21,12 @@ def upload_matches(data, context):
     db = Database()
 
     uploader = int(uploader)
+    build_list = body.get('build_list', [])
+    match_list = body.get('match_list', [])
 
     try:
-        upload_build_list(db, body.get('build_list', []))
-        upload_match_list(db, uploader, body.get('match_list', []))
+        upload_build_list(db, build_list)
+        upload_match_list(db, uploader, match_list)
 
         db.commit()
     except SQLAlchemyError as e:
@@ -32,4 +35,4 @@ def upload_matches(data, context):
     finally:
         db.close()
 
-    return build_response(200, "Data fetched successfully", json.dumps(find_uploads_for_user_id(uploader)))
+    return build_response(200, "Data fetched successfully", json.dumps(get_uploads_by_user(uploader)))
