@@ -2,7 +2,7 @@ from lib.database import *
 from sqlalchemy import select
 
 from lib.database import *
-from weapons import *
+from .weapons import *
 from sqlalchemy import select, and_, exists
 
 

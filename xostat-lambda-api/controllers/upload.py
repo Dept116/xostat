@@ -28,14 +28,12 @@ def upload_matches(data, context):
     if uploader is None:
         return build_response(400, "Missing uploader_uid, upload aborted")
 
+    db = Database()
+
     build_list = body.get('build_list', [])
     match_list = body.get('match_list', [])
-    uploaded_matches = []
 
     try:
-        db = Database()
-        uploaded_matches = get_uploads_by_user(uploader)['uploaded_matches']
-
         uploader = int(uploader)
 
         upload_build_list(db, build_list)
@@ -46,6 +44,7 @@ def upload_matches(data, context):
         db.rollback()
         return build_response(500, f"Internal Server Error: {str(e)}")
     except Exception as e:
+        print(f"An unexpected error occurred: {str(e)}")
         db.rollback()
         return build_response(500, f"An unexpected error occurred: {str(e)}")
     finally:
@@ -55,10 +54,10 @@ def upload_matches(data, context):
 
 
 def process_match_list(db, uploader, match_list):
-    uploaded_matches = set(get_uploads_by_user(uploader)['uploaded_matches'])
+    uploaded_matches = set(get_uploads_by_user(db, uploader))
     for match in match_list:
         if match['match_id'] not in uploaded_matches:
-            upload_upload_record(match, uploader)
+            upload_upload_record(db, match, uploader)
             upload_match(db, match)
             for round in match['rounds']:
                 round_id = upload_round(db, match, round)

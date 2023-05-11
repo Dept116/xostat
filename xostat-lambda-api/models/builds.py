@@ -14,31 +14,32 @@ def upload_build(db, build):
 
     builds = db.get_table('builds')
 
-    stmt = select(builds).where(and_(builds.c.build_hash ==
-                                     build_hash, builds.c.power_score == power_score))
+    stmt = select(builds).where(and_(builds.c.build_hash == build_hash,
+                                     builds.c.power_score == power_score))
     result = db.execute(stmt).fetchone()
 
     if result is None:
         stmt = builds.insert().values(build_hash=build_hash, power_score=power_score)
         result = db.execute(stmt)
 
-        stmt = select(builds).where(and_(builds.c.build_hash ==
-                                         build_hash, builds.c.power_score == power_score))
+        stmt = select(builds).where(and_(builds.c.build_hash == build_hash,
+                                         builds.c.power_score == power_score))
         result = db.execute(stmt).fetchone()
 
-    build_id = result['build_id']
+    build_id = result[0]
+
     upload_parts(db, build_id, parts)
 
 
 def upload_parts(db, build_id, parts):
     build_parts = db.get_table('build_parts')
 
-    stmt = select(build_parts.c.parts).where(
+    stmt = select(build_parts.c.part).where(
         build_parts.c.build_id == build_id)
-    existing_parts = [row['parts'] for row in db.execute(stmt)]
 
-    new_parts = set(parts) - set(existing_parts)
+    existing_parts = db.execute(stmt).fetchall()
 
-    for part in new_parts:
-        stmt = build_parts.insert().values(build_id=build_id, parts=part)
-        db.execute(stmt)
+    for part in parts:
+        if part not in (r[0] for r in existing_parts):
+            stmt = build_parts.insert().values(build_id=build_id, part=part)
+            db.execute(stmt)

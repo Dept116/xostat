@@ -1,5 +1,5 @@
 from lib.database import *
-from medals import *
+from .medals import *
 from sqlalchemy import select, and_, exists
 
 
