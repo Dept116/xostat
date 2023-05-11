@@ -20,7 +20,7 @@ custom:
     host: localhost
     port: 3000
   dev:
-    DB_HOST: host.docker.internal
+    DB_HOST: localhost
     DB_PORT: 5432
     DB_NAME: postgres
     DB_USER: dev

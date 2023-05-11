@@ -114,12 +114,5 @@ Pull postgres and run using the following commands in PowerShell to emulate a db
 
 ```bash
 docker pull postgres
-docker run --name postgres \
-  -e POSTGRES_USER=dev \
-  -e POSTGRES_PASSWORD=devpass1 \
-  -e POSTGRES_DB=xodat \
-  -p 5432:5432 \
-  --cpus=2 \
-  --memory=1g \
-  -d postgres
+docker run --name postgres -e POSTGRES_USER=dev -e POSTGRES_PASSWORD=devpass1 -e POSTGRES_DB=xodat -p 5432:5432 --cpus=2 --memory=1g -d postgres
 ```

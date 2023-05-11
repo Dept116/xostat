@@ -9,19 +9,14 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 def get_upload_records(event, context):
-    print("got here")
-
     db = Database()
-
-    print("got here")
 
     try:
         user_id = event['pathParameters']['id']
         if not user_id.isdigit():
             return build_response(400, "'id' must be a number.")
 
-        upload_records = get_uploads_by_user(db, user_id)
-        return build_response(200, "Data fetched successfully", json.dumps(upload_records))
+        return build_upload_response(get_uploads_by_user(db, user_id))
 
     except KeyError:
         return build_response(400, "'id' must be provided in the path parameters.")

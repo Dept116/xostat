@@ -51,7 +51,7 @@ def upload_matches(data, context):
     finally:
         db.close()
 
-    return build_response(200, "Matches uploaded successfully", json.dumps(get_uploads_by_user(uploader)))
+    return build_upload_response(get_uploads_by_user(uploader))
 
 
 def process_match_list(db, uploader, match_list):
