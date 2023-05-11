@@ -1,0 +1,11 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass1
+      POSTGRES_DB: xodat
+    ports:
+      - "5432:5432"

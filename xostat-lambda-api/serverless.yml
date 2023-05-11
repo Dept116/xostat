@@ -8,17 +8,23 @@ provider:
   region: us-east-2
   stage: ${opt:stage, 'dev'}
   environment:
-    DB_HOST: your_rds_host
-    DB_PORT: 5432
-    DB_NAME: your_database_name
-    DB_USER: your_database_user
-    DB_PASSWORD: your_database_password
+    DB_HOST: ${self:custom.${self:provider.stage}.DB_HOST}
+    DB_PORT: ${self:custom.${self:provider.stage}.DB_PORT}
+    DB_NAME: ${self:custom.${self:provider.stage}.DB_NAME}
+    DB_USER: ${self:custom.${self:provider.stage}.DB_USER}
+    DB_PASSWORD: ${self:custom.${self:provider.stage}.DB_PASSWORD}
 plugins:
   - serverless-offline
 custom:
   serverless-offline:
     host: localhost
     port: 3000
+  dev:
+    DB_HOST: host.docker.internal
+    DB_PORT: 5432
+    DB_NAME: postgres
+    DB_USER: dev
+    DB_PASSWORD: devpass1
 functions:
   uploadMatch:
     handler: controllers/upload.upload_matches
@@ -37,31 +43,9 @@ functions:
                 name: UploadModel
                 description: "Validation for uploading match"
   getUploadRecords:
-    handler: controllers/profile.get_upload_records
+    handler: controllers/player.get_upload_records
     events:
       - http:
           path: /player/{id}
-          method: get
-          cors: true
-  getUserProfile:
-    handler: controllers/profile.get_user_totals
-    events:
-      - http:
-          path: /profile/{id}
-          method: get
-          cors: true
-  getUserTotals:
-    handler: controllers/profile.get_user_totals_from_history
-    events:
-      - http:
-          path: /player_totals/{id}
-          method: get
-          cors: true
-  updateStaticElements:
-    handler: controllers/load_static_assets.update_item_definitions
-    # timeout: 600
-    events:
-      - http:
-          path: /static
           method: get
           cors: true
