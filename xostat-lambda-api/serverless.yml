@@ -19,6 +19,12 @@ custom:
   serverless-offline:
     host: localhost
     port: 3000
+  prod:
+    DB_HOST: ${ssm:/path/to/${self:provider.stage}/db/host~true}
+    DB_PORT: 5432
+    DB_NAME: xodat
+    DB_USER: ${ssm:/path/to/${self:provider.stage}/db/user~true}
+    DB_PASSWORD: ${ssm:/path/to/${self:provider.stage}/db/password~true}
   dev:
     DB_HOST: localhost
     DB_PORT: 5432
