@@ -1,23 +1,26 @@
 import os
 from lib.database import *
-from sqlalchemy import select
+from sqlalchemy import select, exists
 
 
 def upload_match(db, match):
     matches = db.get_table('matches')
 
-    stmt = select(matches).where(matches.c.id == match['id'])
-    result = db.execute(stmt).fetchone()
+    print(f"uploading match:{match['match_id']}")
 
-    if result is None:
+    stmt = select(exists().where(matches.c.id == match['match_id']))
+    result = db.execute(stmt).scalar()
+
+    if not result:
         stmt = matches.insert().values(
-            id=match['id'],
-            classification=match['classification'],
-            start_at=match['start_at'],
-            end_at=match['end_at'],
+            id=match['match_id'],
+            type=match['match_type'],
+            classification=match['match_classification'],
+            start_at=match['match_start'],
+            end_at=match['match_end'],
             map_name=match['map_name'],
             winning_team=match['winning_team'],
-            win_condition=match['win_condition'],
+            win_condition=match['win_conidtion'],
             client_version=match['client_version'],
             co_driver_version=match['co_driver_version'],
             host_name=match['host_name']

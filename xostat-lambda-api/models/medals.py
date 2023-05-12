@@ -15,10 +15,12 @@ def find_medal_id(db, medal):
             medals.c.medal == medal)
         result = db.execute(stmt).fetchone()
 
-    return result['id']
+    return result[0]
 
 
 def upload_medal_type(db, medals, medal):
+    print(f"uploading medal_type:{medal}")
+
     stmt = medals.insert().values(
         medal=medal
     )

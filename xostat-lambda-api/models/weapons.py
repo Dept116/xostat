@@ -15,10 +15,11 @@ def find_weapon_id(db, weapon):
             weapons.c.weapon == weapon)
         result = db.execute(stmt).fetchone()
 
-    return result['id']
+    return result[0]
 
 
 def upload_weapon(db, weapons, weapon):
+    print(f"uploading weapon:{weapon}")
     stmt = weapons.insert().values(
         weapon=weapon
     )

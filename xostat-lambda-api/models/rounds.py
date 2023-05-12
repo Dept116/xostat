@@ -13,6 +13,7 @@ def upload_round(db, match, round):
     result = db.execute(stmt).fetchone()
 
     if result is None:
+        print(f"uploading round:{match_id}:{round_number}")
         stmt = rounds.insert().values(
             match_id=match_id,
             round_number=round_number,
@@ -26,4 +27,4 @@ def upload_round(db, match, round):
             and_(rounds.c.match_id == match_id, rounds.c.round_number == round_number))
         result = db.execute(stmt).fetchone()
 
-    return result['id']
+    return result[0]

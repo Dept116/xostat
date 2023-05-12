@@ -50,20 +50,23 @@ def upload_matches(data, context):
     finally:
         db.close()
 
-    return build_upload_response(get_uploads_by_user(uploader))
+    return build_upload_response(get_uploads_by_user(db, uploader))
 
 
 def process_match_list(db, uploader, match_list):
+    print("process_match_list")
     uploaded_matches = set(get_uploads_by_user(db, uploader))
     for match in match_list:
         if match['match_id'] not in uploaded_matches:
+            print("upload_upload_record")
             upload_upload_record(db, match, uploader)
+            print("upload_match")
             upload_match(db, match)
             for round in match['rounds']:
                 round_id = upload_round(db, match, round)
                 for player in round['players']:
                     player_round_id = upload_player_rounds(
-                        db, match, round, round_id, player)
+                        db, match, round_id, player)
                     upload_player_round_scores(
                         db, player_round_id, player['scores'])
                     upload_player_round_medals(

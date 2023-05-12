@@ -11,13 +11,15 @@ def upload_player_round_damages(db, user_id, player_round_id, damages):
 
     for damage in damages:
         if damage['uid'] == user_id:
-            weapon_id = find_weapon_id(damage['weapon'])
+            weapon_id = find_weapon_id(db, damage['weapon'])
 
             stmt = select(exists().where(and_(player_round_damages.c.player_round_id == player_round_id,
                                               player_round_damages.c.weapon_id == weapon_id)))
             result = db.execute(stmt).scalar()
 
             if not result:
+                print(f"uploading round_damages:{weapon_id}")
+
                 stmt = player_round_damages.insert().values(
                     player_round_id=player_round_id,
                     weapon_id=weapon_id,

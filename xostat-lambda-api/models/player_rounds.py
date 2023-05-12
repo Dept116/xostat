@@ -2,7 +2,7 @@ from lib.database import *
 from sqlalchemy import select, and_
 
 
-def upload_player_rounds(db, match, round, round_id, player):
+def upload_player_rounds(db, match, round_id, player):
     player_rounds = db.get_table('player_rounds')
 
     match_id = match['match_id']
@@ -13,6 +13,7 @@ def upload_player_rounds(db, match, round, round_id, player):
     result = db.execute(stmt).fetchone()
 
     if result is None:
+        print(f"uploading player_rounds:{user_id}")
         stmt = player_rounds.insert().values(
             match_id=match_id,
             round_id=round_id,
@@ -29,8 +30,7 @@ def upload_player_rounds(db, match, round, round_id, player):
             deaths=player['deaths'],
             score=player['score'],
             damage=player['damage'],
-            damage_received=player['damage_received'],
-            score_id=player['score_id']
+            damage_received=player['damage_taken']
         )
         db.execute(stmt)
 
@@ -38,4 +38,4 @@ def upload_player_rounds(db, match, round, round_id, player):
             and_(player_rounds.c.match_id == match_id, player_rounds.c.round_id == round_id, player_rounds.c.user_id == user_id))
         result = db.execute(stmt).fetchone()
 
-    return result['id']
+    return result[0]
