@@ -108,23 +108,11 @@ To run locally on port 3000 run the following command:
 serverless offline
 ```
 
-### Local DynamoDB
+### Local PostgreSQL
 
-Pull amazon/dynamodb-local and run using the following commands
-
-```bash
-docker pull amazon/dynamodb-local
-docker run -p 8000:8000 amazon/dynamodb-local
-```
-
-Configure table with:
+Pull postgres and run using the following commands in PowerShell to emulate a db.tg4.micro
 
 ```bash
-python .\local-config\create-local-dynamodb-table.py
-```
-
-Confirm tables exist with:
-
-```bash
-aws dynamodb list-tables --endpoint-url http://localhost:8000
+docker pull postgres
+docker run --name postgres -e POSTGRES_USER=dev -e POSTGRES_PASSWORD=devpass1 -e POSTGRES_DB=xodat -p 5432:5432 --cpus=2 --memory=1g -d postgres
 ```
