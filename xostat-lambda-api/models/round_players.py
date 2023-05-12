@@ -2,26 +2,22 @@ from lib.database import *
 from sqlalchemy import select, and_
 
 
-def upload_player_rounds(db, match, round_id, player):
-    player_rounds = db.get_table('player_rounds')
+def upload_round_players(db, match, round_id, player):
+    round_players = db.get_table('round_players')
 
     match_id = match['match_id']
     user_id = player['uid']
 
-    stmt = select(player_rounds.c.id).where(
-        and_(player_rounds.c.match_id == match_id, player_rounds.c.round_id == round_id, player_rounds.c.user_id == user_id))
+    stmt = select(round_players.c.id).where(
+        and_(round_players.c.match_id == match_id, round_players.c.round_id == round_id, round_players.c.user_id == user_id))
     result = db.execute(stmt).fetchone()
 
     if result is None:
-        print(f"uploading player_rounds:{user_id}")
-        stmt = player_rounds.insert().values(
+        print(f"uploading round_players:{user_id}")
+        stmt = round_players.insert().values(
             match_id=match_id,
             round_id=round_id,
             user_id=user_id,
-            bot=player['bot'],
-            nickname=player['nickname'],
-            team=player['team'],
-            group_id=player['group_id'],
             build_hash=player['build_hash'],
             power_score=player['power_score'],
             kills=player['kills'],
@@ -33,9 +29,10 @@ def upload_player_rounds(db, match, round_id, player):
             damage_received=player['damage_taken']
         )
         db.execute(stmt)
+        print("done")
 
-        stmt = select(player_rounds.c.id).where(
-            and_(player_rounds.c.match_id == match_id, player_rounds.c.round_id == round_id, player_rounds.c.user_id == user_id))
+        stmt = select(round_players.c.id).where(
+            and_(round_players.c.match_id == match_id, round_players.c.round_id == round_id, round_players.c.user_id == user_id))
         result = db.execute(stmt).fetchone()
 
     return result[0]
