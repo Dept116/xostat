@@ -2,7 +2,7 @@ from lib.database import *
 from sqlalchemy import select, and_
 
 
-def upload_match_players(db, match, match_id, player):
+def upload_match_players(db, match, player):
     match_players = db.get_table('match_players')
 
     match_id = match['match_id']

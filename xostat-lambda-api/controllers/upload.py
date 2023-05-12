@@ -8,6 +8,8 @@ from lib.response import *
 from models.uploads import *
 from models.builds import *
 from models.matches import *
+from models.match_players import *
+from models.match_player_resources import *
 from models.rounds import *
 from models.round_players import *
 from models.round_player_scores import *
@@ -36,8 +38,6 @@ def upload_matches(data, context):
     match_list = body.get('match_list', [])
 
     try:
-        uploader = int(uploader)
-
         upload_build_list(db, build_list)
         process_match_list(db, uploader, match_list)
 
@@ -60,13 +60,17 @@ def process_match_list(db, uploader, match_list):
     uploaded_matches = set(get_uploads_by_user(db, uploader))
     for match in match_list:
         if match['match_id'] not in uploaded_matches:
-            print("upload_upload_record")
+            uploader_match_player_id = None
             upload_upload_record(db, match, uploader)
-            print("upload_match")
             upload_match(db, match)
             for round in match['rounds']:
                 round_id = upload_round(db, match, round)
                 for player in round['players']:
+                    if round['round_id'] == 0:
+                        match_player_id = upload_match_players(
+                            db, match, player)
+                        if player['uid'] == uploader:
+                            uploader_match_player_id = match_player_id
                     round_player_id = upload_round_players(
                         db, match, round_id, player)
                     upload_round_player_scores(
@@ -75,3 +79,6 @@ def process_match_list(db, uploader, match_list):
                         db, round_player_id, player['medals'])
                     upload_round_player_damages(
                         db, player['uid'], round_player_id, round['damage_records'])
+            if uploader_match_player_id is not None:
+                upload_match_player_resources(
+                    db, uploader_match_player_id, match['resources'])
