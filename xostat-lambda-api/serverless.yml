@@ -20,11 +20,11 @@ custom:
     host: localhost
     port: 3000
   prod:
-    DB_HOST: ${ssm:/path/to/${self:provider.stage}/db/host~true}
-    DB_PORT: 5432
-    DB_NAME: xodat
-    DB_USER: ${ssm:/path/to/${self:provider.stage}/db/user~true}
-    DB_PASSWORD: ${ssm:/path/to/${self:provider.stage}/db/password~true}
+    DB_HOST: ${ssm:/rds/prod/host}
+    DB_PORT: ${ssm:/rds/prod/port}
+    DB_NAME: ${ssm:/rds/prod/dbname}
+    DB_USER: ${ssm:/rds/prod/username}
+    DB_PASSWORD: ${ssm:/rds/prod/password}
   dev:
     DB_HOST: localhost
     DB_PORT: 5432
