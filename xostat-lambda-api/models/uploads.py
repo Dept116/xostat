@@ -27,17 +27,12 @@ def upload_upload_record(db, match, uploader_user_id):
 
 
 def get_uploads_by_user(db, uploader_user_id):
-
-    print(f"get_uploads_by_user:{uploader_user_id}")
     uploads = db.get_table('uploads')
-    print("Got table")
 
     stmt = select(uploads.c.match_id).where(
         uploads.c.uploader_user_id == uploader_user_id)
 
     results = db.execute(stmt).fetchall()
-
-    print("Got results")
 
     match_ids = [result[0] for result in results]
 
