@@ -7,6 +7,13 @@ provider:
   runtime: python3.8
   region: us-east-2
   stage: ${opt:stage, 'dev'}
+  vpc:
+    securityGroupIds:
+      - ${ssm:/vpc/vpcGroupId}
+    subnetIds:
+      - ${ssm:/vpc/us-east-2a}
+      - ${ssm:/vpc/us-east-2b}
+      - ${ssm:/vpc/us-east-2c}
   environment:
     DB_HOST: ${self:custom.${self:provider.stage}.DB_HOST}
     DB_PORT: ${self:custom.${self:provider.stage}.DB_PORT}
@@ -36,7 +43,7 @@ functions:
     handler: controllers/upload.upload_matches
     description: upload a list of matches to xodat
     memorySize: 2048
-    timeout: 90
+    timeout: 30
     events:
       - http:
           path: /upload
@@ -48,10 +55,15 @@ functions:
                 schema: ${file(schema/uploadSchema.json)}
                 name: UploadModel
                 description: "Validation for uploading match"
+    layers:
+      - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6
   getUploadRecords:
     handler: controllers/player.get_upload_records
+    timeout: 30
     events:
       - http:
           path: /player/{id}
           method: get
           cors: true
+    layers:
+      - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6

@@ -15,6 +15,8 @@ def get_upload_records(event, context):
         user_id = event['pathParameters']['id']
         if not user_id.isdigit():
             return build_response(400, "'id' must be a number.")
+        
+        print(f"get_upload_records:{user_id}")
 
         return build_upload_response(get_uploads_by_user(db, user_id))
 

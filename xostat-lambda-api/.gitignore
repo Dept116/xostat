@@ -22,6 +22,8 @@ var/
 .installed.cfg
 *.egg
 s_*py
+lambda_layers/sqlalchemy/python/*
+lambda_layers/sqlalchemy.zip
 
 # Serverless directories
 .serverless
