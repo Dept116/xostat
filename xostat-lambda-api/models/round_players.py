@@ -14,7 +14,7 @@ def upload_round_players(db, match, round_id, player):
 
     if result is None:
         print(f"uploading round_players:{user_id}")
-        stmt = round_players.insert().values(
+        stmt = round_players.insert().returning(round_players.c.id).values(
             match_id=match_id,
             round_id=round_id,
             user_id=user_id,
@@ -28,11 +28,7 @@ def upload_round_players(db, match, round_id, player):
             damage=player['damage'],
             damage_received=player['damage_taken']
         )
-        db.execute(stmt)
-        print("done")
-
-        stmt = select(round_players.c.id).where(
-            and_(round_players.c.match_id == match_id, round_players.c.round_id == round_id, round_players.c.user_id == user_id))
         result = db.execute(stmt).fetchone()
+        print("done")
 
     return result[0]

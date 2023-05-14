@@ -14,7 +14,7 @@ def upload_match_players(db, match, player):
 
     if result is None:
         print(f"uploading match_players:{user_id}")
-        stmt = match_players.insert().values(
+        stmt = match_players.insert().returning(match_players.c.id).values(
             match_id=match_id,
             user_id=user_id,
             bot=player['bot'],
@@ -22,11 +22,6 @@ def upload_match_players(db, match, player):
             team=player['team'],
             group_id=player['group_id']
         )
-        db.execute(stmt)
-        print("done")
-
-        stmt = select(match_players.c.id).where(
-            and_(match_players.c.match_id == match_id, match_players.c.match_id == match_id, match_players.c.user_id == user_id))
         result = db.execute(stmt).fetchone()
 
     return result[0]

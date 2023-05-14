@@ -9,18 +9,14 @@ def find_score_type_id(db, score_type):
     result = db.execute(stmt).fetchone()
 
     if result is None:
-        upload_score_type(db, scores, score_type)
-
-        stmt = select(scores.c.id).where(
-            scores.c.score_type == score_type)
-        result = db.execute(stmt).fetchone()
+        result = upload_score_type(db, scores, score_type)
 
     return result[0]
 
 
 def upload_score_type(db, scores, score_type):
     print(f"uploading score_type:{score_type}")
-    stmt = scores.insert().values(
+    stmt = scores.insert().returning(scores.c.id).values(
         score_type=score_type
     )
-    db.execute(stmt)
+    return db.execute(stmt).fetchone()

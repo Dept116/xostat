@@ -9,18 +9,14 @@ def find_resource_id(db, resource):
     result = db.execute(stmt).fetchone()
 
     if result is None:
-        upload_resource(db, resources, resource)
-
-        stmt = select(resources.c.id).where(
-            resources.c.resource == resource)
-        result = db.execute(stmt).fetchone()
+        result = upload_resource(db, resources, resource)
 
     return result[0]
 
 
 def upload_resource(db, resources, resource):
     print(f"uploading resource:{resource}")
-    stmt = resources.insert().values(
+    stmt = resources.insert().returning(resources.c.id).values(
         resource=resource
     )
-    db.execute(stmt)
+    return db.execute(stmt).fetchone()

@@ -9,11 +9,7 @@ def find_medal_id(db, medal):
     result = db.execute(stmt).fetchone()
 
     if result is None:
-        upload_medal_type(db, medals, medal)
-
-        stmt = select(medals.c.id).where(
-            medals.c.medal == medal)
-        result = db.execute(stmt).fetchone()
+        result = upload_medal_type(db, medals, medal)
 
     return result[0]
 
@@ -21,7 +17,7 @@ def find_medal_id(db, medal):
 def upload_medal_type(db, medals, medal):
     print(f"uploading medal_type:{medal}")
 
-    stmt = medals.insert().values(
+    stmt = medals.insert().returning(medals.c.id).values(
         medal=medal
     )
-    db.execute(stmt)
+    return db.execute(stmt).fetchone()

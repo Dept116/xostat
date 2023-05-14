@@ -21,11 +21,7 @@ def upload_build(db, build):
 
     if result is None:
         print(f"uploading build:{build_hash}:{power_score}")
-        stmt = builds.insert().values(build_hash=build_hash, power_score=power_score)
-        result = db.execute(stmt)
-
-        stmt = select(builds.c.id).where(and_(builds.c.build_hash == build_hash,
-                                              builds.c.power_score == power_score))
+        stmt = builds.insert().returning(builds.c.id).values(build_hash=build_hash, power_score=power_score)
         result = db.execute(stmt).fetchone()
 
     build_id = result[0]
