@@ -1,10 +1,10 @@
-.wrapper{
+.wrapper {
   align-items: stretch;
   display: flex;
   width: 100%;
 }
 
-body[data-layout=boxed] {
+body[data-layout="boxed"] {
   .wrapper {
     max-width: 1800px;
     margin: 0 auto;

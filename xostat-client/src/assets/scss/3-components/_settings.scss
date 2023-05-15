@@ -18,15 +18,15 @@ $settings-width: 320px;
   right: 0;
   width: 54px;
   height: 150px;
-  padding: $spacer*0.5;
+  padding: $spacer * 0.5;
   border-top-left-radius: $border-radius;
   border-bottom-left-radius: $border-radius;
-  box-shadow: -5px 0px 10px 0px rgba(0,0,0,0.1);
-  transition: all .1s ease-in-out;
+  box-shadow: -5px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  transition: all 0.1s ease-in-out;
   cursor: pointer;
 }
 
-body[data-theme=dark] {
+body[data-theme="dark"] {
   .settings-toggle {
     background: $gray-100;
   }
@@ -41,7 +41,7 @@ body[data-theme=dark] {
   writing-mode: vertical-rl;
   color: $black;
   background: darken($gray-100, 2);
-  padding: $spacer*0.5;
+  padding: $spacer * 0.5;
   border-radius: $border-radius;
   height: 34px;
 
@@ -49,10 +49,10 @@ body[data-theme=dark] {
     background: darken($gray-100, 5);
     color: $black;
   }
-  
+
   &:first-child {
     color: darken($primary, 10);
-    margin-bottom: $spacer*0.5;
+    margin-bottom: $spacer * 0.5;
   }
 
   svg {
@@ -60,7 +60,7 @@ body[data-theme=dark] {
   }
 }
 
-body[data-theme=dark] {
+body[data-theme="dark"] {
   .settings-toggle-option {
     background: $gray-200;
 
@@ -93,7 +93,7 @@ body[data-theme=dark] {
   top: 0;
   bottom: 0;
   right: -$settings-width;
-  transition: right .2s ease-in-out;
+  transition: right 0.2s ease-in-out;
 
   .settings.open &:before {
     content: "";
@@ -122,8 +122,8 @@ body[data-theme=dark] {
 }
 
 .settings-title {
-  padding: $spacer*1.35 $spacer*1.5;
-  font-size: .875rem;
+  padding: $spacer * 1.35 $spacer * 1.5;
+  font-size: 0.875rem;
   background: $white;
   color: $black;
   border-bottom: 1px solid $gray-200;
@@ -135,12 +135,12 @@ body[data-theme=dark] {
 }
 
 .settings-body {
-  padding: $spacer $spacer*1.5;
+  padding: $spacer $spacer * 1.5;
   flex: 1;
 }
 
 .settings-footer {
-  padding: $spacer $spacer*1.5;
+  padding: $spacer $spacer * 1.5;
 }
 
 .settings-scheme:after {
@@ -202,15 +202,23 @@ body[data-theme=dark] {
 }
 
 .settings-scheme-theme-default {
-  background-image: linear-gradient(-45deg, #222E3C 50%, darken($static-gray-100, 2%) 50%);
+  background-image: linear-gradient(
+    -45deg,
+    #222e3c 50%,
+    darken($static-gray-100, 2%) 50%
+  );
 }
 
 .settings-scheme-theme-colored {
-  background-image: linear-gradient(-45deg, $primary 50%, darken($static-gray-100, 2%) 50%);
+  background-image: linear-gradient(
+    -45deg,
+    $primary 50%,
+    darken($static-gray-100, 2%) 50%
+  );
 }
 
 .settings-scheme-theme-dark {
-  background: #222E3C;
+  background: #222e3c;
 }
 
 .settings-scheme-theme-light {

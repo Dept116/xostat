@@ -1,4 +1,4 @@
-body[data-sidebar-behavior=compact] {
+body[data-sidebar-behavior="compact"] {
   // Hide elements
   .sidebar-header,
   .sidebar-brand span,
@@ -57,7 +57,7 @@ body[data-sidebar-behavior=compact] {
 
     // Make sure hover state is not lost
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       width: 16px;
@@ -101,9 +101,11 @@ body[data-sidebar-behavior=compact] {
   .sidebar .sidebar-dropdown [data-bs-toggle="collapse"]:before {
     top: 0.9rem;
   }
-  
+
   .sidebar .sidebar-dropdown [aria-expanded="true"]:before,
-  .sidebar .sidebar-dropdown [data-bs-toggle="collapse"]:not(.collapsed):before {
+  .sidebar
+    .sidebar-dropdown
+    [data-bs-toggle="collapse"]:not(.collapsed):before {
     top: 1.1rem;
   }
 
@@ -114,9 +116,9 @@ body[data-sidebar-behavior=compact] {
 }
 
 // Collapse behavior if compact sidebar is on left side
-body[data-sidebar-behavior=compact]:not([data-sidebar-position=right]) {
+body[data-sidebar-behavior="compact"]:not([data-sidebar-position="right"]) {
   .sidebar-nav > .sidebar-item > .sidebar-dropdown {
-    left: $sidebar-compact-width + 12px;;
+    left: $sidebar-compact-width + 12px;
 
     &:before {
       left: -16px;
@@ -132,7 +134,6 @@ body[data-sidebar-behavior=compact]:not([data-sidebar-position=right]) {
     // Workaround for IE bug, more info:
     // https://stackoverflow.com/a/25850649
     @media (min-width: 1px) and (max-width: #{map-get($grid-breakpoints, 'lg') - .02px}) {
-
       // Sidebar default state (on mobile)
       margin-left: -$sidebar-compact-width;
 
@@ -145,7 +146,7 @@ body[data-sidebar-behavior=compact]:not([data-sidebar-position=right]) {
 }
 
 // Collapse behavior if compact sidebar is on right side
-body[data-sidebar-behavior=compact][data-sidebar-position=right] {
+body[data-sidebar-behavior="compact"][data-sidebar-position="right"] {
   .sidebar-nav > .sidebar-item > .sidebar-dropdown {
     right: $sidebar-compact-width + 12px;
 
@@ -163,7 +164,6 @@ body[data-sidebar-behavior=compact][data-sidebar-position=right] {
     // Workaround for IE bug, more info:
     // https://stackoverflow.com/a/25850649
     @media (min-width: 1px) and (max-width: #{map-get($grid-breakpoints, 'lg') - .02px}) {
-
       // Sidebar default state (on mobile)
       margin-right: -$sidebar-compact-width;
 

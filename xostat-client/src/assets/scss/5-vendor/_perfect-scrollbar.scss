@@ -12,7 +12,7 @@
 .ps__rail-x {
   display: none;
   opacity: 0;
-  transition: background-color .2s linear, opacity .2s linear;
+  transition: background-color 0.2s linear, opacity 0.2s linear;
   height: 15px;
   bottom: 0px;
   position: absolute;
@@ -21,7 +21,7 @@
 .ps__rail-y {
   display: none;
   opacity: 0;
-  transition: background-color .2s linear, opacity .2s linear;
+  transition: background-color 0.2s linear, opacity 0.2s linear;
   width: 15px;
   right: 0;
   position: absolute;
@@ -46,7 +46,7 @@
 .ps__thumb-x {
   background-color: #fff;
   border-radius: 7px;
-  transition: background-color .2s linear, height .2s ease-in-out;
+  transition: background-color 0.2s linear, height 0.2s ease-in-out;
   height: 7px;
   bottom: 2px;
   position: absolute;
@@ -55,10 +55,8 @@
 .ps__thumb-y {
   background-color: #fff;
   border-radius: 7px;
-  transition: background-color .2s linear, width .2s ease-in-out;
+  transition: background-color 0.2s linear, width 0.2s ease-in-out;
   width: 7px;
   right: 2px;
   position: absolute;
 }
-
-
