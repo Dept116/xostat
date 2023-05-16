@@ -20,8 +20,6 @@ Creating a service.
 
 ```bash
 cd ./services
-mkdir ./hello_world
-cd ./hello_world
 cargo new hello_world
 ```
 
