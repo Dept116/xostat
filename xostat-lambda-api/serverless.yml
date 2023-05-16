@@ -36,7 +36,7 @@ custom:
   dev:
     DB_HOST: localhost
     DB_PORT: 5432
-    DB_NAME: postgres
+    DB_NAME: xodat
     DB_USER: dev
     DB_PASSWORD: devpass1
 functions:

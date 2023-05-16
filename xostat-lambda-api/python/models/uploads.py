@@ -1,8 +1,6 @@
 import datetime
 from python.lib.database import *
 from sqlalchemy import select, and_, exists
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError
 
 
 def upload_upload_record(db, match, uploader_user_id):
@@ -26,21 +24,13 @@ def upload_upload_record(db, match, uploader_user_id):
 
 
 def get_uploads_by_user(db, uploader_user_id):
-    print("got here")
-
     uploads = db.get_table('uploads')
-
-    print("got here")
 
     stmt = select(uploads.c.match_id).where(
         uploads.c.uploader_user_id == uploader_user_id)
 
     results = db.execute(stmt).fetchall()
 
-    print("got here")
-
     match_ids = [result[0] for result in results]
-
-    print("got here")
 
     return match_ids
