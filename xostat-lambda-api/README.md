@@ -1,5 +1,11 @@
 ### Dependencies
 
+Install serverless
+
+```bash
+npm install -g serverless
+```
+
 Python 3.8, see python/README.md
 rust, see rust/README.md
 

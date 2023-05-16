@@ -1,0 +1,11 @@
+C:\Users\morgh\xostat\xostat\xostat-lambda-api\rust\services\hello_world\target\x86_64-unknown-linux-musl\debug\deps\mio_uds-f8cb7be2b5a1ca3c.rmeta: C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\lib.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\datagram.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\listener.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\socket.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\stream.rs
+
+C:\Users\morgh\xostat\xostat\xostat-lambda-api\rust\services\hello_world\target\x86_64-unknown-linux-musl\debug\deps\libmio_uds-f8cb7be2b5a1ca3c.rlib: C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\lib.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\datagram.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\listener.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\socket.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\stream.rs
+
+C:\Users\morgh\xostat\xostat\xostat-lambda-api\rust\services\hello_world\target\x86_64-unknown-linux-musl\debug\deps\mio_uds-f8cb7be2b5a1ca3c.d: C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\lib.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\datagram.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\listener.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\socket.rs C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\stream.rs
+
+C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\lib.rs:
+C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\datagram.rs:
+C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\listener.rs:
+C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\socket.rs:
+C:\Users\morgh\.cargo\registry\src\github.com-1ecc6299db9ec823\mio-uds-0.6.8\src\stream.rs:
