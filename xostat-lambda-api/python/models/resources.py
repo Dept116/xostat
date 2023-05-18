@@ -22,7 +22,7 @@ def find_resource_id(db, resource):
 
 def upload_resource(db, resource):
     resources = db.get_table('resources')
-    #print(f"uploading resource:{resource}")
+    print(f"uploading resource:{resource}")
     stmt = resources.insert().returning(resources.c.id).values(
         resource=resource
     )

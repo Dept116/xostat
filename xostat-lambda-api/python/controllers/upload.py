@@ -48,7 +48,7 @@ def upload_matches(data, context):
         db.rollback()
         return build_response(500, f"Internal Server Error: {str(e)}")
     except Exception as e:
-        #print(f"An unexpected error occurred: {str(e)}")
+        print(f"An unexpected error occurred: {str(e)}")
         db.rollback()
         return build_response(500, f"An unexpected error occurred: {str(e)}")
     finally:

@@ -22,7 +22,7 @@ def find_weapon_id(db, weapon):
 
 def upload_weapon(db, weapon):
     weapons = db.get_table('weapons')
-    #print(f"uploading weapon:{weapon}")
+    print(f"uploading weapon:{weapon}")
     stmt = weapons.insert().returning(weapons.c.id).values(
         weapon=weapon
     )

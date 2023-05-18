@@ -22,7 +22,7 @@ def upload_build_list(db, build_list):
         result = db.execute(stmt).fetchone()
 
         if result is None:
-            #print(f"uploading build:{build_hash}:{power_score}")
+            print(f"uploading build:{build_hash}:{power_score}")
             batch_data.append({'build_hash': build_hash, 'power_score': power_score})
         else:
             existing_builds.append(result)
@@ -45,7 +45,7 @@ def upload_parts(db, builds, parts_data):
 
         for part in parts:
             part_id = find_part_id(db, part)
-            #print(f"uploading part:{part}")
+            print(f"uploading part:{part}")
             batch_data.append({'build_id': build_id, 'part_id': part_id})
 
     if batch_data:

@@ -10,7 +10,7 @@ def queue_upload_record(db, match, uploader_user_id):
     match_id = match['match_id']
     uploaded_at = datetime.datetime.now()
 
-    #print(f"uploading upload:{match_id}")
+    print(f"uploading upload:{match_id}")
     batch_data.append({'match_id': match_id, 'uploaded_at': uploaded_at, 'uploader_user_id': uploader_user_id})
 
 def upload_upload_records(db):
