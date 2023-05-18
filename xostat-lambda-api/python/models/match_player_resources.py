@@ -1,4 +1,3 @@
-from python.lib.database import *
 from sqlalchemy import select
 
 from python.lib.database import *

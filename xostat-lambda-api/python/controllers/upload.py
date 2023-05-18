@@ -35,9 +35,9 @@ def upload_matches(data, context):
 
     try:
         upload_build_list(db, build_list)
-        process_match_list(db, uploader, match_list)
+        # process_match_list(db, uploader, match_list)
 
-        db.commit()
+        # db.commit()
     except SQLAlchemyError as e:
         db.rollback()
         return build_response(500, f"Internal Server Error: {str(e)}")

@@ -24,14 +24,13 @@ RUN apt-get update \
 WORKDIR /usr/src/$ServiceName
 
 # Cache dependencies
-COPY services/$ServiceName ./
+COPY ./services/$ServiceName ./
 RUN mkdir src \
     && echo "fn main() {}" > src/main.rs \
     && cargo build --release --target=x86_64-unknown-linux-musl \
     && rm -rf target/x86_64-unknown-linux-musl/release/.fingerprint/$ServiceName-*
 
 # Build application
-COPY services/$ServiceName . 
 RUN cargo build --release --target=x86_64-unknown-linux-musl
 
 FROM alpine:latest
