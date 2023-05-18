@@ -1,45 +1,53 @@
+from collections import defaultdict
 from python.lib.database import *
 from .parts import *
 from sqlalchemy import select, and_
-
+from sqlalchemy.dialects.postgresql import insert
 
 def upload_build_list(db, build_list):
-    for build in build_list:
-        upload_build(db, build)
-
-
-def upload_build(db, build):
-    build_hash = str(build['build_hash'])
-    power_score = int(build['power_score'])
-    parts = build['parts']
+    batch_data = []
+    new_builds = []
+    existing_builds = []
+    parts_data = defaultdict(list)
 
     builds = db.get_table('builds')
+    
+    for build in build_list:
+        build_hash = str(build['build_hash'])
+        power_score = int(build['power_score'])
+        parts = build['parts']
 
-    stmt = select(builds.c.id).where(and_(builds.c.build_hash == build_hash,
-                                     builds.c.power_score == power_score))
-    result = db.execute(stmt).fetchone()
-
-    if result is None:
-        print(f"uploading build:{build_hash}:{power_score}")
-        stmt = builds.insert().returning(builds.c.id).values(build_hash=build_hash, power_score=power_score)
+        stmt = select(builds.c.id, builds.c.build_hash, builds.c.power_score).where(and_(builds.c.build_hash == build_hash,
+                                         builds.c.power_score == power_score))
         result = db.execute(stmt).fetchone()
 
-    build_id = result[0]
+        if result is None:
+            print(f"uploading build:{build_hash}:{power_score}")
+            batch_data.append({'build_hash': build_hash, 'power_score': power_score})
+        else:
+            existing_builds.append(result)
 
-    upload_parts(db, build_id, parts)
+        parts_data[(build_hash, power_score)].extend(parts)
 
+    if batch_data:
+        stmt = builds.insert().returning(builds.c.id, builds.c.build_hash, builds.c.power_score).values(batch_data)
+        new_builds = db.execute(stmt).fetchall()
 
-def upload_parts(db, build_id, parts):
+    upload_parts(db, new_builds + existing_builds, parts_data)
+
+def upload_parts(db, builds, parts_data):
     build_parts = db.get_table('build_parts')
 
-    stmt = select(build_parts.c.part_id).where(
-        build_parts.c.build_id == build_id)
+    batch_data = []
+    for build in builds:
+        build_id, build_hash, power_score = build
+        parts = parts_data[(build_hash, power_score)]
 
-    existing_part_ids = db.execute(stmt).fetchall()
-
-    for part in parts:
-        part_id = find_part_id(db, part)
-        if part_id not in (r[0] for r in existing_part_ids):
+        for part in parts:
+            part_id = find_part_id(db, part)
             print(f"uploading part:{part}")
-            stmt = build_parts.insert().values(build_id=build_id, part_id=part_id)
-            db.execute(stmt)
+            batch_data.append({'build_id': build_id, 'part_id': part_id})
+
+    if batch_data:
+        stmt = insert(build_parts).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)

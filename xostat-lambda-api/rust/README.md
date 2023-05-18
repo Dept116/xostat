@@ -8,6 +8,18 @@ After run rustup-init from the following site:
 
 https://rustup.rs/
 
+### Configuring docker
+
+Projects need to built in a x86_64-unknown-linux-musl enviroment to be compatible with AWS lambda.
+
+```bash
+docker build -t rust-musl-builder .
+```
+
+```bash
+docker run --rm -it -v .\services\hello_world:/home/rust/src rust-musl-builder cargo build --release
+```
+
 ### Install target
 
 ```bash

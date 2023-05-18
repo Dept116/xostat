@@ -1,27 +1,17 @@
 from python.lib.database import *
-from sqlalchemy import select
-
-from python.lib.database import *
 from .resources import *
-from sqlalchemy import select, and_, exists
+from sqlalchemy.dialects.postgresql import insert
 
+batch_data = []
 
-def upload_match_player_resources(db, uploader_match_player_id, resources):
-    match_player_resources = db.get_table('match_player_resources')
-
+def queue_match_player_resources(db, uploader_match_player_id, resources):
     for resource in resources:
         resource_id = find_resource_id(db, resource['resource'])
+        batch_data.append({'match_player_id': uploader_match_player_id, 'resource_id': resource_id, 'amount': resource['amount']})
 
-        stmt = select(exists().where(and_(match_player_resources.c.match_player_id == uploader_match_player_id,
-                                          match_player_resources.c.resource_id == resource_id)))
-        result = db.execute(stmt).scalar()
+def upload_match_player_resources(db):
+    match_player_resources = db.get_table('match_player_resources')
 
-        if not result:
-            print(f"uploading match_resources:{resource_id}")
-
-            stmt = match_player_resources.insert().values(
-                match_player_id=uploader_match_player_id,
-                resource_id=resource_id,
-                amount=resource['amount']
-            )
-            db.execute(stmt)
+    if batch_data:
+        stmt = insert(match_player_resources).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)

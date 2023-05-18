@@ -1,20 +1,27 @@
 from python.lib.database import *
 from sqlalchemy import select
 
+weapons_dict = {}
 
-def find_weapon_id(db, weapon):
+def initialize_weapons_dict(db):
     weapons = db.get_table('weapons')
 
-    stmt = select(weapons.c.id).where(weapons.c.weapon == weapon)
-    result = db.execute(stmt).fetchone()
+    stmt = select(weapons.c.id, weapons.c.weapon)
+    result = db.execute(stmt).fetchall()
 
-    if result is None:
-        result = upload_weapon(db, weapons, weapon)
-
-    return result[0]
+    weapons_dict.update({row.weapon: row.id for row in result})
 
 
-def upload_weapon(db, weapons, weapon):
+def find_weapon_id(db, weapon):
+    if weapon not in weapons_dict:
+        result = upload_weapon(db, weapon)
+        weapons_dict[weapon] = result[0]
+
+    return weapons_dict[weapon]
+
+
+def upload_weapon(db, weapon):
+    weapons = db.get_table('weapons')
     print(f"uploading weapon:{weapon}")
     stmt = weapons.insert().returning(weapons.c.id).values(
         weapon=weapon

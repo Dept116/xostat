@@ -34,6 +34,12 @@ def upload_matches(data, context):
     match_list = body.get('match_list', [])
 
     try:
+        initialize_parts_dict(db)
+        initialize_weapons_dict(db)
+        initialize_medals_dict(db)
+        initialize_score_types_dict(db)
+        initialize_resources_dict(db)
+        
         upload_build_list(db, build_list)
         process_match_list(db, uploader, match_list)
 
@@ -57,7 +63,7 @@ def process_match_list(db, uploader, match_list):
     for match in match_list:
         if match['match_id'] not in uploaded_matches:
             uploader_match_player_id = None
-            upload_upload_record(db, match, uploader)
+            queue_upload_record(db, match, uploader)
             upload_match(db, match)
 
             for round in match['rounds']:
@@ -72,9 +78,15 @@ def process_match_list(db, uploader, match_list):
                             uploader_match_player_id = match_player_id
 
                     round_player_id = upload_round_players(db, match, round_id, player)
-                    upload_round_player_scores(db, round_player_id, player['scores'])
-                    upload_round_player_medals(db, round_player_id, player['medals'])
-                    upload_round_player_damages(db, player['uid'], round_player_id, round['damage_records'])
+                    queue_round_player_scores(db, round_player_id, player['scores'])
+                    queue_round_player_medals(db, round_player_id, player['medals'])
+                    queue_round_player_damages(db, player['uid'], round_player_id, round['damage_records'])
 
             if uploader_match_player_id is not None:
-                upload_match_player_resources(db, uploader_match_player_id, match['resources'])
+                queue_match_player_resources(db, uploader_match_player_id, match['resources'])
+
+    upload_upload_records(db)
+    upload_round_player_scores(db)
+    upload_round_player_medals(db)
+    upload_round_player_damages(db)
+    upload_match_player_resources(db)

@@ -1,27 +1,24 @@
 import datetime
 from python.lib.database import *
-from sqlalchemy import select, and_, exists
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert
 
+batch_data = []
 
-def upload_upload_record(db, match, uploader_user_id):
+def queue_upload_record(db, match, uploader_user_id):
     uploads = db.get_table('uploads')
     match_id = match['match_id']
-
     uploaded_at = datetime.datetime.now()
 
     print(f"uploading upload:{match_id}")
+    batch_data.append({'match_id': match_id, 'uploaded_at': uploaded_at, 'uploader_user_id': uploader_user_id})
 
-    stmt = select(exists().where(and_(uploads.c.match_id == match_id,
-                                      uploads.c.uploader_user_id == uploader_user_id)))
-    result = db.execute(stmt).scalar()
+def upload_upload_records(db):
+    uploads = db.get_table('uploads')
 
-    if not result:
-        ins = uploads.insert().values(match_id=match_id,
-                                      uploaded_at=uploaded_at,
-                                      uploader_user_id=uploader_user_id)
-
-        db.execute(ins)
-
+    if batch_data:
+        stmt = insert(uploads).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)
 
 def get_uploads_by_user(db, uploader_user_id):
     uploads = db.get_table('uploads')

@@ -29,6 +29,5 @@ def upload_round_players(db, match, round_id, player):
             damage_received=player['damage_taken']
         )
         result = db.execute(stmt).fetchone()
-        print("done")
 
     return result[0]

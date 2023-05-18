@@ -1,20 +1,27 @@
 from python.lib.database import *
 from sqlalchemy import select
 
+resources_dict = {}
 
-def find_resource_id(db, resource):
+def initialize_resources_dict(db):
     resources = db.get_table('resources')
 
-    stmt = select(resources.c.id).where(resources.c.resource == resource)
-    result = db.execute(stmt).fetchone()
+    stmt = select(resources.c.id, resources.c.resource)
+    result = db.execute(stmt).fetchall()
 
-    if result is None:
-        result = upload_resource(db, resources, resource)
-
-    return result[0]
+    resources_dict.update({row.resource: row.id for row in result})
 
 
-def upload_resource(db, resources, resource):
+def find_resource_id(db, resource):
+    if resource not in resources_dict:
+        result = upload_resource(db, resource)
+        resources_dict[resource] = result[0]
+
+    return resources_dict[resource]
+
+
+def upload_resource(db, resource):
+    resources = db.get_table('resources')
     print(f"uploading resource:{resource}")
     stmt = resources.insert().returning(resources.c.id).values(
         resource=resource
