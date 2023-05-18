@@ -1,6 +1,6 @@
 from python.lib.database import *
 from sqlalchemy import select, and_, exists
-from .scores import find_score_type_id
+from .scores import *
 
 
 def upload_round_player_scores(db, round_player_id, scores):

@@ -1,22 +1,28 @@
 from python.lib.database import *
 from sqlalchemy import select
 
+medals_dict = {}
 
-def find_medal_id(db, medal):
+def initialize_medals_dict(db):
     medals = db.get_table('medals')
 
-    stmt = select(medals.c.id).where(medals.c.medal == medal)
-    result = db.execute(stmt).fetchone()
+    stmt = select(medals.c.id, medals.c.medal)
+    result = db.execute(stmt).fetchall()
 
-    if result is None:
-        result = upload_medal_type(db, medals, medal)
-
-    return result[0]
+    medals_dict.update({row.medal: row.id for row in result})
 
 
-def upload_medal_type(db, medals, medal):
-    print(f"uploading medal_type:{medal}")
+def find_medal_id(db, medal):
+    if medal not in medals_dict:
+        result = upload_medal(db, medal)
+        medals_dict[medal] = result[0]
 
+    return medals_dict[medal]
+
+
+def upload_medal(db, medal):
+    medals = db.get_table('medals')
+    print(f"uploading medal:{medal}")
     stmt = medals.insert().returning(medals.c.id).values(
         medal=medal
     )

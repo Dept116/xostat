@@ -1,6 +1,5 @@
 from python.lib.database import *
 from sqlalchemy import select
-from collections import defaultdict
 
 parts_dict = {}
 

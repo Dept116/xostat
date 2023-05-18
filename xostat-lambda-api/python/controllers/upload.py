@@ -35,9 +35,13 @@ def upload_matches(data, context):
 
     try:
         initialize_parts_dict(db)
-
+        initialize_weapons_dict(db)
+        initialize_medals_dict(db)
+        initialize_score_types_dict(db)
+        initialize_resources_dict(db)
+        
         upload_build_list(db, build_list)
-        # process_match_list(db, uploader, match_list)
+        process_match_list(db, uploader, match_list)
 
         db.commit()
     except SQLAlchemyError as e:
