@@ -6,6 +6,8 @@ from sqlalchemy.dialects.postgresql import insert
 
 def upload_build_list(db, build_list):
     batch_data = []
+    new_builds = []
+    existing_builds = []
     parts_data = defaultdict(list)
 
     builds = db.get_table('builds')
@@ -15,28 +17,30 @@ def upload_build_list(db, build_list):
         power_score = int(build['power_score'])
         parts = build['parts']
 
-        stmt = select(builds.c.id).where(and_(builds.c.build_hash == build_hash,
+        stmt = select(builds.c.id, builds.c.build_hash, builds.c.power_score).where(and_(builds.c.build_hash == build_hash,
                                          builds.c.power_score == power_score))
         result = db.execute(stmt).fetchone()
 
         if result is None:
             print(f"uploading build:{build_hash}:{power_score}")
             batch_data.append({'build_hash': build_hash, 'power_score': power_score})
+        else:
+            existing_builds.append(result)
 
         parts_data[(build_hash, power_score)].extend(parts)
 
     if batch_data:
         stmt = builds.insert().returning(builds.c.id, builds.c.build_hash, builds.c.power_score).values(batch_data)
-        results = db.execute(stmt).fetchall()
+        new_builds = db.execute(stmt).fetchall()
 
-    upload_parts(db, results, parts_data)
+    upload_parts(db, new_builds + existing_builds, parts_data)
 
 def upload_parts(db, builds, parts_data):
     build_parts = db.get_table('build_parts')
 
     batch_data = []
-    for result in builds:
-        build_id, build_hash, power_score = result
+    for build in builds:
+        build_id, build_hash, power_score = build
         parts = parts_data[(build_hash, power_score)]
 
         for part in parts:
