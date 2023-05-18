@@ -13,7 +13,7 @@ def upload_match_players(db, match, player):
     result = db.execute(stmt).fetchone()
 
     if result is None:
-        print(f"uploading match_players:{user_id}")
+        #print(f"uploading match_players:{user_id}")
         stmt = match_players.insert().returning(match_players.c.id).values(
             match_id=match_id,
             user_id=user_id,

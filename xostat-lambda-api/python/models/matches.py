@@ -5,7 +5,7 @@ from sqlalchemy import select, exists
 def upload_match(db, match):
     matches = db.get_table('matches')
 
-    print(f"uploading match:{match['match_id']}")
+    #print(f"uploading match:{match['match_id']}")
 
     stmt = select(exists().where(matches.c.id == match['match_id']))
     result = db.execute(stmt).scalar()

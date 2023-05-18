@@ -22,7 +22,7 @@ def find_part_id(db, part):
 
 def upload_part(db, part):
     parts = db.get_table('parts')
-    print(f"uploading part:{part}")
+    #print(f"uploading part:{part}")
     stmt = parts.insert().returning(parts.c.id).values(
         part=part
     )

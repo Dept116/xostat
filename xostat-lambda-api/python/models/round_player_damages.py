@@ -1,28 +1,18 @@
 from python.lib.database import *
-from sqlalchemy import select
-
-from python.lib.database import *
 from .weapons import *
-from sqlalchemy import select, and_, exists
+from sqlalchemy.dialects.postgresql import insert
 
+batch_data = []
 
-def upload_round_player_damages(db, user_id, round_player_id, damages):
-    round_player_damages = db.get_table('round_player_damages')
-
+def queue_round_player_damages(db, user_id, round_player_id, damages):
     for damage in damages:
         if damage['uid'] == user_id:
             weapon_id = find_weapon_id(db, damage['weapon'])
+            batch_data.append({'round_player_id': round_player_id, 'weapon_id': weapon_id, 'damage': damage['damage']})
 
-            stmt = select(exists().where(and_(round_player_damages.c.round_player_id == round_player_id,
-                                              round_player_damages.c.weapon_id == weapon_id)))
-            result = db.execute(stmt).scalar()
+def upload_round_player_damages(db):
+    round_player_damages = db.get_table('round_player_damages')
 
-            if not result:
-                print(f"uploading round_damages:{weapon_id}")
-
-                stmt = round_player_damages.insert().values(
-                    round_player_id=round_player_id,
-                    weapon_id=weapon_id,
-                    damage=damage['damage']
-                )
-                db.execute(stmt)
+    if batch_data:
+        stmt = insert(round_player_damages).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)

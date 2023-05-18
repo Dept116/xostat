@@ -22,7 +22,7 @@ def find_score_type_id(db, score_type):
 
 def upload_score_type(db, score_type):
     score_types = db.get_table('scores')
-    print(f"uploading score_type:{score_type}")
+    #print(f"uploading score_type:{score_type}")
     stmt = score_types.insert().returning(score_types.c.id).values(
         score_type=score_type
     )

@@ -22,7 +22,7 @@ def find_medal_id(db, medal):
 
 def upload_medal(db, medal):
     medals = db.get_table('medals')
-    print(f"uploading medal:{medal}")
+    #print(f"uploading medal:{medal}")
     stmt = medals.insert().returning(medals.c.id).values(
         medal=medal
     )
