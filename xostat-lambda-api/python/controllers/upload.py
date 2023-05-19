@@ -63,29 +63,33 @@ def process_match_list(db, uploader, match_list):
     for match in match_list:
         if match['match_id'] not in uploaded_matches:
             uploader_match_player_id = None
-            queue_upload_record(db, match, uploader)
-            upload_match(db, match)
+            queue_upload_record(match, uploader)
+            match_id = queue_match(match)
 
             for round in match['rounds']:
-                round_id = upload_round(db, match, round)
+                round_id = queue_round(match_id, round)
 
                 for player in round['players']:
 
                     if round['round_id'] == 0:
-                        match_player_id = upload_match_players(db, match, player)
+                        match_player_id = queue_match_players(match, player)
 
                         if player['uid'] == uploader:
                             uploader_match_player_id = match_player_id
 
-                    round_player_id = upload_round_players(db, match, round_id, player)
-                    queue_round_player_scores(db, round_player_id, player['scores'])
-                    queue_round_player_medals(db, round_player_id, player['medals'])
-                    queue_round_player_damages(db, player['uid'], round_player_id, round['damage_records'])
+                    round_player_id = queue_round_players(match, round_id, player)
+                    queue_round_player_scores(round_player_id, player['scores'])
+                    queue_round_player_medals(round_player_id, player['medals'])
+                    queue_round_player_damages(player['uid'], round_player_id, round['damage_records'])
 
             if uploader_match_player_id is not None:
                 queue_match_player_resources(db, uploader_match_player_id, match['resources'])
 
     upload_upload_records(db)
+    upload_matches(db)
+    upload_rounds(db)
+    upload_match_players(db)
+    upload_round_players(db)
     upload_round_player_scores(db)
     upload_round_player_medals(db)
     upload_round_player_damages(db)

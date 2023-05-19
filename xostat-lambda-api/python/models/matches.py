@@ -1,27 +1,30 @@
 from python.lib.database import *
-from sqlalchemy import select, exists
+from sqlalchemy.dialects.postgresql import insert
+
+batch_data = []
+
+def queue_match(match):
+    print(f"uploading match:{match['match_id']}")
+    batch_data.append({
+        'id': match['match_id'],
+        'type': match['match_type'],
+        'classification': match['match_classification'],
+        'start_at': match['match_end'],
+        'end_at': match['co_driver_version'],
+        'map_name': match['map_name'],
+        'winning_team': match['winning_team'],
+        'win_condition': match['win_conidtion'],
+        'client_version': match['client_version'],
+        'co_driver_version': match['co_driver_version'],
+        'host_name': match['host_name']})
+    
+    return match['match_id']
 
 
-def upload_match(db, match):
+
+def upload_matches(db):
     matches = db.get_table('matches')
 
-    print(f"uploading match:{match['match_id']}")
-
-    stmt = select(exists().where(matches.c.id == match['match_id']))
-    result = db.execute(stmt).scalar()
-
-    if not result:
-        stmt = matches.insert().values(
-            id=match['match_id'],
-            type=match['match_type'],
-            classification=match['match_classification'],
-            start_at=match['match_start'],
-            end_at=match['match_end'],
-            map_name=match['map_name'],
-            winning_team=match['winning_team'],
-            win_condition=match['win_conidtion'],
-            client_version=match['client_version'],
-            co_driver_version=match['co_driver_version'],
-            host_name=match['host_name']
-        )
+    if batch_data:
+        stmt = insert(matches).values(batch_data).on_conflict_do_nothing()
         db.execute(stmt)

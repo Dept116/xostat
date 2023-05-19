@@ -1,26 +1,25 @@
+import uuid
 from python.lib.database import *
-from sqlalchemy import select, and_
+from sqlalchemy.dialects.postgresql import insert
 
+batch_data = []
 
-def upload_round(db, match, round):
+def queue_round(match_id, round):
+    round_id = uuid.uuid4()
+
+    batch_data.append({
+        'id': round_id,
+        'match_id': match_id,
+        'round_number': round['match_type'],
+        'start_at': round['match_classification'],
+        'end_at': round['match_end'],
+        'winning_team': round['co_driver_version']})
+    
+    return round_id
+
+def upload_rounds(db):
     rounds = db.get_table('rounds')
 
-    match_id = match['match_id']
-    round_number = round['round_id']
-
-    stmt = select(rounds.c.id).where(
-        and_(rounds.c.match_id == match_id, rounds.c.round_number == round_number))
-    result = db.execute(stmt).fetchone()
-
-    if result is None:
-        print(f"uploading round:{match_id}:{round_number}")
-        stmt = rounds.insert().returning(rounds.c.id).values(
-            match_id=match_id,
-            round_number=round_number,
-            start_at=round['round_start'],
-            end_at=round['round_end'],
-            winning_team=round['winning_team']
-        )
-        result = db.execute(stmt).fetchone()
-
-    return result[0]
+    if batch_data:
+        stmt = insert(rounds).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)

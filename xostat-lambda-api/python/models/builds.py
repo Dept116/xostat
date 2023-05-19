@@ -1,3 +1,4 @@
+import uuid
 from collections import defaultdict
 from python.lib.database import *
 from .parts import *
@@ -22,8 +23,9 @@ def upload_build_list(db, build_list):
         result = db.execute(stmt).fetchone()
 
         if result is None:
+            id = uuid.uuid4()
             print(f"uploading build:{build_hash}:{power_score}")
-            batch_data.append({'build_hash': build_hash, 'power_score': power_score})
+            batch_data.append({'id': id, 'build_hash': build_hash, 'power_score': power_score})
         else:
             existing_builds.append(result)
 

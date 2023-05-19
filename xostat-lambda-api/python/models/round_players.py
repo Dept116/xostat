@@ -1,33 +1,33 @@
+import uuid
 from python.lib.database import *
-from sqlalchemy import select, and_
+from sqlalchemy.dialects.postgresql import insert
 
+batch_data = []
+def queue_round_players(match, round_id, player):
+    id = uuid.uuid4()
 
-def upload_round_players(db, match, round_id, player):
+    batch_data.append({
+        'id':id,
+        'match_id': match['match_id'],
+        'round_id': round_id,
+        'user_id': player['uid'],
+        'build_hash': player['build_hash'],
+        'power_score': player['power_score'],
+        'kills': player['kills'],
+        'assists': player['assists'],
+        'drone_kills': player['drone_kills'],
+        'deaths': player['deaths'],
+        'score': player['score'],
+        'damage': player['damage'],
+        'damage_received': player['damage_taken'],
+        'group_id': player['group_id'],
+        'group_id': player['group_id']})
+
+    return id
+
+def upload_round_players(db):
     round_players = db.get_table('round_players')
 
-    match_id = match['match_id']
-    user_id = player['uid']
-
-    stmt = select(round_players.c.id).where(
-        and_(round_players.c.match_id == match_id, round_players.c.round_id == round_id, round_players.c.user_id == user_id))
-    result = db.execute(stmt).fetchone()
-
-    if result is None:
-        print(f"uploading round_players:{user_id}")
-        stmt = round_players.insert().returning(round_players.c.id).values(
-            match_id=match_id,
-            round_id=round_id,
-            user_id=user_id,
-            build_hash=player['build_hash'],
-            power_score=player['power_score'],
-            kills=player['kills'],
-            assists=player['assists'],
-            drone_kills=player['drone_kills'],
-            deaths=player['deaths'],
-            score=player['score'],
-            damage=player['damage'],
-            damage_received=player['damage_taken']
-        )
-        result = db.execute(stmt).fetchone()
-
-    return result[0]
+    if batch_data:
+        stmt = insert(round_players).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)

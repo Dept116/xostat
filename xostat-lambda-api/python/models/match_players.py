@@ -1,27 +1,26 @@
+import uuid
 from python.lib.database import *
-from sqlalchemy import select, and_
+from sqlalchemy.dialects.postgresql import insert
 
+batch_data = []
 
-def upload_match_players(db, match, player):
-    match_players = db.get_table('match_players')
+def queue_match_players(match, player):
+    id = uuid.uuid4()
 
-    match_id = match['match_id']
-    user_id = player['uid']
+    batch_data.append({
+        'id':id,
+        'match_id': match['match_type'],
+        'user_id': player['uid'],
+        'bot': player['bot'],
+        'nickname': player['nickname'],
+        'team': player['team'],
+        'group_id': player['group_id']})
 
-    stmt = select(match_players.c.id).where(
-        and_(match_players.c.match_id == match_id, match_players.c.match_id == match_id, match_players.c.user_id == user_id))
-    result = db.execute(stmt).fetchone()
+    return id
 
-    if result is None:
-        print(f"uploading match_players:{user_id}")
-        stmt = match_players.insert().returning(match_players.c.id).values(
-            match_id=match_id,
-            user_id=user_id,
-            bot=player['bot'],
-            nickname=player['nickname'],
-            team=player['team'],
-            group_id=player['group_id']
-        )
-        result = db.execute(stmt).fetchone()
+def upload_match_players(db):
+    matches = db.get_table('matches')
 
-    return result[0]
+    if batch_data:
+        stmt = insert(matches).values(batch_data).on_conflict_do_nothing()
+        db.execute(stmt)
