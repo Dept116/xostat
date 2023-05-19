@@ -9,7 +9,7 @@ def queue_match_players(match, player):
 
     batch_data.append({
         'id':id,
-        'match_id': match['match_type'],
+        'match_id': match['match_id'],
         'user_id': player['uid'],
         'bot': player['bot'],
         'nickname': player['nickname'],
@@ -19,8 +19,8 @@ def queue_match_players(match, player):
     return id
 
 def upload_match_players(db):
-    matches = db.get_table('matches')
+    match_players = db.get_table('match_players')
 
     if batch_data:
-        stmt = insert(matches).values(batch_data).on_conflict_do_nothing()
+        stmt = insert(match_players).values(batch_data).on_conflict_do_nothing()
         db.execute(stmt)

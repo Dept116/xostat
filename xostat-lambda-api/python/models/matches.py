@@ -10,7 +10,7 @@ def queue_match(match):
         'type': match['match_type'],
         'classification': match['match_classification'],
         'start_at': match['match_end'],
-        'end_at': match['co_driver_version'],
+        'end_at': match['match_end'],
         'map_name': match['map_name'],
         'winning_team': match['winning_team'],
         'win_condition': match['win_conidtion'],
@@ -22,7 +22,7 @@ def queue_match(match):
 
 
 
-def upload_matches(db):
+def upload_match_records(db):
     matches = db.get_table('matches')
 
     if batch_data:

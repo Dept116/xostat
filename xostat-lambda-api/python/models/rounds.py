@@ -10,10 +10,10 @@ def queue_round(match_id, round):
     batch_data.append({
         'id': round_id,
         'match_id': match_id,
-        'round_number': round['match_type'],
-        'start_at': round['match_classification'],
-        'end_at': round['match_end'],
-        'winning_team': round['co_driver_version']})
+        'round_number':  round['round_id'],
+        'start_at': round['round_start'],
+        'end_at': round['round_end'],
+        'winning_team': round['winning_team']})
     
     return round_id
 

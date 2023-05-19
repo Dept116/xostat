@@ -19,9 +19,7 @@ def queue_round_players(match, round_id, player):
         'deaths': player['deaths'],
         'score': player['score'],
         'damage': player['damage'],
-        'damage_received': player['damage_taken'],
-        'group_id': player['group_id'],
-        'group_id': player['group_id']})
+        'damage_received': player['damage_taken']})
 
     return id
 

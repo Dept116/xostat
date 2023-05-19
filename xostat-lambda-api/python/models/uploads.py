@@ -5,8 +5,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 batch_data = []
 
-def queue_upload_record(db, match, uploader_user_id):
-    uploads = db.get_table('uploads')
+def queue_upload_record(match, uploader_user_id):
     match_id = match['match_id']
     uploaded_at = datetime.datetime.now()
 

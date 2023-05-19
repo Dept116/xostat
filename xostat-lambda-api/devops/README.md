@@ -28,10 +28,10 @@ To clean
 python scripts/db/clean.py
 ```
 
-### Backing up local DB
+### Export local DB
 
-To backup your local database and regenerate the scripts needed above run the following
+To export your local database and regenerate the scripts needed above run the following
 
 ```bash
-python scripts/db/backup.py
+python scripts/db/export.py
 ```

@@ -78,15 +78,15 @@ def process_match_list(db, uploader, match_list):
                             uploader_match_player_id = match_player_id
 
                     round_player_id = queue_round_players(match, round_id, player)
-                    queue_round_player_scores(round_player_id, player['scores'])
-                    queue_round_player_medals(round_player_id, player['medals'])
-                    queue_round_player_damages(player['uid'], round_player_id, round['damage_records'])
+                    queue_round_player_scores(db, round_player_id, player['scores'])
+                    queue_round_player_medals(db, round_player_id, player['medals'])
+                    queue_round_player_damages(db, player['uid'], round_player_id, round['damage_records'])
 
             if uploader_match_player_id is not None:
                 queue_match_player_resources(db, uploader_match_player_id, match['resources'])
 
     upload_upload_records(db)
-    upload_matches(db)
+    upload_match_records(db)
     upload_rounds(db)
     upload_match_players(db)
     upload_round_players(db)
