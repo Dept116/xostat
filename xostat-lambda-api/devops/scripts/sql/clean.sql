@@ -48,7 +48,7 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.build_parts (
-    build_id integer NOT NULL,
+    build_id uuid NOT NULL,
     part_id integer NOT NULL
 );
 
@@ -63,33 +63,11 @@ COMMENT ON TABLE public.build_parts IS 'Parts for a build';
 
 
 --
--- Name: build_parts_build_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
---
-
-CREATE SEQUENCE public.build_parts_build_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.build_parts_build_id_seq OWNER TO dev;
-
---
--- Name: build_parts_build_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
---
-
-ALTER SEQUENCE public.build_parts_build_id_seq OWNED BY public.build_parts.build_id;
-
-
---
 -- Name: builds; Type: TABLE; Schema: public; Owner: dev
 --
 
 CREATE TABLE public.builds (
-    id integer NOT NULL,
+    id uuid NOT NULL,
     build_hash character varying NOT NULL,
     power_score smallint NOT NULL
 );
@@ -98,72 +76,11 @@ CREATE TABLE public.builds (
 ALTER TABLE public.builds OWNER TO dev;
 
 --
--- Name: builds_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
---
-
-CREATE SEQUENCE public.builds_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.builds_id_seq OWNER TO dev;
-
---
--- Name: builds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
---
-
-ALTER SEQUENCE public.builds_id_seq OWNED BY public.builds.id;
-
-
---
--- Name: match_players; Type: TABLE; Schema: public; Owner: dev
---
-
-CREATE TABLE public.match_players (
-    id integer NOT NULL,
-    match_id bigint NOT NULL,
-    user_id integer NOT NULL,
-    bot boolean NOT NULL,
-    nickname character varying NOT NULL,
-    team smallint NOT NULL,
-    group_id integer NOT NULL
-);
-
-
-ALTER TABLE public.match_players OWNER TO dev;
-
---
--- Name: match_player_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
---
-
-CREATE SEQUENCE public.match_player_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.match_player_id_seq OWNER TO dev;
-
---
--- Name: match_player_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
---
-
-ALTER SEQUENCE public.match_player_id_seq OWNED BY public.match_players.id;
-
-
---
 -- Name: match_player_resources; Type: TABLE; Schema: public; Owner: dev
 --
 
 CREATE TABLE public.match_player_resources (
-    match_player_id integer NOT NULL,
+    match_player_id uuid NOT NULL,
     resource_id smallint NOT NULL,
     amount integer NOT NULL
 );
@@ -179,6 +96,23 @@ COMMENT ON TABLE public.match_player_resources IS 'Resources for user in match.'
 
 
 --
+-- Name: match_players; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.match_players (
+    id uuid NOT NULL,
+    match_id bigint NOT NULL,
+    user_id integer NOT NULL,
+    bot boolean NOT NULL,
+    nickname character varying NOT NULL,
+    team smallint NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.match_players OWNER TO dev;
+
+--
 -- Name: matches; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -186,8 +120,8 @@ CREATE TABLE public.matches (
     id bigint NOT NULL,
     type character varying NOT NULL,
     classification smallint NOT NULL,
-    start_at date NOT NULL,
-    end_at date NOT NULL,
+    start_at timestamp without time zone NOT NULL,
+    end_at timestamp without time zone NOT NULL,
     map_name character varying NOT NULL,
     winning_team smallint NOT NULL,
     win_condition smallint NOT NULL,
@@ -282,58 +216,6 @@ ALTER SEQUENCE public.parts_id_seq OWNED BY public.parts.id;
 
 
 --
--- Name: round_players; Type: TABLE; Schema: public; Owner: dev
---
-
-CREATE TABLE public.round_players (
-    match_id bigint NOT NULL,
-    round_id integer NOT NULL,
-    user_id integer NOT NULL,
-    build_hash character varying NOT NULL,
-    power_score smallint NOT NULL,
-    kills smallint NOT NULL,
-    assists smallint NOT NULL,
-    drone_kills smallint NOT NULL,
-    deaths smallint NOT NULL,
-    score integer NOT NULL,
-    damage numeric NOT NULL,
-    damage_received numeric NOT NULL,
-    id integer NOT NULL
-);
-
-
-ALTER TABLE public.round_players OWNER TO dev;
-
---
--- Name: TABLE round_players; Type: COMMENT; Schema: public; Owner: dev
---
-
-COMMENT ON TABLE public.round_players IS 'Player records within a round.';
-
-
---
--- Name: player_rounds_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
---
-
-CREATE SEQUENCE public.player_rounds_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.player_rounds_id_seq OWNER TO dev;
-
---
--- Name: player_rounds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
---
-
-ALTER SEQUENCE public.player_rounds_id_seq OWNED BY public.round_players.id;
-
-
---
 -- Name: resources; Type: TABLE; Schema: public; Owner: dev
 --
 
@@ -372,7 +254,7 @@ ALTER SEQUENCE public.resources_id_seq OWNED BY public.resources.id;
 --
 
 CREATE TABLE public.round_player_damages (
-    round_player_id integer NOT NULL,
+    round_player_id uuid NOT NULL,
     weapon_id integer NOT NULL,
     damage numeric NOT NULL
 );
@@ -385,7 +267,7 @@ ALTER TABLE public.round_player_damages OWNER TO dev;
 --
 
 CREATE TABLE public.round_player_medals (
-    round_player_id integer NOT NULL,
+    round_player_id uuid NOT NULL,
     medal_id integer NOT NULL,
     amount integer NOT NULL
 );
@@ -405,7 +287,7 @@ COMMENT ON TABLE public.round_player_medals IS 'Medals earned for a player withi
 --
 
 CREATE TABLE public.round_player_scores (
-    round_player_id integer NOT NULL,
+    round_player_id uuid NOT NULL,
     score_type_id integer NOT NULL,
     score integer NOT NULL
 );
@@ -421,16 +303,46 @@ COMMENT ON TABLE public.round_player_scores IS 'score breakdown for a round with
 
 
 --
+-- Name: round_players; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.round_players (
+    id uuid NOT NULL,
+    match_id bigint NOT NULL,
+    round_id uuid NOT NULL,
+    user_id integer NOT NULL,
+    build_hash character varying NOT NULL,
+    power_score smallint NOT NULL,
+    kills smallint NOT NULL,
+    assists smallint NOT NULL,
+    drone_kills smallint NOT NULL,
+    deaths smallint NOT NULL,
+    score integer NOT NULL,
+    damage numeric NOT NULL,
+    damage_received numeric NOT NULL
+);
+
+
+ALTER TABLE public.round_players OWNER TO dev;
+
+--
+-- Name: TABLE round_players; Type: COMMENT; Schema: public; Owner: dev
+--
+
+COMMENT ON TABLE public.round_players IS 'Player records within a round.';
+
+
+--
 -- Name: rounds; Type: TABLE; Schema: public; Owner: dev
 --
 
 CREATE TABLE public.rounds (
+    id uuid NOT NULL,
     match_id bigint NOT NULL,
     round_number integer NOT NULL,
-    start_at date NOT NULL,
-    end_at date NOT NULL,
-    winning_team smallint NOT NULL,
-    id integer NOT NULL
+    start_at timestamp without time zone NOT NULL,
+    end_at timestamp without time zone NOT NULL,
+    winning_team smallint NOT NULL
 );
 
 
@@ -441,28 +353,6 @@ ALTER TABLE public.rounds OWNER TO dev;
 --
 
 COMMENT ON TABLE public.rounds IS 'round attributes';
-
-
---
--- Name: rounds_id_seq; Type: SEQUENCE; Schema: public; Owner: dev
---
-
-CREATE SEQUENCE public.rounds_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.rounds_id_seq OWNER TO dev;
-
---
--- Name: rounds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: dev
---
-
-ALTER SEQUENCE public.rounds_id_seq OWNED BY public.rounds.id;
 
 
 --
@@ -504,9 +394,9 @@ ALTER SEQUENCE public.score_types_id_seq OWNED BY public.scores.id;
 --
 
 CREATE TABLE public.uploads (
-    id integer NOT NULL,
+    id bigint NOT NULL,
     match_id bigint NOT NULL,
-    uploaded_at date NOT NULL,
+    uploaded_at timestamp without time zone NOT NULL,
     uploader_user_id integer NOT NULL
 );
 
@@ -576,27 +466,6 @@ ALTER SEQUENCE public.weapons_id_seq OWNED BY public.weapons.id;
 
 
 --
--- Name: build_parts build_id; Type: DEFAULT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.build_parts ALTER COLUMN build_id SET DEFAULT nextval('public.build_parts_build_id_seq'::regclass);
-
-
---
--- Name: builds id; Type: DEFAULT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.builds ALTER COLUMN id SET DEFAULT nextval('public.builds_id_seq'::regclass);
-
-
---
--- Name: match_players id; Type: DEFAULT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.match_players ALTER COLUMN id SET DEFAULT nextval('public.match_player_id_seq'::regclass);
-
-
---
 -- Name: medals id; Type: DEFAULT; Schema: public; Owner: dev
 --
 
@@ -615,20 +484,6 @@ ALTER TABLE ONLY public.parts ALTER COLUMN id SET DEFAULT nextval('public.parts_
 --
 
 ALTER TABLE ONLY public.resources ALTER COLUMN id SET DEFAULT nextval('public.resources_id_seq'::regclass);
-
-
---
--- Name: round_players id; Type: DEFAULT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.round_players ALTER COLUMN id SET DEFAULT nextval('public.player_rounds_id_seq'::regclass);
-
-
---
--- Name: rounds id; Type: DEFAULT; Schema: public; Owner: dev
---
-
-ALTER TABLE ONLY public.rounds ALTER COLUMN id SET DEFAULT nextval('public.rounds_id_seq'::regclass);
 
 
 --
