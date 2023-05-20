@@ -8,22 +8,21 @@ After run rustup-init from the following site:
 
 https://rustup.rs/
 
-### Configuring docker
+Projects need to be built with the `aarch64-unknown-linux-gnu` environment to be compatible with AWS lambda.
 
-Projects need to built in a x86_64-unknown-linux-musl enviroment to be compatible with AWS lambda.
+### Install target toolchain for Linux 2 deployment
+Note: Only required for building artifacts and deploying to Linux 2  
+local development and testing can be done using the system-native toolchain automatically shipped by rustup
 
 ```bash
-docker build -t rust-musl-builder .
+rustup target add aarch64-unknown-linux-gnu --minimal
 ```
 
-```bash
-docker run --rm -it -v .\services\hello_world:/home/rust/src rust-musl-builder cargo build --release
-```
-
-### Install target
+### Install cargo-lambda
+Core utility for testing and deploying lambda functions
 
 ```bash
-rustup target add x86_64-unknown-linux-musl
+cargo install cargo-lambda
 ```
 
 ### Creating new services or libraries
@@ -35,25 +34,28 @@ cd ./services
 cargo new hello_world
 ```
 
-Creating a library.
 
+### Creating new lambda project (from scratch)
+(Substitute $VARNAME with corresponding values)
 ```bash
-cd ./lib
-cargo new my_library --lib
+cargo lambda new $PROJECT_NAME
 ```
 
-Build with
+## Deploying
+
+### Build release in zip format
 
 ```bash
-cargo build --release --target x86_64-unknown-linux-musl
+cargo lambda build --release --arm64 --output-format zip
 ```
 
 Add to serverless.yml
 
+(Substitute $VARNAME with corresponding values)
 ```bash
 functions:
-  hello:
-    handler: hello_world
+  $FUNCTION_NAME:
+    handler: $FUNCTION_NAME
     package:
-      artifact: ./target/x86_64-unknown-linux-musl/release/bootstrap.zip
+      artifact: ./target/lambda/$FUNCTION_NAME/bootstrap.zip
 ```
