@@ -22,7 +22,6 @@ provider:
     DB_PASSWORD: ${self:custom.${self:provider.stage}.DB_PASSWORD}
 plugins:
   - serverless-offline
-  - serverless-rust
 custom:
   serverless-offline:
     host: localhost
