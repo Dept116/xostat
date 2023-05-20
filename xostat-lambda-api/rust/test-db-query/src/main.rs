@@ -1,8 +1,7 @@
-// This example requires the following input to succeed:
-// { "command": "do something" }
-
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde::{Deserialize, Serialize};
+
+use aws_sdk_rdsdata as rds;
 
 /// This is also a made-up example. Requests come into the runtime as unicode
 /// strings in json format, which can map to any structure that implements `serde::Deserialize`
@@ -42,6 +41,17 @@ async fn main() -> Result<(), Error> {
 }
 
 pub(crate) async fn my_handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
+    let config = aws_config::load_from_env().await;
+    let client = rds::Client::new(&config);
+
+    let q =client.execute_statement()
+        .database("postgres")
+        .sql("SELECT * FROM tablename");
+
+    let res = q.send().await?;
+
+    dbg!(res);
+
     // extract some useful info from the request
     let command = event.payload.command;
 
