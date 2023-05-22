@@ -14,6 +14,14 @@ docker pull postgres
 docker run -d --name xodat -e POSTGRES_USER=dev -e POSTGRES_PASSWORD=devpass1 -e POSTGRES_DB=xodat -p 5432:5432 --cpus=2 --memory=1g -d postgres
 ```
 
+### Remote PostgreSQL
+
+Contact Rot_Fish_Bandit for xodat-bastion-host.pem file, then open a ssh tunnel to the bastion host
+
+```bash
+ssh -N -L localhost:5432:<BASTION_HOST_URL>:5432 -i .\xodat-bastion-host.pem ubuntu@3.145.167.98
+```
+
 ### Setting up local DB
 
 Once your docker container is up you can build tables and seed the database with

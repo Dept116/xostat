@@ -20,6 +20,8 @@ provider:
     DB_NAME: ${self:custom.${self:provider.stage}.DB_NAME}
     DB_USER: ${self:custom.${self:provider.stage}.DB_USER}
     DB_PASSWORD: ${self:custom.${self:provider.stage}.DB_PASSWORD}
+    BUCKET_NAME: ${self:custom.${self:provider.stage}.BUCKET_NAME}
+    CK_KEY: ${self:custom.${self:provider.stage}.CK_KEY}
 plugins:
   - serverless-offline
 custom:
@@ -32,12 +34,16 @@ custom:
     DB_NAME: ${ssm:/rds/prod/dbname}
     DB_USER: ${ssm:/rds/prod/username}
     DB_PASSWORD: ${ssm:/rds/prod/password}
+    BUCKET_NAME: ${ssm:/s3/prod/bucket_name}
+    CK_KEY: ${ssm:/s3/prod/ck_key}
   dev:
     DB_HOST: localhost
     DB_PORT: 5432
     DB_NAME: xodat
     DB_USER: dev
     DB_PASSWORD: devpass1
+    BUCKET_NAME: ""
+    CK_KEY: ""
 functions:
   uploadMatch:
     handler: python/controllers/upload.upload_matches
@@ -65,5 +71,11 @@ functions:
           path: /player/{id}
           method: get
           cors: true
+    layers:
+      - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6
+  loadCks:
+    handler: python/controllers/cks.load_cks
+    events:
+      - schedule: cron(30 8 * * ? *)
     layers:
       - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6

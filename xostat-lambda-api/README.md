@@ -22,5 +22,28 @@ serverless offline
 ### Deployment
 
 ```
-$ serverless deploy --stage prod
+serverless deploy --stage prod
+```
+
+### Scheduled Jobs
+
+Functions can be scheduled with cron syntax as below
+
+```
+  loadCks:
+    handler: python/controllers/cks.load_cks
+    events:
+      - schedule: cron(30 8 * * ? *)
+```
+
+They can be manually invoked from the command line
+
+```bash
+aws lambda invoke --function-name your-function-name
+```
+
+Or locally with
+
+```bash
+sls invoke local --function-name your-function-name
 ```
