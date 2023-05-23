@@ -5,6 +5,8 @@ use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use sqlx::{Connection, Postgres, query};
+use sqlx::postgres::PgQueryResult;
+use tracing::{event, info, info_span};
 use shared_logic::get_db_url;
 
 #[derive(Deserialize, Debug)]
@@ -47,8 +49,10 @@ async fn main() -> Result<(), Error> {
 }
 
 pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
+	info!("Requesting prices from crossoutdb");
 	let xodb_prices = reqwest::get("https://crossoutdb.com/api/v1/items?category=Resources").await?;
 	let response_body: Vec<Prices> = from_str(&xodb_prices.text().await?)?;
+	info!("Decoded prices from crossoutdb");
 
 	// K = DB-id of resource
 	// V= best price/unit
@@ -68,16 +72,18 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 			}
 		}
 	}
+	info!("Calculated best sell-prices currently available");
 
 	let mut db = sqlx::PgConnection::connect(&get_db_url()?).await.unwrap();
 
 	for (id, price) in map.iter(){
-		let row = query!("
+		let q: PgQueryResult = query!("
 					INSERT INTO xodat.public.resource_prices (id, resource_id, price)
 					VALUES (NOW(), $1, $2)
 					", *id as i32, price)
 			.execute(&mut db)
 			.await?;
+		info!("Inserted price {price} for resource-id {id}\t {} rows affected", q.rows_affected());
 
 	}
 
