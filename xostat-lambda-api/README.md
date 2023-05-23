@@ -45,5 +45,5 @@ aws lambda invoke --function-name your-function-name
 Or locally with
 
 ```bash
-sls invoke local --function-name your-function-name
+serverless invoke local -f loadCks --stage dev
 ```

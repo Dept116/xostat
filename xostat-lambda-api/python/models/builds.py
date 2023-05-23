@@ -2,6 +2,7 @@ import uuid
 from collections import defaultdict
 from python.lib.database import *
 from .parts import *
+from .cks import *
 from sqlalchemy import select, and_
 from sqlalchemy.dialects.postgresql import insert
 
@@ -45,7 +46,8 @@ def upload_parts(db, builds, parts_data):
         build_id, build_hash, power_score = build
         parts = parts_data[(build_hash, power_score)]
 
-        for part in parts:
+        for p in parts:
+            part = normalize_ck(p)
             part_id = find_part_id(db, part)
             print(f"uploading part:{part}")
             batch_data.append({'build_id': build_id, 'part_id': part_id})

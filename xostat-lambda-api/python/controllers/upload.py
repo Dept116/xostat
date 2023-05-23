@@ -2,6 +2,7 @@ import json
 
 from decimal import *
 from python.lib.response import *
+from python.models.cks import *
 from python.models.uploads import *
 from python.models.builds import *
 from python.models.matches import *
@@ -34,6 +35,7 @@ def upload_matches(data, context):
     match_list = body.get('match_list', [])
 
     try:
+        initialize_cks_dict(db)
         initialize_parts_dict(db)
         initialize_weapons_dict(db)
         initialize_medals_dict(db)

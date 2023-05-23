@@ -15,6 +15,7 @@ provider:
       - ${ssm:/vpc/us-east-2b}
       - ${ssm:/vpc/us-east-2c}
   environment:
+    IS_OFFLINE: ${self:custom.${self:provider.stage}.IS_OFFLINE}
     DB_HOST: ${self:custom.${self:provider.stage}.DB_HOST}
     DB_PORT: ${self:custom.${self:provider.stage}.DB_PORT}
     DB_NAME: ${self:custom.${self:provider.stage}.DB_NAME}
@@ -29,6 +30,7 @@ custom:
     host: localhost
     port: 3000
   prod:
+    IS_OFFLINE: false
     DB_HOST: ${ssm:/rds/prod/host}
     DB_PORT: ${ssm:/rds/prod/port}
     DB_NAME: ${ssm:/rds/prod/dbname}
@@ -37,6 +39,7 @@ custom:
     BUCKET_NAME: ${ssm:/s3/prod/bucket_name}
     CK_KEY: ${ssm:/s3/prod/ck_key}
   dev:
+    IS_OFFLINE: true
     DB_HOST: localhost
     DB_PORT: 5432
     DB_NAME: xodat

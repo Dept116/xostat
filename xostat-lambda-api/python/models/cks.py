@@ -5,14 +5,30 @@ import json
 from sqlalchemy import select, and_
 from sqlalchemy.dialects.postgresql import insert
 
-batch_data = []
+ck_dict = {}
+
+def initialize_cks_dict(db):
+    cks = db.get_table('cks')
+
+    stmt = select(cks.c.ck, cks.c.name)
+    result = db.execute(stmt).fetchall()
+
+    ck_dict.update({row.ck: row.name for row in result})
+
+def normalize_ck(part):
+    if part not in ck_dict:
+        return part
+
+    return ck_dict[part]
 
 def insert_cks(db):
     is_offline = os.getenv('IS_OFFLINE')
     json_data = load_ck_from_local() if is_offline else load_ck_from_s3()
     cks = db.get_table('cks')
+    batch_data = []
 
     for ck in json_data:
+        print(f"inserting: {ck['CKName']} - {ck['Name']}")
         batch_data.append({'ck': ck['CKName'], 'name': ck['Name']})
 
     if batch_data:
@@ -32,6 +48,6 @@ def load_ck_from_s3():
         return None
 
 def load_ck_from_local():
-    with open('/devops/static_assets/ck.json', 'r') as f:
+    with open('.\devops\static_assets\cks.json', 'r') as f:
         data = json.load(f)
     return data

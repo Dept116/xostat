@@ -1,5 +1,6 @@
 from python.lib.database import *
 from .weapons import *
+from .cks import *
 from sqlalchemy.dialects.postgresql import insert
 
 batch_data = []
@@ -7,7 +8,8 @@ batch_data = []
 def queue_round_player_damages(db, user_id, round_player_id, damages):
     for damage in damages:
         if damage['uid'] == user_id:
-            weapon_id = find_weapon_id(db, damage['weapon'])
+            part = normalize_ck(damage['weapon'])
+            weapon_id = find_weapon_id(db, part)
             batch_data.append({'round_player_id': round_player_id, 'weapon_id': weapon_id, 'damage': damage['damage']})
 
 def upload_round_player_damages(db):
