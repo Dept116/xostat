@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.2 (Debian 15.2-1.pgdg110+1)
--- Dumped by pg_dump version 15.2 (Debian 15.2-1.pgdg110+1)
+-- Dumped from database version 15.3 (Debian 15.3-1.pgdg110+1)
+-- Dumped by pg_dump version 15.3 (Debian 15.3-1.pgdg110+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -213,6 +213,26 @@ ALTER TABLE public.parts_id_seq OWNER TO dev;
 --
 
 ALTER SEQUENCE public.parts_id_seq OWNED BY public.parts.id;
+
+
+--
+-- Name: resource_prices; Type: TABLE; Schema: public; Owner: dev
+--
+
+CREATE TABLE public.resource_prices (
+    id timestamp without time zone NOT NULL,
+    resource_id integer NOT NULL,
+    price double precision NOT NULL
+);
+
+
+ALTER TABLE public.resource_prices OWNER TO dev;
+
+--
+-- Name: TABLE resource_prices; Type: COMMENT; Schema: public; Owner: dev
+--
+
+COMMENT ON TABLE public.resource_prices IS 'price per single unit of the resource';
 
 
 --
@@ -637,6 +657,14 @@ ALTER TABLE ONLY public.round_players
 
 
 --
+-- Name: resource_prices resource_prices_pkey; Type: CONSTRAINT; Schema: public; Owner: dev
+--
+
+ALTER TABLE ONLY public.resource_prices
+    ADD CONSTRAINT resource_prices_pkey PRIMARY KEY (id, resource_id);
+
+
+--
 -- Name: resources resources_pk; Type: CONSTRAINT; Schema: public; Owner: dev
 --
 
@@ -735,6 +763,13 @@ CREATE INDEX player_round_damages_player_round_id_idx ON public.round_player_dam
 --
 
 CREATE INDEX player_round_scores_player_round_id_idx ON public.round_player_scores USING btree (round_player_id);
+
+
+--
+-- Name: resource_prices_id_resource_id_uindex; Type: INDEX; Schema: public; Owner: dev
+--
+
+CREATE UNIQUE INDEX resource_prices_id_resource_id_uindex ON public.resource_prices USING btree (id DESC, resource_id);
 
 
 --

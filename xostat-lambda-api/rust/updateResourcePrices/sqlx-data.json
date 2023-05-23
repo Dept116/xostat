@@ -1,0 +1,16 @@
+{
+  "db": "PostgreSQL",
+  "189ad17160926ad9ba02a244054dfc99f7b88f245a7e0a949e594cc3c30a287d": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Float8"
+        ]
+      }
+    },
+    "query": "\n\t\t\t\t\tINSERT INTO xodat.public.resource_prices (id, resource_id, price)\n\t\t\t\t\tVALUES (NOW(), $1, $2)\n\t\t\t\t\t"
+  }
+}
