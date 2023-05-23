@@ -27,7 +27,7 @@ fn main() {
 
 	let mut map = HashMap::new();
 
-	for (xodat_id,xodb_id,amount,name) in csv {
+	for (xodat_id, xodb_id, amount, name) in csv {
 		map.insert(xodb_id, PriceMap {
 			id: xodat_id,
 			amount,
@@ -37,10 +37,9 @@ fn main() {
 
 
 	// Join individual definitions together
-	let const_declarations  = vec![
+	let const_declarations = vec![
 		const_definition!(#[derive(Debug, Eq, PartialEq, Clone)] pub PriceMap),
-
-		const_declaration!(pub  PRICE_MAP = map)
+		const_declaration!(pub  PRICE_MAP = map),
 	];
 
 
