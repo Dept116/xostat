@@ -14,7 +14,7 @@ struct PriceMap {
 fn main() {
 	let mapping = read_to_string("../../devops//static_assets/resources_xodb_id_mapping.csv").unwrap();
 	let csv = mapping.lines()
-		.skip(1)
+		.skip(1) // First line is header, so it is ignored
 		.map(|line| {
 			let mut cols = line.split(",");
 			(
@@ -48,4 +48,5 @@ fn main() {
 	std::fs::write(&dest_path, const_declarations.join("\n")).unwrap(); // write static source code definitions
 
 	println!("cargo:rerun-if-changed=build.rs");
+	println!("cargo:rerun-if-changed=../../devops//static_assets/resources_xodb_id_mapping.csv");
 }
