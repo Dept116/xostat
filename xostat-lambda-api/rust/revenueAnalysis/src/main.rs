@@ -12,14 +12,10 @@ use tracing::{event, info, info_span};
 use shared_logic::get_db_url;
 
 use crate::request_object::Request as RequestObject;
+use crate::response_object::Response as ResponseObject;
 
 mod request_object;
-
-#[derive(Serialize)]
-struct Response {
-	req_id: String,
-	success: bool,
-}
+mod response_object;
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
@@ -40,12 +36,13 @@ async fn main() -> Result<(), Error> {
 	Ok(())
 }
 
-pub(crate) async fn handler(event: LambdaEvent<RequestObject>) -> Result<Response, Error> {
+pub(crate) async fn handler(event: LambdaEvent<RequestObject>) -> Result<ResponseObject, Error> {
 
 	// prepare the response
-	let resp = Response {
+	let resp = ResponseObject {
 		req_id: event.context.request_id,
 		success: true,
+		rows: vec![], // TODO: Query here
 	};
 
 	Ok(resp)

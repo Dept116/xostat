@@ -3,32 +3,32 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 pub struct Request {
 	#[serde(default = "default_avg")]
-	aggregate: AggregateBy,
+	pub aggregate: AggregateBy,
 
 	#[serde(default = "default_true")]
-	revenue_in_coin: bool,
+	pub revenue_in_coin: bool,
 
 	#[serde(default = "default_true")]
-	revenue_per_hour: bool,
+	pub revenue_per_hour: bool,
 
 	/// Optionally including fuel as a resource to group by
 	#[serde(default = "default_true")]
-	include_fuel_as_reward: bool,
+	pub include_fuel_as_reward: bool,
 
 	/// Optionally subtracting the cost of fuel from the reward
 	#[serde(default = "default_false")]
-	include_pve_fuel_cost: bool,
+	pub include_pve_fuel_cost: bool,
 
 	/// optionally grouping by win, lose, tie in addition to resource and
 	#[serde(default = "default_false")]
-	group_by_match_result: bool,
+	pub group_by_match_result: bool,
 
-	gamemode: String,
+	pub game_mode: String,
 }
 
 
 #[derive(Deserialize, Debug)]
-enum AggregateBy {
+pub enum AggregateBy {
 	Max,
 	Avg,
 	Total,
