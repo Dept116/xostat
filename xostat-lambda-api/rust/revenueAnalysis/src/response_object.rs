@@ -13,9 +13,9 @@ pub struct ResultRow {
 	game_mode: String,
 	game_result: Option<GameResult>, // None if Request::group_by_match_result is false
 	games: u64,
-	queue_time: u64, // Microseconds - UTC
+	// queue_time: u64, // Microseconds - UTC
 	match_time: u64, // Microseconds - UTC
-	match_rewards: MatchReward,
+	match_rewards: MatchReward, // Coins if Request::revenue_in_coin is true, otherwise Resources
 }
 
 
