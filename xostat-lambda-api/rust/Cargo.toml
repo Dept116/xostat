@@ -1,0 +1,7 @@
+# This should generally unify the crate-logic into one workspace
+
+[workspace]
+members = [
+    "shared-logic",
+    "updateResourcePrices",
+]
