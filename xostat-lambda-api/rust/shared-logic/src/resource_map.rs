@@ -1,5 +1,3 @@
-use phf::phf_map;
-
 //  Constant generated resource ID mapping
 include!(concat!(env!("OUT_DIR"), "/const_gen.rs"));
 

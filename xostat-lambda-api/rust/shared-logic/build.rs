@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fs::{read, read_to_string};
+use std::fs::{read_to_string};
 use std::str::FromStr;
 use std::path::Path;
 use const_gen::*;

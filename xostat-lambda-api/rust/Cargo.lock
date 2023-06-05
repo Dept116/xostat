@@ -1151,6 +1151,8 @@ version = "0.1.0"
 dependencies = [
  "const-gen",
  "phf",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
