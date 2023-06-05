@@ -1,16 +1,16 @@
 use std::collections::HashMap;
-use std::env;
-use std::env::{var, VarError};
-use lambda_runtime::{service_fn, Error, LambdaEvent};
+
+use lambda_runtime::{Error, LambdaEvent, service_fn};
 use serde::{Deserialize, Serialize};
 use serde_json::from_str;
-use sqlx::{Connection, Postgres, query};
+use sqlx::{Connection, query};
 use sqlx::postgres::PgQueryResult;
-use tracing::{event, info, info_span};
+use tracing::info;
+
 use shared_logic::get_db_url;
 
 #[derive(Deserialize, Debug)]
-struct Prices  {
+struct Prices {
 	/// ID as stored in this projects DB in the `resources` table
 	id: u32,
 	#[serde(rename = "sellPrice")]
@@ -19,8 +19,7 @@ struct Prices  {
 }
 
 #[derive(Deserialize)]
-struct Request {
-}
+struct Request {}
 
 
 #[derive(Serialize)]
@@ -76,7 +75,7 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 
 	let mut db = sqlx::PgConnection::connect(&get_db_url()?).await.unwrap();
 
-	for (id, price) in map.iter(){
+	for (id, price) in map.iter() {
 		let q: PgQueryResult = query!("
 					INSERT INTO xodat.public.resource_prices (id, resource_id, price)
 					VALUES (NOW(), $1, $2)
@@ -84,7 +83,6 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 			.execute(&mut db)
 			.await?;
 		info!("Inserted price {price} for resource-id {id}\t {} rows affected", q.rows_affected());
-
 	}
 
 	// prepare the response
