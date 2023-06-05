@@ -5,6 +5,7 @@
     "serverless-rust": "^0.3.8"
   },
   "dependencies": {
-    "serverless-python-requirements": "^6.0.0"
+    "serverless-python-requirements": "^6.0.0",
+    "zig": "^0.3.0"
   }
 }
