@@ -92,3 +92,9 @@ functions:
     package:
       artifact: ./path/to/bootstrap.zip
 ```
+
+### Manually Invoking Production
+
+```bash
+aws lambda invoke --function-name xostat-lambda-api-prod-$FUNCTION_NAME outputfile.txt
+```
