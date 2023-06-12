@@ -2,6 +2,7 @@ use std::env::{var, VarError};
 
 pub mod resource_map;
 pub mod coins;
+pub mod database;
 
 pub fn get_db_url() -> Result<String, VarError> {
 	let host = var("DB_HOST")?;

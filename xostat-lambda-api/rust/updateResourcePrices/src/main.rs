@@ -7,6 +7,7 @@ use serde_json::from_str;
 use sqlx::{Connection, query};
 use sqlx::postgres::PgQueryResult;
 use tracing::info;
+use shared_logic::database::Database;
 
 use shared_logic::get_db_url;
 
@@ -79,14 +80,14 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 	}
 	info!("Calculated best sell-prices currently available");
 
-	let mut db = sqlx::PgConnection::connect(&get_db_url()?).await.unwrap();
+	let db = Database::connect_from_env().await?;
 
 	for (id, price) in map.iter() {
 		let q: PgQueryResult = query!("
 					INSERT INTO xodat.public.resource_prices (id, resource_id, price)
 					VALUES (NOW(), $1, $2)
 					", *id as i32, price)
-			.execute(&mut db)
+			.execute(db.get_connection())
 			.await?;
 		info!("Inserted price {price} for resource-id {id}\t {} rows affected", q.rows_affected());
 	}

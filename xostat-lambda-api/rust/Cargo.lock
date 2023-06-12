@@ -1150,9 +1150,11 @@ name = "shared-logic"
 version = "0.1.0"
 dependencies = [
  "const-gen",
+ "lambda_runtime",
  "phf",
  "serde",
  "serde_json",
+ "sqlx",
 ]
 
 [[package]]
