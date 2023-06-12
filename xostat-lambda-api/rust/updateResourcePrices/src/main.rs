@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::ops::DerefMut;
 use std::time::Duration;
 
 use lambda_runtime::{Error, LambdaEvent, service_fn};
@@ -6,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use sqlx::{Connection, query};
 use sqlx::postgres::PgQueryResult;
+use tokio::sync::MutexGuard;
 use tracing::info;
 use shared_logic::database::Database;
 
@@ -81,13 +83,16 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 	info!("Calculated best sell-prices currently available");
 
 	let db = Database::connect_from_env().await?;
+	let db_connection = db.get_connection(); // Copy connection out of pool
 
 	for (id, price) in map.iter() {
 		let q: PgQueryResult = query!("
 					INSERT INTO xodat.public.resource_prices (id, resource_id, price)
 					VALUES (NOW(), $1, $2)
 					", *id as i32, price)
-			.execute(db.get_connection())
+			.execute(
+				db_connection.lock().await.deref_mut() // Temporarily lock and execute on database, releases right after insertion
+			)
 			.await?;
 		info!("Inserted price {price} for resource-id {id}\t {} rows affected", q.rows_affected());
 	}
