@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::Duration;
 
 use lambda_runtime::{Error, LambdaEvent, service_fn};
 use serde::{Deserialize, Serialize};
@@ -49,7 +50,12 @@ async fn main() -> Result<(), Error> {
 
 pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
 	info!("Requesting prices from crossoutdb");
-	let xodb_prices = reqwest::get("https://crossoutdb.com/api/v1/items?category=Resources").await?;
+	let request = reqwest::ClientBuilder::new()
+		.timeout(Duration::from_secs(5))
+		.build()?;
+	let xodb_prices = request.get("https://crossoutdb.com/api/v1/items?category=Resources")
+		.send()
+		.await?;
 	let response_body: Vec<Prices> = from_str(&xodb_prices.text().await?)?;
 	info!("Decoded prices from crossoutdb");
 
