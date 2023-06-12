@@ -78,6 +78,7 @@ functions:
       - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6
   updateResourcePrices:
     handler: updateResourcePrices
+    timeout: 30
     runtime: provided
     package:
       artifact: ./rust/updateResourcePrices/target/lambda/update-resource-prices/bootstrap.zip
