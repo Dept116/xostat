@@ -53,38 +53,35 @@ async fn main() -> Result<(), Error> {
 
 pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
     info!("Requesting prices from crossoutdb");
+
     let client = Client::builder()
         .timeout(Duration::from_secs(10))
-        .build()?;
+        .build()
+        .map_err(|err| {
+            error!("Failed to build client: {}", err);
+            Error::from(err)
+        })?;
 
-    let res = client.get("https://crossoutdb.com/api/v1/items?category=Resources").send().await;
-
-    let xodb_prices = match res {
-        Ok(response) => response,
-        Err(err) => {
+    let res = client.get("https://crossoutdb.com/api/v1/items?category=Resources")
+        .send().await
+        .map_err(|err| {
             error!("Error while requesting prices: {}", err);
-            return Err(Error::from(err));
-        }
-    };
+            Error::from(err)
+        })?;
 
-    let text = match xodb_prices.text().await {
-        Ok(text) => text,
-        Err(err) => {
+    let text = res.text().await
+        .map_err(|err| {
             error!("Failed to read response text: {}", err);
-            return Err(Error::from(err));
-        }
-    };
+            Error::from(err)
+        })?;
 
-    let response_body: Vec<Prices> = match from_str(&text) {
-        Ok(data) => data,
-        Err(err) => {
+    let response_body: Vec<Prices> = from_str(&text)
+        .map_err(|err| {
             error!("Failed to decode prices from crossoutdb: {}", err);
-            return Err(Error::from(err));
-        }
-    };
+            Error::from(err)
+        })?;
 
     info!("Decoded prices from crossoutdb");
-
 	// K = DB-id of resource
 	// V= best price/unit
 	let mut map: HashMap<u32, f64> = HashMap::new();

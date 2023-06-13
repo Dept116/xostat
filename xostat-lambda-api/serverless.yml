@@ -8,7 +8,7 @@ provider:
   stage: ${opt:stage, 'dev'}
   vpc:
     securityGroupIds:
-      - ${ssm:/vpc/vpcGroupId}
+      - ${ssm:/vpc/lambdaToRDS}
     subnetIds:
       - ${ssm:/vpc/us-east-2a}
       - ${ssm:/vpc/us-east-2b}
@@ -78,6 +78,14 @@ functions:
       - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6
   updateResourcePrices:
     handler: updateResourcePrices
+    vpc:
+      securityGroupIds:
+        - ${ssm:/vpc/lambdaToRDS}
+        - ${ssm:/vpc/lambdaToHttps}
+      subnetIds:
+        - ${ssm:/vpc/us-east-2a}
+        - ${ssm:/vpc/us-east-2b}
+        - ${ssm:/vpc/us-east-2c}
     timeout: 30
     runtime: provided
     package:
