@@ -1,24 +1,57 @@
-### Installing Rust
+### Installing Ubuntu WSL on windows
 
-Rust requires Visual Studio 2013 or greater C++ tools, instructions on how to do so are below:
+Install WSL
 
-https://rust-lang.github.io/rustup/installation/windows-msvc.html
+```bash
+wsl --install
+wsl --set-default-version 2 Ubuntu
+```
 
-After run rustup-init from the following site:
+Confirm correct installation
 
-https://rustup.rs/
+```bash
+wsl -l -v
+```
 
-Projects need to be built with the `aarch64-unknown-linux-gnu` environment to be compatible with AWS lambda.
+Launch Ubuntu WSL
 
-### Install target toolchain for Linux 2 deployment
-Note: Only required for building artifacts and deploying to Linux 2  
+```bash
+ubuntu
+```
+
+Download Dependencies
+
+```bash
+sudo apt-get update
+sudo apt-get install build-essential
+sudo apt-get install libzstd-dev
+sudo apt-get install libbz2-dev
+
+sudo snap install zig --classic --beta
+```
+
+Navigate to rust project directory (Replace the name unless your name is also Morgan Hall)
+
+```bash
+cd /mnt/c/Users/morgh/xostat/xostat/xostat-lambda-api/rust/
+```
+
+### Install Rust (Start Here if you're on Linux or Mac)
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+### Install target toolchain
+
 local development and testing can be done using the system-native toolchain automatically shipped by rustup
 
 ```bash
-rustup target add aarch64-unknown-linux-gnu --minimal
+rustup target add aarch64-unknown-linux-gnu
 ```
 
 ### Install cargo-lambda
+
 Core utility for testing and deploying lambda functions
 
 ```bash
@@ -34,14 +67,13 @@ cd ./services
 cargo new hello_world
 ```
 
-
 ### Creating new lambda project (from scratch)
+
 (Substitute $VARNAME with corresponding values)
+
 ```bash
 cargo lambda new $PROJECT_NAME
 ```
-
-## Deploying
 
 ### Build release in zip format
 
@@ -52,10 +84,17 @@ cargo lambda build --release --arm64 --output-format zip
 Add to serverless.yml
 
 (Substitute $VARNAME with corresponding values)
+
 ```bash
 functions:
   $FUNCTION_NAME:
     handler: $FUNCTION_NAME
     package:
-      artifact: ./target/lambda/$FUNCTION_NAME/bootstrap.zip
+      artifact: ./path/to/bootstrap.zip
+```
+
+### Manually Invoking Production
+
+```bash
+aws lambda invoke --function-name xostat-lambda-api-prod-$FUNCTION_NAME outputfile.txt
 ```

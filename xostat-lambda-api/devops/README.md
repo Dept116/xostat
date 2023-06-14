@@ -2,7 +2,7 @@
 
 ```bash
 serverless plugin install -n serverless-offline
-serverless plugin install -n serverless-rust
+serverless plugin install -n serverless-python-requirements
 ```
 
 ### Local PostgreSQL

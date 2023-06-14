@@ -1,13 +1,15 @@
 use std::collections::HashMap;
 use std::env;
 use std::env::{var, VarError};
+use std::time::Duration;
 use lambda_runtime::{service_fn, Error, LambdaEvent};
 use serde::{Deserialize, Serialize};
 use serde_json::from_str;
 use sqlx::{Connection, Postgres, query};
 use sqlx::postgres::PgQueryResult;
-use tracing::{event, info, info_span};
+use tracing::{event, info, error, info_span};
 use shared_logic::get_db_url;
+use reqwest::Client;
 
 #[derive(Deserialize, Debug)]
 struct Prices  {
@@ -49,11 +51,36 @@ async fn main() -> Result<(), Error> {
 }
 
 pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Error> {
-	info!("Requesting prices from crossoutdb");
-	let xodb_prices = reqwest::get("https://crossoutdb.com/api/v1/items?category=Resources").await?;
-	let response_body: Vec<Prices> = from_str(&xodb_prices.text().await?)?;
-	info!("Decoded prices from crossoutdb");
+    info!("Requesting prices from crossoutdb");
 
+    let client = Client::builder()
+        .timeout(Duration::from_secs(10))
+        .build()
+        .map_err(|err| {
+            error!("Failed to build client: {}", err);
+            Error::from(err)
+        })?;
+
+    let res = client.get("https://crossoutdb.com/api/v1/items?category=Resources")
+        .send().await
+        .map_err(|err| {
+            error!("Error while requesting prices: {}", err);
+            Error::from(err)
+        })?;
+
+    let text = res.text().await
+        .map_err(|err| {
+            error!("Failed to read response text: {}", err);
+            Error::from(err)
+        })?;
+
+    let response_body: Vec<Prices> = from_str(&text)
+        .map_err(|err| {
+            error!("Failed to decode prices from crossoutdb: {}", err);
+            Error::from(err)
+        })?;
+
+    info!("Decoded prices from crossoutdb");
 	// K = DB-id of resource
 	// V= best price/unit
 	let mut map: HashMap<u32, f64> = HashMap::new();
