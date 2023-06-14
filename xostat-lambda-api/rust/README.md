@@ -78,7 +78,7 @@ cargo lambda new $PROJECT_NAME
 ### Build release in zip format
 
 ```bash
-cargo lambda build --release --target aarch64-unknown-linux-gnu --output-format zip
+cargo lambda build --release --arm64 --output-format zip
 ```
 
 Add to serverless.yml
