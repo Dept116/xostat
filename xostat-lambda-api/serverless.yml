@@ -10,7 +10,6 @@ provider:
     securityGroupIds:
       - ${ssm:/vpc/lambdaToRDS}
     subnetIds:
-      - ${ssm:/vpc/us-east-2a}
       - ${ssm:/vpc/us-east-2b}
       - ${ssm:/vpc/us-east-2c}
   environment:
@@ -83,7 +82,6 @@ functions:
         - ${ssm:/vpc/lambdaToRDS}
         - ${ssm:/vpc/lambdaToHttps}
       subnetIds:
-        - ${ssm:/vpc/us-east-2a}
         - ${ssm:/vpc/us-east-2b}
         - ${ssm:/vpc/us-east-2c}
     timeout: 30

@@ -12,7 +12,6 @@ use shared_logic::get_db_url;
 use reqwest::Client;
 
 #[derive(Deserialize, Debug)]
-#[serde(deny_unknown_fields)]
 struct Prices  {
 	/// ID as stored in this projects DB in the `resources` table
 	id: u32,
