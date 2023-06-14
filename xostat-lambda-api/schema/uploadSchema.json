@@ -1,0 +1,338 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/UploadModel",
+    "definitions": {
+        "UploadModel": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "uploader_uid": {
+                    "type": "integer"
+                },
+                "match_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MatchList"
+                    }
+                },
+                "build_list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BuildList"
+                    }
+                }
+            },
+            "required": [
+                "build_list",
+                "match_list",
+                "uploader_uid"
+            ],
+            "title": "UploadModel"
+        },
+        "BuildList": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "build_hash": {
+                    "type": "string"
+                },
+                "power_score": {
+                    "type": "integer"
+                },
+                "parts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "build_hash",
+                "parts",
+                "power_score"
+            ],
+            "title": "BuildList"
+        },
+        "MatchList": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "match_id": {
+                    "type": "integer"
+                },
+                "match_type": {
+                    "type": "string"
+                },
+                "match_classification": {
+                    "type": "integer"
+                },
+                "match_start": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "match_end": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "map_name": {
+                    "type": "string"
+                },
+                "map_display_name": {
+                    "type": "string"
+                },
+                "winning_team": {
+                    "type": "integer"
+                },
+                "win_conidtion": {
+                    "type": "integer"
+                },
+                "client_version": {
+                    "type": "string"
+                },
+                "co_driver_version": {
+                    "type": "string"
+                },
+                "host_name": {
+                    "type": "string"
+                },
+                "rounds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Round"
+                    }
+                },
+                "resources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Resource"
+                    }
+                }
+            },
+            "required": [
+                "client_version",
+                "co_driver_version",
+                "host_name",
+                "map_display_name",
+                "map_name",
+                "match_classification",
+                "match_end",
+                "match_id",
+                "match_start",
+                "match_type",
+                "resources",
+                "rounds",
+                "win_conidtion",
+                "winning_team"
+            ],
+            "title": "MatchList"
+        },
+        "Resource": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "resource": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "amount",
+                "resource"
+            ],
+            "title": "Resource"
+        },
+        "Round": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "match_id": {
+                    "type": "integer"
+                },
+                "round_id": {
+                    "type": "integer"
+                },
+                "round_start": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "round_end": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "winning_team": {
+                    "type": "integer"
+                },
+                "players": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Player"
+                    }
+                },
+                "damage_records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DamageRecord"
+                    }
+                }
+            },
+            "required": [
+                "damage_records",
+                "match_id",
+                "players",
+                "round_end",
+                "round_id",
+                "round_start",
+                "winning_team"
+            ],
+            "title": "Round"
+        },
+        "DamageRecord": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "uid": {
+                    "type": "integer"
+                },
+                "weapon": {
+                    "type": "string"
+                },
+                "damage": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "damage",
+                "uid",
+                "weapon"
+            ],
+            "title": "DamageRecord"
+        },
+        "Player": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "match_id": {
+                    "type": "integer"
+                },
+                "round_id": {
+                    "type": "integer"
+                },
+                "uid": {
+                    "type": "integer"
+                },
+                "bot": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "team": {
+                    "type": "integer"
+                },
+                "group_id": {
+                    "type": "integer"
+                },
+                "build_hash": {
+                    "type": "string"
+                },
+                "power_score": {
+                    "type": "integer"
+                },
+                "kills": {
+                    "type": "integer"
+                },
+                "assists": {
+                    "type": "integer"
+                },
+                "drone_kills": {
+                    "type": "integer"
+                },
+                "deaths": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "integer"
+                },
+                "damage": {
+                    "type": "number"
+                },
+                "damage_taken": {
+                    "type": "number"
+                },
+                "scores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Score"
+                    }
+                },
+                "medals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Medal"
+                    }
+                }
+            },
+            "required": [
+                "assists",
+                "bot",
+                "build_hash",
+                "damage",
+                "damage_taken",
+                "deaths",
+                "drone_kills",
+                "group_id",
+                "kills",
+                "match_id",
+                "medals",
+                "nickname",
+                "power_score",
+                "round_id",
+                "score",
+                "scores",
+                "team",
+                "uid"
+            ],
+            "title": "Player"
+        },
+        "Medal": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "medal": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "amount",
+                "medal"
+            ],
+            "title": "Medal"
+        },
+        "Score": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "score_type": {
+                    "$ref": "#/definitions/ScoreType"
+                },
+                "points": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "points",
+                "score_type"
+            ],
+            "title": "Score"
+        },
+        "ScoreType": {
+            "type": "string",
+            "title": "ScoreType"
+        }
+    }
+}

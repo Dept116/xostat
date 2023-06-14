@@ -4,27 +4,53 @@ service: xostat-lambda-api
 
 provider:
   name: aws
-  runtime: python3.8
   region: us-east-2
+  stage: ${opt:stage, 'dev'}
+  vpc:
+    securityGroupIds:
+      - ${ssm:/vpc/lambdaToRDS}
+    subnetIds:
+      - ${ssm:/vpc/us-east-2b}
+      - ${ssm:/vpc/us-east-2c}
   environment:
-    DYNAMODB_TABLE: xodat
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:Scan
-        - dynamodb:Query
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:GetItem
-        - dynamodb:BatchWriteItem
-      Resource: 
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
-        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/sk-pk-index"
+    DB_HOST: ${self:custom.${self:provider.stage}.DB_HOST}
+    DB_PORT: ${self:custom.${self:provider.stage}.DB_PORT}
+    DB_NAME: ${self:custom.${self:provider.stage}.DB_NAME}
+    DB_USER: ${self:custom.${self:provider.stage}.DB_USER}
+    DB_PASSWORD: ${self:custom.${self:provider.stage}.DB_PASSWORD}
+package:
+  exclude:
+    - ./**/target/**
+    - ./devops/**
+    - ./rust/**
+    - ./**/*.md
+    - ./**/*.txt
+plugins:
+  - serverless-offline
+  - serverless-python-requirements
+custom:
+  serverless-offline:
+    host: localhost
+    port: 3000
+  prod:
+    DB_HOST: ${ssm:/rds/prod/host}
+    DB_PORT: ${ssm:/rds/prod/port}
+    DB_NAME: ${ssm:/rds/prod/dbname}
+    DB_USER: ${ssm:/rds/prod/username}
+    DB_PASSWORD: ${ssm:/rds/prod/password}
+  dev:
+    DB_HOST: localhost
+    DB_PORT: 5432
+    DB_NAME: xodat
+    DB_USER: dev
+    DB_PASSWORD: devpass1
 functions:
   uploadMatch:
-    handler: xostat-lambda-api/upload.upload_matches
-    description: upload a list of matches to xodat 
+    handler: python/controllers/upload.upload_matches
+    runtime: python3.8
+    description: upload a list of matches to xodat
     memorySize: 2048
+    timeout: 30
     events:
       - http:
           path: /upload
@@ -32,36 +58,36 @@ functions:
           cors: false
           request:
             schemas:
-              application/json: 
-                schema: ${file(models/uploadSchema.json)}
+              application/json:
+                schema: ${file(schema/uploadSchema.json)}
                 name: UploadModel
-                description: 'Validation for uploading match'
+                description: "Validation for uploading match"
+    layers:
+      - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6
   getUploadRecords:
-    handler: xostat-lambda-api/profile.get_upload_records
+    handler: python/controllers/player.get_upload_records
+    runtime: python3.8
+    timeout: 30
     events:
       - http:
           path: /player/{id}
           method: get
           cors: true
-  getUserProfile:
-    handler: xostat-lambda-api/profile.get_user_totals
+    layers:
+      - arn:aws:lambda:us-east-2:189829313893:layer:sqlalchemy-layer:6
+  updateResourcePrices:
+    handler: updateResourcePrices
+    runtime: provided.al2
+    architecture: arm64
+    vpc:
+      securityGroupIds:
+        - ${ssm:/vpc/lambdaToRDS}
+        - ${ssm:/vpc/lambdaToHttps}
+      subnetIds:
+        - ${ssm:/vpc/us-east-2b}
+        - ${ssm:/vpc/us-east-2c}
+    package:
+      artifact: ./rust/updateResourcePrices/target/lambda/update-resource-prices/bootstrap.zip
     events:
-      - http:
-          path: /profile/{id}
-          method: get
-          cors: true        
-  getUserTotals:
-    handler: xostat-lambda-api/profile.get_user_totals_from_history
-    events:
-      - http:
-          path: /player_totals/{id}
-          method: get
-          cors: true
-  updateStaticElements:
-    handler: xostat-lambda-api/load_static_assets.update_item_definitions
-    # timeout: 600
-    events:
-      - http:
-          path: /static
-          method: get
-          cors: true
+      - schedule:
+          rate: cron(0 3 * * ? *)

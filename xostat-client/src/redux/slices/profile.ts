@@ -2,13 +2,11 @@ import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export interface profileData {
-  tot_cabin_damage: number;
   min_deaths: number;
   mvp: number;
   max_kills: number;
   record_count: number;
   min_duration: number;
-  min_cabin_damage: number;
   min_drone_kills: number;
   max_deaths: number;
   losses: number;
@@ -25,7 +23,6 @@ export interface profileData {
   tot_damage_rec: number;
   draws: number;
   min_damage: number;
-  max_cabin_damage: number;
   max_assists: number;
   tot_duration: number;
   rounds: number;
@@ -46,13 +43,11 @@ export interface profileData {
 }
 
 const initialState: profileData = {
-  tot_cabin_damage: 0,
   min_deaths: 0,
   mvp: 0,
   max_kills: 0,
   record_count: 0,
   min_duration: 0,
-  min_cabin_damage: 0,
   min_drone_kills: 0,
   max_deaths: 0,
   losses: 0,
@@ -69,7 +64,6 @@ const initialState: profileData = {
   tot_damage_rec: 0,
   draws: 0,
   min_damage: 0,
-  max_cabin_damage: 0,
   max_assists: 0,
   tot_duration: 0,
   rounds: 0,
@@ -116,13 +110,11 @@ const slice = createSlice({
   reducers: {
     setProfileData(state, action: PayloadAction<number>) {
       if (action) {
-        parseProfileDatum("tot_cabin_damage", state, action.payload);
         parseProfileDatum("min_deaths", state, action.payload);
         parseProfileDatum("mvp", state, action.payload);
         parseProfileDatum("max_kills", state, action.payload);
         parseProfileDatum("record_count", state, action.payload);
         parseProfileDatum("min_duration", state, action.payload);
-        parseProfileDatum("min_cabin_damage", state, action.payload);
         parseProfileDatum("min_drone_kills", state, action.payload);
         parseProfileDatum("max_deaths", state, action.payload);
         parseProfileDatum("losses", state, action.payload);
@@ -139,7 +131,6 @@ const slice = createSlice({
         parseProfileDatum("tot_damage_rec", state, action.payload);
         parseProfileDatum("draws", state, action.payload);
         parseProfileDatum("min_damage", state, action.payload);
-        parseProfileDatum("max_cabin_damage", state, action.payload);
         parseProfileDatum("max_assists", state, action.payload);
         parseProfileDatum("tot_duration", state, action.payload);
         parseProfileDatum("rounds", state, action.payload);

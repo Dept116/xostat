@@ -2,7 +2,7 @@
  * https://github.com/YouCanBookMe/react-datetime
  */
 
- .rdt {
+.rdt {
   position: relative;
 }
 .rdtPicker {
@@ -37,7 +37,7 @@
   height: 36px;
   line-height: 36px;
   width: 36px;
-  padding: .3rem;
+  padding: 0.3rem;
   border-radius: $border-radius;
 }
 .rdtPicker td {
@@ -59,7 +59,7 @@
   position: relative;
 }
 .rdtPicker td.rdtToday:before {
-  content: '';
+  content: "";
   display: inline-block;
   border-left: 7px solid transparent;
   border-bottom: 7px solid $primary;
@@ -111,10 +111,10 @@
 .rdtNext span {
   display: block;
   -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none;   /* Chrome/Safari/Opera */
-  -khtml-user-select: none;    /* Konqueror */
-  -moz-user-select: none;      /* Firefox */
-  -ms-user-select: none;       /* Internet Explorer/Edge */
+  -webkit-user-select: none; /* Chrome/Safari/Opera */
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
 }
 

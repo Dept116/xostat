@@ -2,8 +2,9 @@
   padding: 0;
   display: flex;
   color: $gray-900;
-  
-  b, strong {
+
+  b,
+  strong {
     color: $black;
   }
 
@@ -61,7 +62,7 @@
 
 .alert-icon {
   padding: $alert-padding-y $alert-padding-x;
-  background: rgba(255,255,255,.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .alert-message {

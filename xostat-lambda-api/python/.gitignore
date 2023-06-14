@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+vendor/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/__pycache__
+lib64/
+parts/
+sdist/
+serverless_sdk/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+s_*py
+lambda_layers/sqlalchemy/python/*
+lambda_layers/sqlalchemy.zip

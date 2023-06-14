@@ -7,7 +7,6 @@ import Main from "../components/Main";
 import Navbar from "../components/navbar/Navbar";
 import Content from "../components/Content";
 import Footer from "../components/Footer";
-import Settings from "../components/Settings";
 
 import dashboardItems from "../components/sidebar/dashboardItems";
 
