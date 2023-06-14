@@ -47,7 +47,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 local development and testing can be done using the system-native toolchain automatically shipped by rustup
 
 ```bash
-rustup target add x86_64-unknown-linux-musl
+rustup target add aarch64-unknown-linux-gnu
 ```
 
 ### Install cargo-lambda
@@ -78,7 +78,7 @@ cargo lambda new $PROJECT_NAME
 ### Build release in zip format
 
 ```bash
-cargo lambda build --release --target x86_64-unknown-linux-musl --output-format zip
+cargo lambda build --release --target aarch64-unknown-linux-gnu --output-format zip
 ```
 
 Add to serverless.yml
