@@ -82,10 +82,10 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 	}
 	info!("Calculated best sell-prices currently available");
 
-	info!("Fetching DB connection");
+	let db_span = info_span!("database_connection").entered();
 	let db = Database::connect_from_env().await?;
 	let db_connection = db.get_connection(); // Copy connection out of pool
-	info!("Connected to DB");
+	db_span.exit();
 
 	for (id, price) in map.iter() {
 		let q: PgQueryResult = query!("
