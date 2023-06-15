@@ -9,8 +9,8 @@ use sqlx::{Connection, query};
 use sqlx::postgres::PgQueryResult;
 use tokio::sync::MutexGuard;
 use tracing::{info, info_span};
-use shared_logic::database::Database;
 
+use shared_logic::database::Database;
 use shared_logic::get_db_url;
 
 #[derive(Deserialize, Debug)]
@@ -88,10 +88,10 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 	db_span.exit();
 
 	for (id, price) in map.iter() {
-		let q: PgQueryResult = query!("
-					INSERT INTO xodat.public.resource_prices (id, resource_id, price)
-					VALUES (NOW(), $1, $2)
-					", *id as i32, price)
+		let q: PgQueryResult = query!( // language=postgresql
+			"INSERT INTO xodat.public.resource_prices (id, resource_id, price)
+			 VALUES (NOW(), $1, $2)
+			", *id as i32, price)
 			.execute(
 				db_connection.lock().await.deref_mut() // Temporarily lock and execute on database, releases right after insertion
 			)
