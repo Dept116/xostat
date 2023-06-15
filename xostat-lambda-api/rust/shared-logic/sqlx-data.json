@@ -1,0 +1,27 @@
+{
+  "db": "PostgreSQL",
+  "e10a29bd79189d34f393767d2071f6d1cf0259061974b6a21534a2edad0a9393": {
+    "describe": {
+      "columns": [
+        {
+          "name": "resource_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "price",
+          "ordinal": 1,
+          "type_info": "Float8"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT resource_id, price\n\t\t\t FROM xodat.public.resource_prices\n        \t NATURAL JOIN\n     \t\t\t(SELECT MAX(id) AS id\n     \t\t\t FROM xodat.public.resource_prices\n      \t\t\t GROUP BY resource_id) AS _\n\t\t\t"
+  }
+}

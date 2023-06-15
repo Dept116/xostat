@@ -1,10 +1,12 @@
+use std::ops::DerefMut;
 use std::sync::{Arc};
 use crate::get_db_url;
 
-use sqlx::{Connection, PgConnection};
+use sqlx::{Connection, PgConnection, query};
 use lambda_runtime::{Error};
 use tokio::sync::Mutex;
 use tracing::info;
+use crate::coins::Coins;
 
 
 /// Either query the DB directly through the `get_connection` function, or through provided methods
@@ -34,7 +36,23 @@ impl Database {
 		return self.connection.clone();
 	}
 
-	pub async fn query_latest_resource_prices(&self) {
+	#[tracing::instrument(level = "info")]						// id
+	pub async fn query_latest_resource_prices(&self) -> Result<Vec<(usize, Coins)>, Error> {
+		let db_connection = self.get_connection();
 
+		let q = query!( // language=postgresql
+			"SELECT resource_id, price
+			 FROM xodat.public.resource_prices
+        	 NATURAL JOIN
+     			(SELECT MAX(id) AS id
+     			 FROM xodat.public.resource_prices
+      			 GROUP BY resource_id) AS _
+			")
+			.fetch_all(
+				db_connection.lock().await.deref_mut() // Temporarily lock and execute on database, releases right after insertion
+			).await?;
+
+		// Maps the collection of rows to the expected struct
+		Ok(q.iter().map(|row| (row.resource_id as usize, Coins::from_real(row.price))).collect())
 	}
 }
