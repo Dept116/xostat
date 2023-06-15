@@ -8,7 +8,7 @@ use serde_json::from_str;
 use sqlx::{Connection, query};
 use sqlx::postgres::PgQueryResult;
 use tokio::sync::MutexGuard;
-use tracing::info;
+use tracing::{info, info_span};
 use shared_logic::database::Database;
 
 use shared_logic::get_db_url;
@@ -43,7 +43,7 @@ async fn main() -> Result<(), Error> {
 		// show up in a confusing manner in CloudWatch logs.
 		.with_ansi(false)
 		// disabling time is handy because CloudWatch will add the ingestion time.
-		.without_time()
+		// .with_time()
 		.init();
 
 	let func = service_fn(handler);
@@ -82,8 +82,10 @@ pub(crate) async fn handler(event: LambdaEvent<Request>) -> Result<Response, Err
 	}
 	info!("Calculated best sell-prices currently available");
 
+	info!("Fetching DB connection");
 	let db = Database::connect_from_env().await?;
 	let db_connection = db.get_connection(); // Copy connection out of pool
+	info!("Connected to DB");
 
 	for (id, price) in map.iter() {
 		let q: PgQueryResult = query!("
